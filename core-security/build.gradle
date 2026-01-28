@@ -1,26 +1,7 @@
 plugins {
-    id 'java'
-}
-
-repositories {
-    maven {
-        url = uri("https://nexus.agipi.net/nexus/content/groups/developpement")
-    }
+    id 'hexa-java'
 }
 
 dependencies {
-    compileOnly             libs.lombok
-    annotationProcessor     libs.lombok
-    implementation          project(":core")
-
-    testCompileOnly         libs.lombok
-    testAnnotationProcessor libs.lombok
-    testImplementation      libs.junit
-    testRuntimeOnly         libs.junit.platform
-    testImplementation      libs.assertj
-    testImplementation      libs.bundles.mockito
-}
-
-test {
-    useJUnitPlatform()
+    implementation project(":core")
 }
