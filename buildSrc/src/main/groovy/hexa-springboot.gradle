@@ -1,0 +1,8 @@
+plugins {
+    id 'hexa-java'
+}
+
+dependencies {
+    implementation      libs.bundles.springboot
+    testImplementation  libs.bundles.springboottest
+}
