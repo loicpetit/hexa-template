@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 class EmailTest {
     @Test
     void mustIntantiateEmail() {
-        assertDoesNotThrow(() -> new Email("be@ba.com"));
+        assertDoesNotThrow(() -> Email.builder().value("be@ba.com").build());
     }
 
     @ParameterizedTest
@@ -19,7 +19,7 @@ class EmailTest {
     @ValueSource(strings = "  ")
     void ifInvalideValueMustThrowException(final String value) {
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> new Email(value))
+                .isThrownBy(() -> Email.builder().value(value).build())
                 .withMessage("The email value cannot be blank");
     }
 }

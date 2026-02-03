@@ -7,4 +7,9 @@
 
 rootProject.name = 'Hexa template'
 
-include('core', 'core-security', 'core-springboot-starter')
+include(
+        'core',
+        'core-persistence',
+        'core-security',
+        'core-springboot-starter'
+)

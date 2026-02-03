@@ -20,6 +20,9 @@ dependencies {
     annotationProcessor     libs.lombok
     testCompileOnly         libs.lombok
     testAnnotationProcessor libs.lombok
+    // mapstruct
+    implementation          libs.mapstruct
+    annotationProcessor     libs.mapstruct.processor
     // tests
     testImplementation      libs.junit
     testRuntimeOnly         libs.junit.platform
