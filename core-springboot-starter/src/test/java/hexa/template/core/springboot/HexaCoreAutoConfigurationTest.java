@@ -1,12 +1,14 @@
 package hexa.template.core.springboot;
 
 import hexa.template.core.model.Email;
+import hexa.template.core.persistence.adapter.EmailReaderMemoryAdapter;
+import hexa.template.core.persistence.port.UserProvider;
 import hexa.template.core.port.EmailReader;
 import hexa.template.core.security.model.UserPermission;
 import hexa.template.core.security.port.UserPermissionProvider;
 import hexa.template.core.security.usecase.GetEmailsSecurityProxy;
 import hexa.template.core.security.validator.EmailPermissionValidator;
-import hexa.template.core.springboot.adapter.SpringbootUserPermissionProvider;
+import hexa.template.core.springboot.adapter.SpringbootUserProvider;
 import hexa.template.core.springboot.testapp.Application;
 import hexa.template.core.usecase.GetEmails;
 import jakarta.annotation.Nullable;
@@ -20,7 +22,6 @@ import org.springframework.context.annotation.Import;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 
@@ -30,6 +31,10 @@ public class HexaCoreAutoConfigurationTest {
             classes = Application.class
     )
     class Default {
+        @Autowired
+        @Nullable
+        UserProvider userProvider;
+
         @Autowired
         @Nullable
         UserPermissionProvider userPermissionProvider;
@@ -47,14 +52,18 @@ public class HexaCoreAutoConfigurationTest {
         GetEmails getter;
 
         @Test
+        void userProviderShouldBeFromStarter() {
+            assertInstanceOf(SpringbootUserProvider.class, userProvider);
+        }
+
+        @Test
         void userPermissionProviderShouldBeFromStarter() {
-            assertInstanceOf(SpringbootUserPermissionProvider.class, userPermissionProvider);
+            assertInstanceOf(SpringbootUserProvider.class, userPermissionProvider);
         }
 
         @Test
         void emailReaderShouldBeFromPersistenceCore() {
-            //assertInstanceOf(??.class, emailReader);
-            assertNotNull(emailReader);
+            assertInstanceOf(EmailReaderMemoryAdapter.class, emailReader);
         }
 
         @Test
@@ -78,6 +87,10 @@ public class HexaCoreAutoConfigurationTest {
     class Disabled {
         @Autowired
         @Nullable
+        UserProvider userProvider;
+
+        @Autowired
+        @Nullable
         UserPermissionProvider userPermissionProvider;
 
         @Autowired
@@ -91,6 +104,11 @@ public class HexaCoreAutoConfigurationTest {
         @Autowired
         @Nullable
         GetEmails getter;
+
+        @Test
+        void userProviderShouldBeNull() {
+            assertNull(userProvider);
+        }
 
         @Test
         void userPermissionProviderShouldBeNull() {
@@ -121,7 +139,6 @@ public class HexaCoreAutoConfigurationTest {
             }
     )
     class Enabled {
-
         @Autowired
         @Nullable
         GetEmails getter;
@@ -140,6 +157,10 @@ public class HexaCoreAutoConfigurationTest {
     class ReplaceBeans {
         @Autowired
         @Nullable
+        UserProvider userProvider;
+
+        @Autowired
+        @Nullable
         UserPermissionProvider userPermissionProvider;
 
         @Autowired
@@ -155,14 +176,18 @@ public class HexaCoreAutoConfigurationTest {
         GetEmails getter;
 
         @Test
+        void userProviderShouldBeFromStarter() {
+            assertFalse(userProvider instanceof SpringbootUserProvider);
+        }
+
+        @Test
         void userPermissionProviderShouldBeFromStarter() {
-            assertFalse(userPermissionProvider instanceof SpringbootUserPermissionProvider);
+            assertFalse(userPermissionProvider instanceof SpringbootUserProvider);
         }
 
         @Test
         void emailReaderShouldBeFromPersistenceCore() {
-            //assertFalse(emailReader instanceof ???);
-            assertNotNull(emailReader);
+            assertFalse(emailReader instanceof EmailReaderMemoryAdapter);
         }
 
         @Test
@@ -177,6 +202,16 @@ public class HexaCoreAutoConfigurationTest {
 
         @TestConfiguration
         static class Config {
+            @Bean
+            public UserProvider customUserProvider() {
+                return new UserProvider() {
+                    @Override
+                    public String getUserName() {
+                        return "chuck";
+                    }
+                };
+            }
+
             @Bean
             public UserPermissionProvider customUserPermissionProvider() {
                 return new UserPermissionProvider() {

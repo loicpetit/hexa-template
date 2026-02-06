@@ -1,13 +1,18 @@
 package hexa.template.core.springboot;
 
+import hexa.template.core.persistence.adapter.EmailReaderMemoryAdapter;
+import hexa.template.core.persistence.dao.EmailReaderMemoryDao;
+import hexa.template.core.persistence.mapper.EmailEntityMapperImpl;
+import hexa.template.core.persistence.mapper.EmailMapperImpl;
+import hexa.template.core.persistence.port.UserProvider;
 import hexa.template.core.port.EmailReader;
 import hexa.template.core.security.port.UserPermissionProvider;
 import hexa.template.core.security.usecase.GetEmailsSecurityProxy;
 import hexa.template.core.security.validator.EmailPermissionValidator;
-import hexa.template.core.springboot.adapter.SpringbootUserPermissionProvider;
-import hexa.template.core.springboot.security.AuthoritiesProvider;
+import hexa.template.core.springboot.adapter.SpringbootUserProvider;
+import hexa.template.core.springboot.mapper.AuthoryMapper;
+import hexa.template.core.springboot.mapper.UserPermissionMapper;
 import hexa.template.core.springboot.security.SecurityContextProxy;
-import hexa.template.core.springboot.security.SpringbootAuthoritiesProvider;
 import hexa.template.core.usecase.GetEmails;
 import hexa.template.core.usecase.GetEmailsImpl;
 import jakarta.annotation.PostConstruct;
@@ -31,27 +36,28 @@ public class HexaCoreAutoConfiguration {
     }
 
     @Bean
-    public AuthoritiesProvider authoritiesProvider() {
-        log.debug("use starter authorities provider");
-        return new SpringbootAuthoritiesProvider(
-                new SecurityContextProxy()
+    @ConditionalOnMissingBean({UserProvider.class, UserPermissionProvider.class})
+    public SpringbootUserProvider springbootUserPermissionProvider() {
+        log.debug("use starter user permission provider");
+        return new SpringbootUserProvider(
+                new SecurityContextProxy(),
+                new AuthoryMapper(),
+                new UserPermissionMapper()
         );
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public UserPermissionProvider springbootUserPermissionProvider(
-            final AuthoritiesProvider authoritiesProvider
+    public EmailReader persistenceEmailReader(
+            final UserProvider userProvider
     ) {
-        log.debug("use starter user permission provider");
-        return new SpringbootUserPermissionProvider(authoritiesProvider);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public EmailReader persistenceEmailReader() {
         log.debug("use core persistence email reader");
-        return id -> null;
+        return new EmailReaderMemoryAdapter(
+                userProvider,
+                new EmailReaderMemoryDao(),
+                new EmailMapperImpl(),
+                new EmailEntityMapperImpl()
+        );
     }
 
     @Bean

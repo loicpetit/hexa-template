@@ -1,5 +1,5 @@
 package hexa.template.core.persistence.port;
 
 public interface UserProvider {
-    String getUser();
+    String getUserName();
 }

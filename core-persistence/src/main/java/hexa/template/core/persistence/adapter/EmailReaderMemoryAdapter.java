@@ -22,7 +22,7 @@ public class EmailReaderMemoryAdapter implements EmailReader {
     }
 
     public void save(final Email email) {
-        final String author = userProvider.getUser();
+        final String author = userProvider.getUserName();
         final EmailEntity entity = entityMapper.map(email, author);
         dao.save(entity);
     }
