@@ -3,7 +3,7 @@ package hexa.template.email.springboot;
 import hexa.template.email.core.model.Email;
 import hexa.template.email.core.port.EmailReader;
 import hexa.template.email.core.usecase.GetEmails;
-import hexa.template.email.persistence.adapter.EmailReaderMemoryAdapter;
+import hexa.template.email.persistence.adapter.memory.EmailReaderMemoryAdapter;
 import hexa.template.email.persistence.port.UserProvider;
 import hexa.template.email.security.model.UserPermission;
 import hexa.template.email.security.port.UserPermissionProvider;

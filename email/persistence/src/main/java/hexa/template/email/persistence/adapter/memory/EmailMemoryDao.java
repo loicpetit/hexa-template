@@ -1,4 +1,4 @@
-package hexa.template.email.persistence.dao;
+package hexa.template.email.persistence.adapter.memory;
 
 import hexa.template.email.persistence.model.EmailEntity;
 
@@ -6,15 +6,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class EmailReaderMemoryDao {
+public class EmailMemoryDao {
     private final Map<Long, EmailEntity> cache;
     private long nextId = 1L;
 
-    public EmailReaderMemoryDao() {
+    public EmailMemoryDao() {
         cache = new ConcurrentHashMap<>();
     }
 
-    public EmailReaderMemoryDao(final List<EmailEntity> initialEntities) {
+    public EmailMemoryDao(final List<EmailEntity> initialEntities) {
         this();
         for(EmailEntity entity : initialEntities) {
             save(entity);
@@ -45,7 +45,7 @@ public class EmailReaderMemoryDao {
         return newId;
     }
 
-    public void delete(final long id) {
+    public void deleteById(final long id) {
         cache.remove(id);
     }
 

@@ -1,4 +1,4 @@
-package hexa.template.email.persistence.dao;
+package hexa.template.email.persistence.adapter.memory;
 
 import hexa.template.email.persistence.model.EmailEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,12 +11,12 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-class EmailReaderMemoryDaoTest {
-    private EmailReaderMemoryDao dao;
+class EmailMemoryDaoTest {
+    private EmailMemoryDao dao;
 
     @BeforeEach
     void before() {
-        dao = new EmailReaderMemoryDao(
+        dao = new EmailMemoryDao(
                 List.of(
                         new EmailEntity(
                                 1L,
@@ -192,7 +192,7 @@ class EmailReaderMemoryDaoTest {
                     .as("entity 1")
                     .isNotNull();
 
-            dao.delete(id);
+            dao.deleteById(id);
 
             assertThat(dao.getEmailById(id))
                     .as("entity 1")
@@ -201,7 +201,7 @@ class EmailReaderMemoryDaoTest {
 
         @Test
         void ifIdDoesNotExistDoNothing() {
-            assertDoesNotThrow(() -> dao.delete(100L));
+            assertDoesNotThrow(() -> dao.deleteById(100L));
         }
     }
 

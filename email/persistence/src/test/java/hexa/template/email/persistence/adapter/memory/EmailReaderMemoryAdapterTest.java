@@ -1,16 +1,11 @@
-package hexa.template.email.persistence.adapter;
+package hexa.template.email.persistence.adapter.memory;
 
 import hexa.template.email.core.model.Email;
-import hexa.template.email.persistence.dao.EmailReaderMemoryDao;
-import hexa.template.email.persistence.mapper.EmailEntityMapper;
 import hexa.template.email.persistence.mapper.EmailMapper;
 import hexa.template.email.persistence.model.EmailEntity;
-import hexa.template.email.persistence.port.UserProvider;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -18,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,16 +21,10 @@ class EmailReaderMemoryAdapterTest {
     private EmailReaderMemoryAdapter adapter;
 
     @Mock
-    private UserProvider userProvider;
-
-    @Mock
-    private EmailReaderMemoryDao dao;
+    private EmailMemoryDao dao;
 
     @Mock
     private EmailMapper modelMapper;
-
-    @Mock
-    private EmailEntityMapper entityMapper;
 
     @Nested
     class GetEmailById {
@@ -52,28 +40,6 @@ class EmailReaderMemoryAdapterTest {
             assertThat(email)
                     .as("email")
                     .isSameAs(emailModel);
-        }
-    }
-
-    @Nested
-    class Save {
-        @Captor
-        private ArgumentCaptor<String> authorCaptor;
-
-        @Test
-        void mustSaveWithAuteur() {
-            final var emailModel = mock(Email.class);
-            final var emailEntity = mock(EmailEntity.class);
-            final var author = "chuck";
-            when(userProvider.getUserName()).thenReturn(author);
-            when(entityMapper.map(same(emailModel), authorCaptor.capture())).thenReturn(emailEntity);
-
-            adapter.save(emailModel);
-
-            assertThat(authorCaptor.getValue())
-                    .as("entity author")
-                    .isEqualTo(author);
-            verify(dao).save(same(emailEntity));
         }
     }
 }
