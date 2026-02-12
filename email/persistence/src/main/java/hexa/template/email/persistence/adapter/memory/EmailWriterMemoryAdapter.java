@@ -24,7 +24,7 @@ public class EmailWriterMemoryAdapter implements EmailWriter {
     }
 
     @Override
-    public void deleteById(final long id) {
-        dao.deleteById(id);
+    public boolean deleteById(final long id) {
+        return dao.deleteById(id);
     }
 }

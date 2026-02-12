@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class EmailMemoryDaoTest {
     private EmailMemoryDao dao;
@@ -185,23 +184,24 @@ class EmailMemoryDaoTest {
     @Nested
     class Delete {
         @Test
-        void mustRemoveEntity() {
+        void isExistsMustRemoveEntity() {
             final long id = 1L;
 
             assertThat(dao.getEmailById(id))
                     .as("entity 1")
                     .isNotNull();
 
-            dao.deleteById(id);
+            final var result = dao.deleteById(id);
 
+            assertThat(result).as("result").isTrue();
             assertThat(dao.getEmailById(id))
                     .as("entity 1")
                     .isNull();
         }
 
         @Test
-        void ifIdDoesNotExistDoNothing() {
-            assertDoesNotThrow(() -> dao.deleteById(100L));
+        void ifIDoesNotExistMustReturnFalse() {
+            assertThat(dao.deleteById(100L)).isFalse();
         }
     }
 

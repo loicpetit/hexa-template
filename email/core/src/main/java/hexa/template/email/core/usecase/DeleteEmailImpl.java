@@ -1,5 +1,6 @@
 package hexa.template.email.core.usecase;
 
+import hexa.template.email.core.exception.EmailNotFoundException;
 import hexa.template.email.core.port.EmailWriter;
 import lombok.RequiredArgsConstructor;
 
@@ -9,6 +10,8 @@ public class DeleteEmailImpl implements DeleteEmail {
 
     @Override
     public void byId(final long id) {
-        writer.deleteById(id);
+        if (!writer.deleteById(id)) {
+            throw new EmailNotFoundException();
+        }
     }
 }

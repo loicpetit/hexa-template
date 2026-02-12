@@ -1,5 +1,6 @@
 package hexa.template.email.core.usecase;
 
+import hexa.template.email.core.exception.EmailNotFoundException;
 import hexa.template.email.core.model.Email;
 import hexa.template.email.core.port.EmailReader;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,5 +33,11 @@ class GetEmailsTest {
         assertThat(result)
                 .as("result")
                 .isSameAs(email);
+    }
+
+    @Test
+    void ifEmailNotFoundMustThrowException() {
+        assertThatExceptionOfType(EmailNotFoundException.class)
+                .isThrownBy(() -> getter.getEmailById(1L));
     }
 }

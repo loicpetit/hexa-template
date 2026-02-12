@@ -1,5 +1,6 @@
 package hexa.template.email.core.usecase;
 
+import hexa.template.email.core.exception.NullEmailException;
 import hexa.template.email.core.model.Email;
 import hexa.template.email.core.port.EmailWriter;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -34,5 +36,11 @@ class SaveEmailTest {
         assertThat(result)
                 .as("result")
                 .isSameAs(savedEmail);
+    }
+
+    @Test
+    void idEmailIsNullMustThrowException() {
+        assertThatExceptionOfType(NullEmailException.class)
+                .isThrownBy(() -> saver.save(null));
     }
 }

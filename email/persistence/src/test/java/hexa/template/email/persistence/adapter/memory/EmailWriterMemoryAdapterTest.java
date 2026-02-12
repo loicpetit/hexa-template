@@ -17,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -70,8 +69,11 @@ class EmailWriterMemoryAdapterTest {
         @Test
         void mustDelete() {
             adapter.deleteById(1L);
+            when(dao.deleteById(1L)).thenReturn(true);
 
-            verify(dao).deleteById(1L);
+            final var result = dao.deleteById(1L);
+
+            assertThat(result).isTrue();
         }
     }
 }

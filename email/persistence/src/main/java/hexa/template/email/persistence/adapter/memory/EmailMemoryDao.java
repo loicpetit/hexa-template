@@ -45,8 +45,12 @@ public class EmailMemoryDao {
         return newId;
     }
 
-    public void deleteById(final long id) {
+    public boolean deleteById(final long id) {
+        if (!cache.containsKey(id)) {
+            return false;
+        }
         cache.remove(id);
+        return true;
     }
 
     public void clear() {
