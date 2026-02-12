@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 
-public class HexaCoreAutoConfigurationTest {
+public class HexaEmailAutoConfigurationTest {
     @Nested
     @SpringBootTest(
             classes = Application.class

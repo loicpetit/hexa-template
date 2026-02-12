@@ -29,7 +29,7 @@ import org.springframework.context.annotation.Bean;
         matchIfMissing = true
 )
 @Slf4j
-public class HexaCoreAutoConfiguration {
+public class HexaEmailAutoConfiguration {
     @PostConstruct
     public void init() {
         log.info("HexaCoreAutoConfiguration is set up");
@@ -51,7 +51,7 @@ public class HexaCoreAutoConfiguration {
     public EmailReader persistenceEmailReader(
             final UserProvider userProvider
     ) {
-        log.debug("use core persistence email reader");
+        log.debug("use persistence email reader");
         return new EmailReaderMemoryAdapter(
                 userProvider,
                 new EmailReaderMemoryDao(),
