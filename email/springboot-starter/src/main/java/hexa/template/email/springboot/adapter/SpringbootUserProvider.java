@@ -9,13 +9,11 @@ import hexa.template.email.springboot.security.AuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-@Service
 @RequiredArgsConstructor
 public class SpringbootUserProvider implements UserProvider, UserPermissionProvider {
     private final AuthenticationProvider provider;
@@ -41,8 +39,4 @@ public class SpringbootUserProvider implements UserProvider, UserPermissionProvi
                 .map(Authentication::getAuthorities)
                 .orElse(List.of());
     }
-
-    // TODO TESTS
-    // TODO ADD INITIALS DATA FROM CONFIG TO BE OVERWRITTEN
-    // TODO CORE INTEGRATION TESTS
 }
