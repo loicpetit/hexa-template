@@ -1,9 +1,0 @@
-plugins {
-    id 'hexa-springboot'
-}
-
-dependencies {
-    implementation project(":core")
-    implementation project(":core-persistence")
-    implementation project(":core-security")
-}

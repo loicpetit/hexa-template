@@ -8,8 +8,8 @@
 rootProject.name = 'Hexa template'
 
 include(
-        'core',
-        'core-persistence',
-        'core-security',
-        'core-springboot-starter'
+        'email:core',
+        'email:persistence',
+        'email:security',
+        'email:springboot-starter'
 )

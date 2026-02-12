@@ -1,0 +1,8 @@
+plugins {
+    id 'hexa-java'
+}
+
+base {
+    archivesName = "email-core"
+    version = "0.0.1-SNAPSHOT"
+}

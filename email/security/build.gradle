@@ -1,0 +1,12 @@
+plugins {
+    id 'hexa-java'
+}
+
+base {
+    archivesName = "email-security"
+    version = "0.0.1-SNAPSHOT"
+}
+
+dependencies {
+    implementation project(":email:core")
+}
