@@ -253,9 +253,18 @@ public class HexaEmailAutoConfigurationTest {
                 }
 
                 @Override
-                public EmailPermissionValidator validateUserCanRead() {
+                public void validateUserCanRead() {
                     // nothing
-                    return this;
+                }
+
+                @Override
+                public void validateUserCanSave(Email email) {
+                    // nothing
+                }
+
+                @Override
+                public void validateUserCanDelete(long id) {
+                    // nothing
                 }
             }
         }
