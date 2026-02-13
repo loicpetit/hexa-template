@@ -1,11 +1,17 @@
 package hexa.template.email.springboot.testapp;
 
+import hexa.template.email.persistence.adapter.EmailDao;
+import hexa.template.email.persistence.model.EmailEntity;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.LocalDateTime;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -22,6 +28,14 @@ public class ControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private EmailDao dao;
+
+    @AfterEach
+    void after() {
+        dao.clear();
+    }
+
     @Test
     void test() throws Exception {
         mockMvc.perform(
@@ -36,6 +50,12 @@ public class ControllerTest {
         @Nested
         class ById {
             private static final String ENDPOINT = "/api/emails/1";
+
+            @BeforeEach
+            void before() {
+                dao.save(new EmailEntity(1L, "chuck@kick.com", "test", LocalDateTime.now()));
+            }
+
             @Test
             void ifPermissionShouldBeOk() throws Exception {
                 mockMvc.perform(get(ENDPOINT).with(httpBasic("emailUser", "emailPwd")))

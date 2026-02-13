@@ -3,7 +3,10 @@ package hexa.template.email.springboot;
 import hexa.template.email.core.model.Email;
 import hexa.template.email.core.port.EmailReader;
 import hexa.template.email.core.usecase.GetEmails;
-import hexa.template.email.persistence.adapter.memory.EmailReaderMemoryAdapter;
+import hexa.template.email.persistence.adapter.EmailDao;
+import hexa.template.email.persistence.adapter.EmailReaderAdapter;
+import hexa.template.email.persistence.adapter.memory.EmailMemoryDao;
+import hexa.template.email.persistence.model.EmailEntity;
 import hexa.template.email.persistence.port.UserProvider;
 import hexa.template.email.security.model.UserPermission;
 import hexa.template.email.security.port.UserPermissionProvider;
@@ -37,6 +40,10 @@ public class HexaEmailAutoConfigurationTest {
 
         @Autowired
         @Nullable
+        EmailDao emailDao;
+
+        @Autowired
+        @Nullable
         UserPermissionProvider userPermissionProvider;
 
         @Autowired
@@ -57,13 +64,18 @@ public class HexaEmailAutoConfigurationTest {
         }
 
         @Test
+        void emailDaoShouldBeFromStarter() {
+            assertInstanceOf(EmailMemoryDao.class, emailDao);
+        }
+
+        @Test
         void userPermissionProviderShouldBeFromStarter() {
             assertInstanceOf(SpringbootUserProvider.class, userPermissionProvider);
         }
 
         @Test
         void emailReaderShouldBeFromPersistenceCore() {
-            assertInstanceOf(EmailReaderMemoryAdapter.class, emailReader);
+            assertInstanceOf(EmailReaderAdapter.class, emailReader);
         }
 
         @Test
@@ -91,6 +103,10 @@ public class HexaEmailAutoConfigurationTest {
 
         @Autowired
         @Nullable
+        EmailDao emailDao;
+
+        @Autowired
+        @Nullable
         UserPermissionProvider userPermissionProvider;
 
         @Autowired
@@ -108,6 +124,11 @@ public class HexaEmailAutoConfigurationTest {
         @Test
         void userProviderShouldBeNull() {
             assertNull(userProvider);
+        }
+
+        @Test
+        void emailDaoShouldBeNull() {
+            assertNull(emailDao);
         }
 
         @Test
@@ -161,6 +182,10 @@ public class HexaEmailAutoConfigurationTest {
 
         @Autowired
         @Nullable
+        EmailDao emailDao;
+
+        @Autowired
+        @Nullable
         UserPermissionProvider userPermissionProvider;
 
         @Autowired
@@ -181,13 +206,18 @@ public class HexaEmailAutoConfigurationTest {
         }
 
         @Test
+        void emailDaoShouldBeFromStarter() {
+            assertFalse(emailDao instanceof EmailMemoryDao);
+        }
+
+        @Test
         void userPermissionProviderShouldBeFromStarter() {
             assertFalse(userPermissionProvider instanceof SpringbootUserProvider);
         }
 
         @Test
         void emailReaderShouldBeFromPersistenceCore() {
-            assertFalse(emailReader instanceof EmailReaderMemoryAdapter);
+            assertFalse(emailReader instanceof EmailReaderAdapter);
         }
 
         @Test
@@ -218,6 +248,31 @@ public class HexaEmailAutoConfigurationTest {
                     @Override
                     public Iterable<UserPermission> getCurrentUserPermissions() {
                         return null;
+                    }
+                };
+            }
+
+            @Bean
+            public EmailDao customEmailDao() {
+                return new EmailDao() {
+                    @Override
+                    public EmailEntity getEmailById(long id) {
+                        return null;
+                    }
+
+                    @Override
+                    public EmailEntity save(EmailEntity entity) {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean deleteById(long id) {
+                        return false;
+                    }
+
+                    @Override
+                    public void clear() {
+
                     }
                 };
             }

@@ -3,8 +3,9 @@ package hexa.template.email.springboot;
 import hexa.template.email.core.port.EmailReader;
 import hexa.template.email.core.usecase.GetEmails;
 import hexa.template.email.core.usecase.GetEmailsImpl;
+import hexa.template.email.persistence.adapter.EmailDao;
+import hexa.template.email.persistence.adapter.EmailReaderAdapter;
 import hexa.template.email.persistence.adapter.memory.EmailMemoryDao;
-import hexa.template.email.persistence.adapter.memory.EmailReaderMemoryAdapter;
 import hexa.template.email.persistence.mapper.EmailMapperImpl;
 import hexa.template.email.persistence.port.UserProvider;
 import hexa.template.email.security.port.UserPermissionProvider;
@@ -47,12 +48,19 @@ public class HexaEmailAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
+    public EmailDao persistenceEmailDao() {
+        log.debug("use persistence email memory dao");
+        return new EmailMemoryDao();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
     public EmailReader persistenceEmailReader(
-            final UserProvider userProvider
+            final EmailDao emailDao
     ) {
         log.debug("use persistence email reader");
-        return new EmailReaderMemoryAdapter(
-                new EmailMemoryDao(),
+        return new EmailReaderAdapter(
+                emailDao,
                 new EmailMapperImpl()
         );
     }
