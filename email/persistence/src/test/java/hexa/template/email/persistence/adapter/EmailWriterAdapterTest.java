@@ -1,4 +1,4 @@
-package hexa.template.email.persistence.adapter.memory;
+package hexa.template.email.persistence.adapter;
 
 import hexa.template.email.core.model.Email;
 import hexa.template.email.persistence.mapper.EmailEntityMapper;
@@ -20,15 +20,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class EmailWriterMemoryAdapterTest {
+class EmailWriterAdapterTest {
     @InjectMocks
-    private EmailWriterMemoryAdapter adapter;
+    private EmailWriterAdapter adapter;
 
     @Mock
     private UserProvider userProvider;
 
     @Mock
-    private EmailMemoryDao dao;
+    private EmailDao dao;
 
     @Mock
     private EmailMapper modelMapper;

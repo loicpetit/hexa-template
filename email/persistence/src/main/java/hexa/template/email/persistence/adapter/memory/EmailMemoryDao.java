@@ -1,12 +1,13 @@
 package hexa.template.email.persistence.adapter.memory;
 
+import hexa.template.email.persistence.adapter.EmailDao;
 import hexa.template.email.persistence.model.EmailEntity;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class EmailMemoryDao {
+public class EmailMemoryDao implements EmailDao {
     private final Map<Long, EmailEntity> cache;
     private long nextId = 1L;
 

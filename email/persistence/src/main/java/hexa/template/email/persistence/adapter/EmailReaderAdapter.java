@@ -1,4 +1,4 @@
-package hexa.template.email.persistence.adapter.memory;
+package hexa.template.email.persistence.adapter;
 
 import hexa.template.email.core.model.Email;
 import hexa.template.email.core.port.EmailReader;
@@ -6,8 +6,8 @@ import hexa.template.email.persistence.mapper.EmailMapper;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class EmailReaderMemoryAdapter implements EmailReader {
-    final EmailMemoryDao dao;
+public class EmailReaderAdapter implements EmailReader {
+    final EmailDao dao;
     final EmailMapper modelMapper;
 
     @Override
