@@ -1,5 +1,6 @@
 plugins {
     id 'hexa-springboot'
+    id 'org.springframework.boot'
 }
 
 base {

@@ -3,5 +3,13 @@ plugins {
 }
 
 repositories {
+    maven {
+        url = uri("https://nexus.agipi.net/nexus/content/groups/developpement")
+    }
+
     gradlePluginPortal()
+}
+
+dependencies {
+    implementation('org.springframework.boot:spring-boot-gradle-plugin:4.0.2')
 }
