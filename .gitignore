@@ -1,6 +1,9 @@
 # security config
 /**/main/resources/users.properties
 
+# http client plugin
+http-client.private.env.json
+
 # Gradle
 # Ignore Gradle project-specific cache directory
 .gradle
