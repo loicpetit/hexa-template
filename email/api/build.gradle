@@ -1,0 +1,15 @@
+plugins {
+    id 'hexa-springboot'
+}
+
+base {
+    archivesName = "email-api"
+    version = "0.0.1-SNAPSHOT"
+}
+
+dependencies {
+    implementation project(":email:core")
+    implementation project(":email:persistence")
+    implementation project(":email:security")
+    implementation project(":email:springboot-starter")
+}

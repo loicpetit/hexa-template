@@ -39,7 +39,7 @@ class EmailPermissionValidatorTest {
         void ifUserCannotReadMustThrowException() {
             assertThatExceptionOfType(ForbiddenException.class)
                     .isThrownBy(() -> validator.validateUserCanRead())
-                    .withMessage("User cannot read email");
+                    .withMessage("user cannot read email");
         }
     }
 
@@ -52,7 +52,7 @@ class EmailPermissionValidatorTest {
         void ifEmailIsInUnexpectedStateMustThrowException() {
             assertThatExceptionOfType(IllegalArgumentException.class)
                     .isThrownBy(() -> validator.validateUserCanSave(null))
-                    .withMessage("Unexpected email state");
+                    .withMessage("unexpected email state");
         }
 
         @Test
@@ -68,7 +68,7 @@ class EmailPermissionValidatorTest {
         void ifUserCannotCreateMustThrowException() {
             assertThatExceptionOfType(ForbiddenException.class)
                     .isThrownBy(() -> validator.validateUserCanSave(newEmail))
-                    .withMessage("User cannot create email");
+                    .withMessage("user cannot create email");
         }
 
         @Test
@@ -84,7 +84,7 @@ class EmailPermissionValidatorTest {
         void ifUserCannotUpdateMustThrowException() {
             assertThatExceptionOfType(ForbiddenException.class)
                     .isThrownBy(() -> validator.validateUserCanSave(existingEmail))
-                    .withMessage("User cannot update email");
+                    .withMessage("user cannot update email");
         }
     }
 
@@ -103,14 +103,14 @@ class EmailPermissionValidatorTest {
         void ifUserCannotDeleteMustThrowException() {
             assertThatExceptionOfType(ForbiddenException.class)
                     .isThrownBy(() -> validator.validateUserCanDelete(1L))
-                    .withMessage("User cannot delete email");
+                    .withMessage("user cannot delete email");
         }
 
         @Test
         void ifIdUndeletableMustThrowException() {
             assertThatExceptionOfType(ForbiddenException.class)
                     .isThrownBy(() -> validator.validateUserCanDelete(2L))
-                    .withMessage("Cannot delete email with even id");
+                    .withMessage("cannot delete email with even id");
         }
     }
 }

@@ -1,0 +1,7 @@
+### Get email by id - valid
+GET http://{{machine}}/api/emails/1
+Authorization: Basic {{auth.user}} {{auth.password}}
+
+### Get email by id - forbidden
+GET http://{{machine}}/api/emails/1
+Authorization: Basic {{forbidden.user}} {{forbidden.password}}

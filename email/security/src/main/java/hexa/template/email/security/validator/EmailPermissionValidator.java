@@ -11,28 +11,28 @@ public class EmailPermissionValidator {
 
     public void validateUserCanRead() {
         if (missPermission(UserPermission.EMAIL_READ)) {
-            throw new ForbiddenException("User cannot read email");
+            throw new ForbiddenException("user cannot read email");
         }
     }
 
     public void validateUserCanSave(final Email email) {
         if (!isCreate(email) && !isUpdate(email)) {
-            throw new IllegalArgumentException("Unexpected email state");
+            throw new IllegalArgumentException("unexpected email state");
         }
         if (isCreate(email) && missPermission(UserPermission.EMAIL_CREATE)) {
-            throw new ForbiddenException("User cannot create email");
+            throw new ForbiddenException("user cannot create email");
         }
         if (isUpdate(email) && missPermission(UserPermission.EMAIL_UPDATE)) {
-            throw new ForbiddenException("User cannot update email");
+            throw new ForbiddenException("user cannot update email");
         }
     }
 
     public void validateUserCanDelete(final long id) {
         if (id % 2 == 0) {
-            throw new ForbiddenException("Cannot delete email with even id");
+            throw new ForbiddenException("cannot delete email with even id");
         }
         if (missPermission(UserPermission.EMAIL_DELETE)) {
-            throw new ForbiddenException("User cannot delete email");
+            throw new ForbiddenException("user cannot delete email");
         }
     }
 
