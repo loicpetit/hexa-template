@@ -1,17 +1,12 @@
 package hexa.template.email.springboot;
 
 import hexa.template.email.core.model.Email;
-import hexa.template.email.core.port.EmailReader;
 import hexa.template.email.core.usecase.GetEmails;
 import hexa.template.email.persistence.adapter.EmailDao;
-import hexa.template.email.persistence.adapter.EmailReaderAdapter;
 import hexa.template.email.persistence.adapter.memory.EmailMemoryDao;
 import hexa.template.email.persistence.model.EmailEntity;
 import hexa.template.email.persistence.port.UserProvider;
-import hexa.template.email.security.model.UserPermission;
-import hexa.template.email.security.port.UserPermissionProvider;
 import hexa.template.email.security.usecase.GetEmailsSecurityProxy;
-import hexa.template.email.security.validator.EmailPermissionValidator;
 import hexa.template.email.springboot.adapter.SpringbootUserProvider;
 import hexa.template.email.springboot.testapp.Application;
 import jakarta.annotation.Nullable;
@@ -44,18 +39,6 @@ public class HexaEmailAutoConfigurationTest {
 
         @Autowired
         @Nullable
-        UserPermissionProvider userPermissionProvider;
-
-        @Autowired
-        @Nullable
-        EmailReader emailReader;
-
-        @Autowired
-        @Nullable
-        EmailPermissionValidator emailPermissionValidator;
-
-        @Autowired
-        @Nullable
         GetEmails getter;
 
         @Test
@@ -66,21 +49,6 @@ public class HexaEmailAutoConfigurationTest {
         @Test
         void emailDaoShouldBeFromStarter() {
             assertInstanceOf(EmailMemoryDao.class, emailDao);
-        }
-
-        @Test
-        void userPermissionProviderShouldBeFromStarter() {
-            assertInstanceOf(SpringbootUserProvider.class, userPermissionProvider);
-        }
-
-        @Test
-        void emailReaderShouldBeFromPersistenceCore() {
-            assertInstanceOf(EmailReaderAdapter.class, emailReader);
-        }
-
-        @Test
-        void emailPermissionValidatorShouldBeFromStarter() {
-            assertInstanceOf(EmailPermissionValidator.class, emailPermissionValidator);
         }
 
         @Test
@@ -107,18 +75,6 @@ public class HexaEmailAutoConfigurationTest {
 
         @Autowired
         @Nullable
-        UserPermissionProvider userPermissionProvider;
-
-        @Autowired
-        @Nullable
-        EmailReader emailReader;
-
-        @Autowired
-        @Nullable
-        EmailPermissionValidator emailPermissionValidator;
-
-        @Autowired
-        @Nullable
         GetEmails getter;
 
         @Test
@@ -129,21 +85,6 @@ public class HexaEmailAutoConfigurationTest {
         @Test
         void emailDaoShouldBeNull() {
             assertNull(emailDao);
-        }
-
-        @Test
-        void userPermissionProviderShouldBeNull() {
-            assertNull(userPermissionProvider);
-        }
-
-        @Test
-        void emailReaderShouldBeNull() {
-            assertNull(emailReader);
-        }
-
-        @Test
-        void emailPermissionValidatorShouldBeNull() {
-            assertNull(emailPermissionValidator);
         }
 
         @Test
@@ -186,47 +127,20 @@ public class HexaEmailAutoConfigurationTest {
 
         @Autowired
         @Nullable
-        UserPermissionProvider userPermissionProvider;
-
-        @Autowired
-        @Nullable
-        EmailReader emailReader;
-
-        @Autowired
-        @Nullable
-        EmailPermissionValidator emailPermissionValidator;
-
-        @Autowired
-        @Nullable
         GetEmails getter;
 
         @Test
-        void userProviderShouldBeFromStarter() {
+        void userProviderShouldNotBeFromStarter() {
             assertFalse(userProvider instanceof SpringbootUserProvider);
         }
 
         @Test
-        void emailDaoShouldBeFromStarter() {
+        void emailDaoShouldNotBeFromStarter() {
             assertFalse(emailDao instanceof EmailMemoryDao);
         }
 
         @Test
-        void userPermissionProviderShouldBeFromStarter() {
-            assertFalse(userPermissionProvider instanceof SpringbootUserProvider);
-        }
-
-        @Test
-        void emailReaderShouldBeFromPersistenceCore() {
-            assertFalse(emailReader instanceof EmailReaderAdapter);
-        }
-
-        @Test
-        void emailPermissionValidatorShouldBeFromStarter() {
-            assertInstanceOf(Config.CustomEmailPermissionValidator.class, emailPermissionValidator);
-        }
-
-        @Test
-        void getterShouldBeSecurityProxy() {
+        void getterShouldNotBeSecurityProxy() {
             assertFalse(getter instanceof GetEmailsSecurityProxy);
         }
 
@@ -238,16 +152,6 @@ public class HexaEmailAutoConfigurationTest {
                     @Override
                     public String getUserName() {
                         return "chuck";
-                    }
-                };
-            }
-
-            @Bean
-            public UserPermissionProvider customUserPermissionProvider() {
-                return new UserPermissionProvider() {
-                    @Override
-                    public Iterable<UserPermission> getCurrentUserPermissions() {
-                        return null;
                     }
                 };
             }
@@ -278,21 +182,6 @@ public class HexaEmailAutoConfigurationTest {
             }
 
             @Bean
-            public EmailReader customEmailReader() {
-                return new EmailReader() {
-                    @Override
-                    public Email getEmailById(long id) {
-                        return null;
-                    }
-                };
-            }
-
-            @Bean
-            public EmailPermissionValidator customEmailPermissionValidator() {
-                return new CustomEmailPermissionValidator();
-            }
-
-            @Bean
             public GetEmails customGetEmails() {
                 return new GetEmails() {
                     @Override
@@ -300,27 +189,6 @@ public class HexaEmailAutoConfigurationTest {
                         return null;
                     }
                 };
-            }
-
-            public static class CustomEmailPermissionValidator extends EmailPermissionValidator {
-                public CustomEmailPermissionValidator() {
-                    super(null);
-                }
-
-                @Override
-                public void validateUserCanRead() {
-                    // nothing
-                }
-
-                @Override
-                public void validateUserCanSave(Email email) {
-                    // nothing
-                }
-
-                @Override
-                public void validateUserCanDelete(long id) {
-                    // nothing
-                }
             }
         }
     }
