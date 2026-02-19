@@ -1,0 +1,20 @@
+server:
+  port: 8010
+
+api:
+  users:
+    - login: simpleUser
+      password: "{noop}simplePwd"
+      authorities: USER
+    - login: emailUser
+      password: "{noop}emailPwd"
+      authorities: USER,EMAIL_READ
+    - login: emailCreate
+      password: "{noop}emailPwd"
+      authorities: USER,EMAIL_CREATE
+    - login: emailUpdate
+      password: "{noop}emailPwd"
+      authorities: USER,EMAIL_UPDATE
+    - login: emailDelete
+      password: "{noop}emailPwd"
+      authorities: USER,EMAIL_DELETE

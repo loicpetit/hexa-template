@@ -20,6 +20,6 @@ class EmailTest {
     void ifInvalideValueMustThrowException(final String value) {
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> Email.builder().value(value).build())
-                .withMessage("The email value cannot be blank");
+                .withMessage("the email value cannot be blank");
     }
 }

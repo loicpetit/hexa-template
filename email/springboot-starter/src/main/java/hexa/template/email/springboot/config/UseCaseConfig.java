@@ -58,11 +58,12 @@ public class UseCaseConfig {
     @Bean
     @ConditionalOnMissingBean
     public SaveEmail secureSaveEmail(
+            final EmailReader reader,
             final EmailWriter writer,
             final EmailPermissionValidator validator
     ) {
         log.debug("use security save email proxy");
-        final SaveEmail coreSaveEmail = new SaveEmailImpl(writer);
+        final SaveEmail coreSaveEmail = new SaveEmailImpl(reader, writer);
         return new SaveEmailSecurityProxy(coreSaveEmail, validator);
     }
 

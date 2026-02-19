@@ -16,7 +16,7 @@ Two jars will be generated in the `email/api/build/libs` directory:
 
 * Generate the boot jar with gradle build
 * From the project root directory, run the following command in powershell:  
-  ` & "$($env:JAVA_HOME)\bin\java.exe" -jar "email/api/build/libs/email-api-0.0.1-SNAPSHOT.jar"`    
+  ` & "$($env:JAVA_HOME)\bin\java.exe" -jar "-Dspring.profiles.active=local" "email/api/build/libs/email-api-0.0.1-SNAPSHOT.jar"`    
   Point to the correct JDK in your JAVA_HOME or change the command ;)  
   Adapt the version as well
 

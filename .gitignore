@@ -1,5 +1,5 @@
-# security config
-/**/main/resources/users.properties
+# local config
+application-local.yml
 
 # http client plugin
 http-client.private.env.json

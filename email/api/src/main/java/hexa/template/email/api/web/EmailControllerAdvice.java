@@ -14,20 +14,26 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class EmailControllerAdvice {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDto> unexpectedException(final Exception e) {
-        log.error("Unexpected error", e);
+        log.error("unexpected error", e);
         return toResponse(Error.UNEXPECTED);
     }
 
     @ExceptionHandler(EmailNotFoundException.class)
     public ResponseEntity<ErrorDto> emailNotFoundException(final EmailNotFoundException e) {
-        log.warn("Email not found", e);
+        log.warn("email not found", e);
         return toResponse(Error.NOT_FOUND);
     }
 
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity<ErrorDto> forbiddenException(final ForbiddenException e) {
-        log.error("Forbidden access", e);
+        log.error("forbidden access", e);
         return toResponse(Error.FORBIDDEN, e.getMessage());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorDto> illegalArgumentException(final IllegalArgumentException e) {
+        log.warn("bad request", e);
+        return toResponse(Error.BAD_REQUEST, e.getMessage());
     }
 
     private ResponseEntity<ErrorDto> toResponse(final Error error) {
@@ -40,9 +46,10 @@ public class EmailControllerAdvice {
 
     @Getter
     public enum Error {
-        UNEXPECTED(500, "email.unexpected", "Unexpected error"),
+        BAD_REQUEST(400, "email.bad.request", "Bad request: %s"),
+        FORBIDDEN(403, "email.forbidden", "The user is not allowed: %s"),
         NOT_FOUND(404, "email.not.found", "The email was not found"),
-        FORBIDDEN(403, "email.forbidden", "The user is not allowed: %s");
+        UNEXPECTED(500, "email.unexpected", "Unexpected error");
 
         private final int status;
         private final String code;

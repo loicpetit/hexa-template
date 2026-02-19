@@ -9,7 +9,7 @@ public record Email (
 ) {
     public Email {
         if (value == null || value.trim().isEmpty()) {
-            throw new IllegalArgumentException("The email value cannot be blank");
+            throw new IllegalArgumentException("the email value cannot be blank");
         }
     }
 }
