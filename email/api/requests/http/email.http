@@ -29,6 +29,17 @@ Content-Type: application/json
 GET http://{{machine}}/api/emails/1
 Authorization: Basic {{auth.user}} {{auth.password}}
 
+> {%
+    const etag = response.headers.valueOf("ETag")
+    client.log("etag", etag)
+    client.global.set("email-get-etag", etag)
+ %}
+
+### Get email by id - with etag
+GET http://{{machine}}/api/emails/1
+Authorization: Basic {{auth.user}} {{auth.password}}
+If-None-Match: {{email-get-etag}}
+
 ### Get email by id - bad id
 GET http://{{machine}}/api/emails/1000
 Authorization: Basic {{auth.user}} {{auth.password}}
