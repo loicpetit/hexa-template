@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -57,8 +58,25 @@ class EmailControllerTest {
                                     .with(httpBasic("emailUser", "emailPwd"))
                     )
                     .andExpect(status().isOk())
+                    .andExpect(header().exists("ETag"))
                     .andExpect(jsonPath("$.value").value("chuck@kickass.com"))
                     .andExpect(jsonPath("$.id").doesNotExist());
+        }
+
+        @Test
+        void ifETagsMatchShouldReturn302() throws Exception {
+            final var response = mvc.perform(get(ID_ENDPOINT).with(httpBasic("emailUser", "emailPwd")))
+                    .andReturn()
+                    .getResponse();
+            final var eTag = response.getHeader("ETag");
+
+            mvc.perform(
+                            get(ID_ENDPOINT)
+                                    .with(httpBasic("emailUser", "emailPwd"))
+                                    .header("If-None-Match", eTag)
+                    )
+                    .andExpect(status().isNotModified())
+                    .andExpect(content().string(""));
         }
 
         @Test
@@ -102,10 +120,10 @@ class EmailControllerTest {
                                     .with(httpBasic("emailCreate", "emailPwd"))
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content("""
-                                        {
-                                            "value": "chuck@kickass.com"
-                                        }
-                                    """)
+                                                {
+                                                    "value": "chuck@kickass.com"
+                                                }
+                                            """)
                     )
                     .andExpect(status().isOk())
                     .andExpect(content().string(EXPECTED_ID.toString()));
@@ -138,10 +156,10 @@ class EmailControllerTest {
                                     .with(httpBasic("emailCreate", "emailPwd"))
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content("""
-                                        {
-                                            "value": ""
-                                        }
-                                    """)
+                                                {
+                                                    "value": ""
+                                                }
+                                            """)
                     )
                     .andExpect(status().isBadRequest());
         }
@@ -159,10 +177,10 @@ class EmailControllerTest {
                                     .with(httpBasic("simpleUser", "simplePwd"))
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content("""
-                                        {
-                                            "value": "chuck@kickass.com"
-                                        }
-                                    """)
+                                                {
+                                                    "value": "chuck@kickass.com"
+                                                }
+                                            """)
                     )
                     .andExpect(status().isForbidden());
         }
@@ -182,10 +200,10 @@ class EmailControllerTest {
                                     .with(httpBasic("emailUpdate", "emailPwd"))
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content("""
-                                        {
-                                            "value": "bruce@kickass.com"
-                                        }
-                                    """)
+                                                {
+                                                    "value": "bruce@kickass.com"
+                                                }
+                                            """)
                     )
                     .andExpect(status().isOk())
                     .andExpect(content().string(""));
@@ -218,10 +236,10 @@ class EmailControllerTest {
                                     .with(httpBasic("emailUpdate", "emailPwd"))
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content("""
-                                        {
-                                            "value": ""
-                                        }
-                                    """)
+                                                {
+                                                    "value": ""
+                                                }
+                                            """)
                     )
                     .andExpect(status().isBadRequest());
         }
@@ -233,10 +251,10 @@ class EmailControllerTest {
                                     .with(httpBasic("emailUpdate", "emailPwd"))
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content("""
-                                        {
-                                            "value": "bruce@kickass.com"
-                                        }
-                                    """)
+                                                {
+                                                    "value": "bruce@kickass.com"
+                                                }
+                                            """)
                     )
                     .andExpect(status().isNotFound());
         }
@@ -254,10 +272,10 @@ class EmailControllerTest {
                                     .with(httpBasic("simpleUser", "simplePwd"))
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content("""
-                                        {
-                                            "value": "bruce@kickass.com"
-                                        }
-                                    """)
+                                                {
+                                                    "value": "bruce@kickass.com"
+                                                }
+                                            """)
                     )
                     .andExpect(status().isForbidden());
         }

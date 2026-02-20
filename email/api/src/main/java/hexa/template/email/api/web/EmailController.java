@@ -9,6 +9,7 @@ import hexa.template.email.core.usecase.GetEmails;
 import hexa.template.email.core.usecase.SaveEmail;
 import hexa.template.email.persistence.adapter.EmailDao;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,8 +31,13 @@ public class EmailController {
     final EmailDao dao;
 
     @GetMapping("/{id}")
-    public EmailDto getEmails(@PathVariable("id") final Long id) {
-        return dtoMapper.toDto(get.getEmailById(id));
+    public ResponseEntity<EmailDto> getEmails(
+            @PathVariable("id") final Long id
+    ) {
+        final EmailDto dto = dtoMapper.toDto(get.getEmailById(id));
+        return ResponseEntity.ok()
+                .eTag(Integer.toString(dto.hashCode()))
+                .body(dto);
     }
 
     @PostMapping

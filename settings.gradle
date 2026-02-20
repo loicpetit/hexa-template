@@ -8,7 +8,6 @@
 rootProject.name = 'Hexa template'
 
 include(
-        'utils:api',
         'email:core',
         'email:persistence',
         'email:security',

@@ -1,8 +1,0 @@
-plugins {
-    id 'hexa-springboot'
-}
-
-base {
-    archivesName = "utils-api"
-    version = "0.0.1-SNAPSHOT"
-}
