@@ -9,6 +9,7 @@ import hexa.template.email.core.usecase.GetEmails;
 import hexa.template.email.core.usecase.SaveEmail;
 import hexa.template.email.persistence.adapter.EmailDao;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/emails")
 @RequiredArgsConstructor
+@Slf4j
 public class EmailController {
     final SaveEmail save;
     final GetEmails get;
@@ -34,6 +36,7 @@ public class EmailController {
     public ResponseEntity<EmailDto> getEmails(
             @PathVariable("id") final Long id
     ) {
+        log.info("Get email from id {}", id);
         final EmailDto dto = dtoMapper.toDto(get.getEmailById(id));
         return ResponseEntity.ok()
                 .eTag(Integer.toString(dto.hashCode()))
@@ -42,18 +45,22 @@ public class EmailController {
 
     @PostMapping
     public Long createEmail(@RequestBody final EmailDto dto) {
+        log.info("Create email");
+        log.debug("Email to create: {}", dto);
         final Email savedEmail = save.save(mapper.toEmail(dto));
         return savedEmail.id();
     }
 
     @PutMapping("/{id}")
     public void updateEmail(@PathVariable("id") final Long id, @RequestBody final EmailDto dto) {
+        log.info("Update email with id {}", id);
         final Email emailToUpdate = mapper.toEmail(id, dto);
         save.save(emailToUpdate);
     }
 
     @DeleteMapping("/{id}")
     public void deleteEmail(@PathVariable("id") final Long id) {
+        log.info("Delete email with id {}", id);
         delete.byId(id);
     }
 }
