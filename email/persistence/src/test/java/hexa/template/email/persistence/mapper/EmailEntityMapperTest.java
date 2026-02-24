@@ -3,6 +3,7 @@ package hexa.template.email.persistence.mapper;
 import hexa.template.email.core.model.Email;
 import hexa.template.email.persistence.model.EmailEntity;
 import org.assertj.core.data.TemporalUnitLessThanOffset;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -17,36 +18,55 @@ class EmailEntityMapperTest {
 
     private final EmailEntityMapper mapper = new EmailEntityMapperImpl();
 
-    @Test
-    void mustMapEveryFields() {
-        final var email = new Email(ID, MAIL);
+    @Nested
+    class NewEntity {
+        @Test
+        void mustMapEveryFields() {
+            final var email = new Email(ID, MAIL);
 
-        final var entity = mapper.map(email, AUTHOR);
+            final var entity = mapper.map(email, null, AUTHOR);
 
-        assertEntity(entity, ID, MAIL, AUTHOR);
+            assertEntity(entity, ID, MAIL, AUTHOR, LocalDateTime.now());
+        }
+
+        @Test
+        void ifEmptyMustMap() {
+            final var entity = mapper.map(new Email(null , MAIL), null, null);
+
+            assertEntity(entity, null, MAIL, null, LocalDateTime.now());
+        }
+
+        @Test
+        void ifNullReturnNull() {
+            final var entity = mapper.map(null, null, null);
+
+            assertThat(entity)
+                    .as("entity")
+                    .isNull();
+        }
     }
 
-    @Test
-    void ifEmptyMustMap() {
-        final var entity = mapper.map(new Email(null , MAIL), null);
+    @Nested
+    class Update {
+        @Test
+        void mustKeepSameCreated() {
+            final var created = LocalDateTime.now().minusDays(2);
+            final var modified = LocalDateTime.now().minusDays(1);
+            final var email = new Email(ID, MAIL);
+            final var existing = new EmailEntity(ID, MAIL, "titi", created, modified);
 
-        assertEntity(entity, null, MAIL, null);
-    }
+            final var entity = mapper.map(email, existing, AUTHOR);
 
-    @Test
-    void ifNullReturnNull() {
-        final var entity = mapper.map(null, null);
-
-        assertThat(entity)
-                .as("entity")
-                .isNull();
+            assertEntity(entity, ID, MAIL, AUTHOR, created);
+        }
     }
 
     private void assertEntity(
             final EmailEntity entity,
             final Long expectedId,
             final String expectedValue,
-            final String expectedAuthor
+            final String expectedAuthor,
+            final LocalDateTime expectedCreated
     ) {
         assertThat(entity)
                 .as("entity")
@@ -63,6 +83,9 @@ class EmailEntityMapperTest {
                                 .isEqualTo(expectedAuthor),
                         e -> assertThat(e.created())
                                 .as("created")
+                                .isCloseTo(expectedCreated, new TemporalUnitLessThanOffset(1L, ChronoUnit.SECONDS)),
+                        e -> assertThat(e.modified())
+                                .as("modified")
                                 .isCloseTo(LocalDateTime.now(), new TemporalUnitLessThanOffset(1L, ChronoUnit.SECONDS))
                 );
     }

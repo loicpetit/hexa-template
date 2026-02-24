@@ -8,6 +8,8 @@ import hexa.template.email.persistence.model.EmailEntity;
 import hexa.template.email.persistence.port.UserProvider;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 public class EmailWriterAdapter implements EmailWriter {
     final UserProvider userProvider;
@@ -18,7 +20,10 @@ public class EmailWriterAdapter implements EmailWriter {
     @Override
     public Email save(final Email email) {
         final String author = userProvider.getUserName();
-        final EmailEntity entity = entityMapper.map(email, author);
+        final EmailEntity existingEntity = Optional.ofNullable(email.id())
+                .map(dao::getEmailById)
+                .orElse(null);
+        final EmailEntity entity = entityMapper.map(email, existingEntity, author);
         final EmailEntity savedEntity = dao.save(entity);
         return modelMapper.map(savedEntity);
     }

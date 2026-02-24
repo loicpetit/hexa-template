@@ -210,7 +210,7 @@ class PersistenceConfigTest {
             public EmailEntityMapper customEmailEntityMapper() {
                 return new EmailEntityMapper() {
                     @Override
-                    public EmailEntity map(Email email, String author) {
+                    public EmailEntity map(Email email, EmailEntity existing, String author) {
                         return null;
                     }
                 };

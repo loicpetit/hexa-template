@@ -13,12 +13,13 @@ class EmailMapperTest {
     private static final String MAIL = "chuck.norris@kickass.com";
     private static final String AUTHOR = "toto";
     private static final LocalDateTime CREATED = LocalDateTime.of(2026, 2, 3, 0, 0 ,0);
+    private static final LocalDateTime MODIFIED = LocalDateTime.of(2026, 2, 4, 0, 0 ,0);
 
     private final EmailMapper mapper = new EmailMapperImpl();
 
     @Test
     void mustMapEveryFields() {
-        final var entity = new EmailEntity(ID, MAIL, AUTHOR, CREATED);
+        final var entity = new EmailEntity(ID, MAIL, AUTHOR, CREATED, MODIFIED);
 
         final var email = mapper.map(entity);
 
@@ -27,7 +28,7 @@ class EmailMapperTest {
 
     @Test
     void ifEmptyMustMap() {
-        final var email = mapper.map(new EmailEntity(null, MAIL, null, null));
+        final var email = mapper.map(new EmailEntity(null, MAIL, null, null, null));
 
         assertEmail(email, null, MAIL);
     }

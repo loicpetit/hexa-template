@@ -11,8 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDateTime;
-
+import static java.time.LocalDateTime.now;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -53,7 +52,7 @@ public class ControllerTest {
 
             @BeforeEach
             void before() {
-                dao.save(new EmailEntity(1L, "chuck@kick.com", "test", LocalDateTime.now()));
+                dao.save(new EmailEntity(1L, "chuck@kick.com", "test", now(), now()));
             }
 
             @Test

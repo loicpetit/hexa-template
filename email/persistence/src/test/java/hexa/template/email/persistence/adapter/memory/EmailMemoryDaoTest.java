@@ -21,18 +21,21 @@ class EmailMemoryDaoTest {
                                 1L,
                                 "a@a",
                                 "tata",
+                                LocalDateTime.of(2026, 2, 1, 0, 0, 0),
                                 LocalDateTime.of(2026, 2, 1, 0, 0, 0)
                         ),
                         new EmailEntity(
                                 2L,
                                 "i@i",
                                 "titi",
+                                LocalDateTime.of(2026, 2, 2, 0, 0, 0),
                                 LocalDateTime.of(2026, 2, 2, 0, 0, 0)
                         ),
                         new EmailEntity(
                                 3L,
                                 "o@o",
                                 "toto",
+                                LocalDateTime.of(2026, 2, 3, 0, 0, 0),
                                 LocalDateTime.of(2026, 2, 3, 0, 0, 0)
                         )
                 )
@@ -82,6 +85,7 @@ class EmailMemoryDaoTest {
                     null,
                     "u@u",
                     "tutu",
+                    LocalDateTime.of(2026, 2, 4, 0, 0, 0),
                     LocalDateTime.of(2026, 2, 4, 0, 0, 0)
             );
 
@@ -102,7 +106,10 @@ class EmailMemoryDaoTest {
                                     .isEqualTo(entity.author()),
                             e -> assertThat(e.created())
                                     .as("created")
-                                    .isEqualTo(entity.created())
+                                    .isEqualTo(entity.created()),
+                            e -> assertThat(e.modified())
+                                    .as("modified")
+                                    .isEqualTo(entity.modified())
                     );
         }
 
@@ -112,6 +119,7 @@ class EmailMemoryDaoTest {
                     2L,
                     "u@u",
                     "tutu",
+                    LocalDateTime.of(2026, 2, 4, 0, 0, 0),
                     LocalDateTime.of(2026, 2, 4, 0, 0, 0)
             );
 
@@ -132,7 +140,10 @@ class EmailMemoryDaoTest {
                                     .isEqualTo(entity.author()),
                             e -> assertThat(e.created())
                                     .as("created")
-                                    .isEqualTo(entity.created())
+                                    .isEqualTo(entity.created()),
+                            e -> assertThat(e.modified())
+                                    .as("modified")
+                                    .isEqualTo(entity.modified())
                     );
         }
 
@@ -142,6 +153,7 @@ class EmailMemoryDaoTest {
                     null,
                     "u@u",
                     "tutu",
+                    LocalDateTime.of(2026, 2, 4, 0, 0, 0),
                     LocalDateTime.of(2026, 2, 4, 0, 0, 0)
             );
 
@@ -159,12 +171,14 @@ class EmailMemoryDaoTest {
                     10L,
                     "u@u",
                     "tutu",
+                    LocalDateTime.of(2026, 2, 4, 0, 0, 0),
                     LocalDateTime.of(2026, 2, 4, 0, 0, 0)
             );
             final var entity2 = new EmailEntity(
                     null,
                     "u@u",
                     "tutu",
+                    LocalDateTime.of(2026, 2, 4, 0, 0, 0),
                     LocalDateTime.of(2026, 2, 4, 0, 0, 0)
             );
 

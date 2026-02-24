@@ -26,11 +26,8 @@ public class EmailMemoryDao implements EmailDao {
         if (entity == null) {
             return null;
         }
-        final var savedEntity = EmailEntity.builder()
+        final var savedEntity = entity.copy()
                 .id(computeNewEntityId(entity.id()))
-                .value(entity.value())
-                .author(entity.author())
-                .created(entity.created())
                 .build();
         cache.put(savedEntity.id(), savedEntity);
         return savedEntity;

@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+import static java.time.LocalDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.byLessThan;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
@@ -48,7 +49,7 @@ class EmailControllerTest {
     class GetById {
         @BeforeEach
         void before() {
-            dao.save(new EmailEntity(ID, "chuck@kickass.com", "test", LocalDateTime.now()));
+            dao.save(new EmailEntity(ID, "chuck@kickass.com", "test", now(), now()));
         }
 
         @Test
@@ -144,7 +145,10 @@ class EmailControllerTest {
                                     .isEqualTo("emailCreate"),
                             e -> assertThat(e.created())
                                     .as("created")
-                                    .isCloseTo(LocalDateTime.now(), byLessThan(Duration.ofSeconds(1)))
+                                    .isCloseTo(now(), byLessThan(Duration.ofSeconds(1))),
+                            e -> assertThat(e.modified())
+                                    .as("modified")
+                                    .isCloseTo(now(), byLessThan(Duration.ofSeconds(1)))
                     );
         }
 
@@ -188,9 +192,11 @@ class EmailControllerTest {
 
     @Nested
     class Update {
+        private static final LocalDateTime CREATED = now().minusDays(2);
+        private static final LocalDateTime MODIFIED = now().minusDays(1);
         @BeforeEach
         void before() {
-            dao.save(new EmailEntity(ID, "chuck@kickass.com", "test", LocalDateTime.now()));
+            dao.save(new EmailEntity(ID, "chuck@kickass.com", "test", CREATED, MODIFIED));
         }
 
         @Test
@@ -224,7 +230,10 @@ class EmailControllerTest {
                                     .isEqualTo("emailUpdate"),
                             e -> assertThat(e.created())
                                     .as("created")
-                                    .isCloseTo(LocalDateTime.now(), byLessThan(Duration.ofSeconds(1)))
+                                    .isEqualTo(CREATED),
+                            e -> assertThat(e.modified())
+                                    .as("modified")
+                                    .isCloseTo(now(), byLessThan(Duration.ofSeconds(1)))
                     );
         }
 
@@ -285,7 +294,7 @@ class EmailControllerTest {
     class Delete {
         @BeforeEach
         void before() {
-            dao.save(new EmailEntity(ID, "chuck@kickass.com", "test", LocalDateTime.now()));
+            dao.save(new EmailEntity(ID, "chuck@kickass.com", "test", now(), now()));
         }
 
         @Test
