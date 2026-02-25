@@ -9,12 +9,14 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import static java.time.LocalDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class EmailEntityMapperTest {
     private static final long ID = 1L;
     private static final String MAIL = "chuck.norris@kickass.com";
     private static final String AUTHOR = "toto";
+    private static final LocalDateTime MODIFIED = now().minusDays(1);
 
     private final EmailEntityMapper mapper = new EmailEntityMapperImpl();
 
@@ -22,7 +24,7 @@ class EmailEntityMapperTest {
     class NewEntity {
         @Test
         void mustMapEveryFields() {
-            final var email = new Email(ID, MAIL);
+            final var email = new Email(ID, MAIL, MODIFIED);
 
             final var entity = mapper.map(email, null, AUTHOR);
 
@@ -31,7 +33,7 @@ class EmailEntityMapperTest {
 
         @Test
         void ifEmptyMustMap() {
-            final var entity = mapper.map(new Email(null , MAIL), null, null);
+            final var entity = mapper.map(new Email(MAIL), null, null);
 
             assertEntity(entity, null, MAIL, null, LocalDateTime.now());
         }
@@ -52,7 +54,7 @@ class EmailEntityMapperTest {
         void mustKeepSameCreated() {
             final var created = LocalDateTime.now().minusDays(2);
             final var modified = LocalDateTime.now().minusDays(1);
-            final var email = new Email(ID, MAIL);
+            final var email = new Email(ID, MAIL, modified);
             final var existing = new EmailEntity(ID, MAIL, "titi", created, modified);
 
             final var entity = mapper.map(email, existing, AUTHOR);

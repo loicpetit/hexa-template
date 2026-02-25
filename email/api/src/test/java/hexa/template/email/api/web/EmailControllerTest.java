@@ -194,6 +194,13 @@ class EmailControllerTest {
     class Update {
         private static final LocalDateTime CREATED = now().minusDays(2);
         private static final LocalDateTime MODIFIED = now().minusDays(1);
+        private static final String BODY_VALID = """
+                {
+                    "value": "bruce@kickass.com",
+                    "modified": "%s"
+                }
+                """.formatted(MODIFIED.toString());
+
         @BeforeEach
         void before() {
             dao.save(new EmailEntity(ID, "chuck@kickass.com", "test", CREATED, MODIFIED));
@@ -205,11 +212,7 @@ class EmailControllerTest {
                             put(ID_ENDPOINT)
                                     .with(httpBasic("emailUpdate", "emailPwd"))
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .content("""
-                                                {
-                                                    "value": "bruce@kickass.com"
-                                                }
-                                            """)
+                                    .content(BODY_VALID)
                     )
                     .andExpect(status().isOk())
                     .andExpect(content().string(""));
@@ -238,15 +241,30 @@ class EmailControllerTest {
         }
 
         @Test
-        void ifInvalidEmailShouldReturn400() throws Exception {
-
+        void ifInvalidValueShouldReturn400() throws Exception {
             mvc.perform(
                             put(ID_ENDPOINT)
                                     .with(httpBasic("emailUpdate", "emailPwd"))
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content("""
                                                 {
-                                                    "value": ""
+                                                    "value": "",
+                                                    "modified": "%s"
+                                                }
+                                            """.formatted(MODIFIED.toString()))
+                    )
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        void ifInvalidModifiedShouldReturn400() throws Exception {
+            mvc.perform(
+                            put(ID_ENDPOINT)
+                                    .with(httpBasic("emailUpdate", "emailPwd"))
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("""
+                                                {
+                                                    "value": "bruce@kickass.com"
                                                 }
                                             """)
                     )
@@ -259,11 +277,7 @@ class EmailControllerTest {
                             put(BASE_ENDPOINT + "/10")
                                     .with(httpBasic("emailUpdate", "emailPwd"))
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .content("""
-                                                {
-                                                    "value": "bruce@kickass.com"
-                                                }
-                                            """)
+                                    .content(BODY_VALID)
                     )
                     .andExpect(status().isNotFound());
         }
@@ -280,13 +294,25 @@ class EmailControllerTest {
                             put(ID_ENDPOINT)
                                     .with(httpBasic("simpleUser", "simplePwd"))
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .content("""
-                                                {
-                                                    "value": "bruce@kickass.com"
-                                                }
-                                            """)
+                                    .content(BODY_VALID)
                     )
                     .andExpect(status().isForbidden());
+        }
+
+        @Test
+        void ifOlderDtoShouldReturn409() throws Exception {
+            mvc.perform(
+                            put(ID_ENDPOINT)
+                                    .with(httpBasic("emailUpdate", "emailPwd"))
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("""
+                                                {
+                                                    "value": "bruce@kickass.com",
+                                                    "modified": "%s"
+                                                }
+                                            """.formatted(MODIFIED.minusDays(1).toString()))
+                    )
+                    .andExpect(status().isConflict());
         }
     }
 

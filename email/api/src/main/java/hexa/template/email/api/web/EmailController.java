@@ -39,7 +39,7 @@ public class EmailController {
         log.info("Get email from id {}", id);
         final EmailDto dto = dtoMapper.toDto(get.getEmailById(id));
         return ResponseEntity.ok()
-                .eTag(Integer.toString(dto.hashCode()))
+                .eTag(Integer.toString(dto.hashCode())) // TODO hashcode temp solution, use sha1 or md5
                 .body(dto);
     }
 

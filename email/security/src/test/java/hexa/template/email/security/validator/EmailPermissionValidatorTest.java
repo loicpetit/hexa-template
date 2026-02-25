@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
+import static java.time.LocalDateTime.now;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.when;
@@ -45,8 +46,8 @@ class EmailPermissionValidatorTest {
 
     @Nested
     class CanSave {
-        private final Email newEmail = new Email(null, "c.norris@kickass.com");
-        private final Email existingEmail = new Email(1L, "c.norris@kickass.com");
+        private final Email newEmail = new Email("c.norris@kickass.com");
+        private final Email existingEmail = new Email(1L, "c.norris@kickass.com", now());
 
         @Test
         void ifEmailIsInUnexpectedStateMustThrowException() {

@@ -1,5 +1,6 @@
 package hexa.template.email.core.usecase;
 
+import hexa.template.email.core.exception.EmailConflictException;
 import hexa.template.email.core.exception.EmailNotFoundException;
 import hexa.template.email.core.exception.NullEmailException;
 import hexa.template.email.core.model.Email;
@@ -11,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static java.time.LocalDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.same;
@@ -60,9 +62,20 @@ class SaveEmailTest {
     }
 
     @Test
-    void ifEmailIdAndEmailFoundMustSave() {
+    void ifEmailIdAndEmailOutOfDateMustThrowException() {
         when(email.id()).thenReturn(1L);
-        when(reader.getEmailById(1L)).thenReturn(mock(Email.class));
+        when(reader.getEmailById(1L)).thenReturn(new Email(1L, "test", now().minusDays(1)));
+
+        assertThatExceptionOfType(EmailConflictException.class)
+                .isThrownBy(() -> saver.save(email));
+    }
+
+    @Test
+    void ifEmailIdAndEmailFoundMustSave() {
+        final var modified = now().minusDays(1);
+        when(email.id()).thenReturn(1L);
+        when(email.modified()).thenReturn(modified);
+        when(reader.getEmailById(1L)).thenReturn(new Email(1L, "test", modified));
 
         saver.save(email);
 

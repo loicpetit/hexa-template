@@ -23,14 +23,14 @@ class EmailMapperTest {
 
         final var email = mapper.map(entity);
 
-        assertEmail(email, ID, MAIL);
+        assertEmail(email, ID, MAIL, MODIFIED);
     }
 
     @Test
     void ifEmptyMustMap() {
         final var email = mapper.map(new EmailEntity(null, MAIL, null, null, null));
 
-        assertEmail(email, null, MAIL);
+        assertEmail(email, null, MAIL, null);
     }
 
     @Test
@@ -45,7 +45,8 @@ class EmailMapperTest {
     private void assertEmail(
             final Email email,
             final Long expectedId,
-            final String expectedValue
+            final String expectedValue,
+            final LocalDateTime expectedModified
     ) {
         assertThat(email)
                 .as("email")
@@ -56,7 +57,10 @@ class EmailMapperTest {
                                 .isEqualTo(expectedId),
                         e -> assertThat(e.value())
                                 .as("value")
-                                .isEqualTo(expectedValue)
+                                .isEqualTo(expectedValue),
+                        e -> assertThat(e.modified())
+                                .as("modified")
+                                .isEqualTo(expectedModified)
                 );
     }
 }

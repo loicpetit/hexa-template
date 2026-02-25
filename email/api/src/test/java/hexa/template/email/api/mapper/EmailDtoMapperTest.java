@@ -3,6 +3,7 @@ package hexa.template.email.api.mapper;
 import hexa.template.email.core.model.Email;
 import org.junit.jupiter.api.Test;
 
+import static java.time.LocalDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class EmailDtoMapperTest {
@@ -10,7 +11,8 @@ class EmailDtoMapperTest {
 
     @Test
     void toDto() {
-        final var email = new Email(1L, "test");
+        final var modified = now().minusDays(1);
+        final var email = new Email(1L, "test", modified);
 
         final var dto = mapper.toDto(email);
 
@@ -19,8 +21,11 @@ class EmailDtoMapperTest {
                 .isNotNull()
                 .satisfies(
                         d -> assertThat(d.value())
-                                .as("dto.value")
-                                .isEqualTo("test")
+                                .as("value")
+                                .isEqualTo("test"),
+                        d -> assertThat(d.modified())
+                                .as("modified")
+                                .isEqualTo(modified)
                 );
     }
 }

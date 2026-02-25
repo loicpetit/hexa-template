@@ -1,5 +1,6 @@
 package hexa.template.email.core.usecase;
 
+import hexa.template.email.core.exception.EmailConflictException;
 import hexa.template.email.core.exception.EmailNotFoundException;
 import hexa.template.email.core.exception.NullEmailException;
 import hexa.template.email.core.model.Email;
@@ -17,8 +18,14 @@ public class SaveEmailImpl implements SaveEmail {
         if (email == null) {
             throw new NullEmailException();
         }
-        if (email.id() != null && reader.getEmailById(email.id()) == null) {
-            throw new EmailNotFoundException();
+        if (email.id() != null) {
+            final var existing = reader.getEmailById(email.id());
+            if (existing == null) {
+                throw new EmailNotFoundException();
+            }
+            if (!existing.modified().equals(email.modified())) {
+                throw new EmailConflictException();
+            }
         }
         return writer.save(email);
     }

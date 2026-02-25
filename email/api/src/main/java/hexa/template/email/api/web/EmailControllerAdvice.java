@@ -1,6 +1,7 @@
 package hexa.template.email.api.web;
 
 import hexa.template.email.api.dto.ErrorDto;
+import hexa.template.email.core.exception.EmailConflictException;
 import hexa.template.email.core.exception.EmailNotFoundException;
 import hexa.template.email.security.validator.ForbiddenException;
 import lombok.Getter;
@@ -22,6 +23,12 @@ public class EmailControllerAdvice {
     public ResponseEntity<ErrorDto> emailNotFoundException(final EmailNotFoundException e) {
         log.warn("email not found", e);
         return toResponse(Error.NOT_FOUND);
+    }
+
+    @ExceptionHandler(EmailConflictException.class)
+    public ResponseEntity<ErrorDto> emailConflictException(final EmailConflictException e) {
+        log.warn("email out of date", e);
+        return toResponse(Error.CONFLICT);
     }
 
     @ExceptionHandler(ForbiddenException.class)
@@ -47,6 +54,7 @@ public class EmailControllerAdvice {
     @Getter
     public enum Error {
         BAD_REQUEST(400, "email.bad.request", "Bad request: %s"),
+        CONFLICT(409, "email.conflict", "The email is out of date"),
         FORBIDDEN(403, "email.forbidden", "The user is not allowed: %s"),
         NOT_FOUND(404, "email.not.found", "The email was not found"),
         UNEXPECTED(500, "email.unexpected", "Unexpected error");
