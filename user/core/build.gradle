@@ -1,0 +1,8 @@
+plugins {
+    id 'hexa-java'
+}
+
+base {
+    archivesName = "user-core"
+    version = globalVersion
+}
