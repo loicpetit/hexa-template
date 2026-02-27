@@ -7,7 +7,6 @@ import hexa.template.email.core.model.Email;
 import hexa.template.email.core.usecase.DeleteEmail;
 import hexa.template.email.core.usecase.GetEmails;
 import hexa.template.email.core.usecase.SaveEmail;
-import hexa.template.email.persistence.adapter.EmailDao;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +29,6 @@ public class EmailController {
     final DeleteEmail delete;
     final EmailMapper mapper;
     final EmailDtoMapper dtoMapper;
-    final EmailDao dao;
 
     @GetMapping("/{id}")
     public ResponseEntity<EmailDto> getEmails(
