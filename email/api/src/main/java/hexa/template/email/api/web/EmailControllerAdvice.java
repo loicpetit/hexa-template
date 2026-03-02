@@ -7,6 +7,7 @@ import hexa.template.email.security.validator.ForbiddenException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -43,12 +44,21 @@ public class EmailControllerAdvice {
         return toResponse(Error.BAD_REQUEST, e.getMessage());
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorDto> illegalArgumentException(final HttpMessageNotReadableException e) {
+        // invalid request body
+        log.warn("bad request", e);
+        return toResponse(Error.BAD_REQUEST, e.getMessage());
+    }
+
     private ResponseEntity<ErrorDto> toResponse(final Error error) {
-        return ResponseEntity.status(error.getStatus()).body(new ErrorDto(error.getCode(), error.getMessage()));
+        final var dto = new ErrorDto().code(error.getCode()).message(error.getMessage());
+        return ResponseEntity.status(error.getStatus()).body(dto);
     }
 
     private ResponseEntity<ErrorDto> toResponse(final Error error, final Object... args) {
-        return ResponseEntity.status(error.getStatus()).body(new ErrorDto(error.getCode(), error.getMessage().formatted(args)));
+        final var dto = new ErrorDto().code(error.getCode()).message(error.getMessage().formatted(args));
+        return ResponseEntity.status(error.getStatus()).body(dto);
     }
 
     @Getter

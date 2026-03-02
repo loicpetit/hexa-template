@@ -1,0 +1,195 @@
+openapi: 3.0.0
+
+servers:
+  - description: Local environment
+    url: 'https://localhost:8010'
+
+info:
+  title: Email API
+  version: 1.0.0
+  description: |-
+    This API allows you to manage emails data, including creating, retrieving, updating, and deleting email records.
+    
+    Changelog:
+    * 1.0.0 - Initial version of the API.  
+      Provide CRUD operations and security features.
+
+paths:
+  /api/emails:
+    post:
+      summary: Create an email.
+      description: Create an email.
+      tags:
+        - Emails
+      operationId: createEmail
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Email'
+      responses:
+        '200':
+          description: The email was created successfully
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+                description: The unique identifier of the created email.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+  /api/emails/{id}:
+    get:
+      summary: Retrieve the email from id.
+      description: Retrieve the email from id.
+      tags:
+        - Emails
+      operationId: getEmailById
+      parameters:
+        - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: An email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Email'
+        '302':
+            description: If the etag header is provided and the data has not changed, a 302 status code is returned to indicate that the client can use the cached version of the data.
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+    put:
+      summary: Update an email from id.
+      description: Update an email from id.
+      tags:
+        - Emails
+      operationId: updateEmailById
+      parameters:
+        - $ref: '#/components/parameters/idPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Email'
+      responses:
+        '204':
+          description: The email was updated successfully
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+    delete:
+      summary: Delete an email from id.
+      description: Delete an email from id.
+      tags:
+        - Emails
+      operationId: deleteEmailById
+      parameters:
+        - $ref: '#/components/parameters/idPath'
+      responses:
+        '204':
+          description: The email was updated successfully
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+
+components:
+  parameters:
+    idPath:
+      name: id
+      in: path
+      description: The unique identifier of the email.
+      required: true
+      schema:
+        type: integer
+        format: int64
+  schemas:
+    Email:
+      type: object
+      properties:
+        value:
+          type: string
+          description: The email address.
+          example: chuck.norris@kickass.com
+        modified:
+          type: localdatetime
+          description: The local date and time when the email record was last modified.
+          example: 2024-06-01T12:00:00.000000
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: A code representing the error type.
+          example: email.unexpected
+        message:
+          type: string
+          description: A message describing the error.
+          example: Unexpected error
+  responses:
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: The request could not be completed due to a conflict with the current state of the resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthenticated:
+      description: Unauthenticated user
+    Unauthorized:
+      description: The user is not authorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnexpectedError:
+      description: An unexpected error occurred
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+
+security:
+  - basicAuth: []

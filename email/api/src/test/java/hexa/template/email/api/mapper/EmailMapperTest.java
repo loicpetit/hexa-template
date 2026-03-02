@@ -11,7 +11,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 class EmailMapperTest {
     final EmailMapper mapper = new EmailMapperImpl();
     final LocalDateTime modified = now().minusDays(1);
-    final EmailDto dto = new EmailDto("chuck@kickass.com", modified);
+    final EmailDto dto = new EmailDto()
+            .value("chuck@kickass.com")
+            .modified(modified);
 
     @Test
     void siDtodoitMapperVersEmail() {

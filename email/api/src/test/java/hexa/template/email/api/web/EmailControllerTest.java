@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static java.time.LocalDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,9 +48,12 @@ class EmailControllerTest {
 
     @Nested
     class GetById {
+        private static final LocalDateTime CREATED = now().minusDays(2);
+        private static final LocalDateTime MODIFIED = now().minusDays(1);
+
         @BeforeEach
         void before() {
-            dao.save(new EmailEntity(ID, "chuck@kickass.com", "test", now(), now()));
+            dao.save(new EmailEntity(ID, "chuck@kickass.com", "test", CREATED, MODIFIED));
         }
 
         @Test
@@ -61,6 +65,7 @@ class EmailControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(header().exists("ETag"))
                     .andExpect(jsonPath("$.value").value("chuck@kickass.com"))
+                    .andExpect(jsonPath("$.modified").value(MODIFIED.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)))
                     .andExpect(jsonPath("$.id").doesNotExist());
         }
 
@@ -153,8 +158,28 @@ class EmailControllerTest {
         }
 
         @Test
-        void ifInvalidEmailShouldReturn400() throws Exception {
+        void ifNoBodyShouldReturn400() throws Exception {
+            mvc.perform(
+                            post(BASE_ENDPOINT)
+                                    .with(httpBasic("emailCreate", "emailPwd"))
+                                    .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isBadRequest());
+        }
 
+        @Test
+        void ifInvalidBodyShouldReturn400() throws Exception {
+            mvc.perform(
+                            post(BASE_ENDPOINT)
+                                    .with(httpBasic("emailCreate", "emailPwd"))
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("toto")
+                    )
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        void ifInvalidEmailShouldReturn400() throws Exception {
             mvc.perform(
                             post(BASE_ENDPOINT)
                                     .with(httpBasic("emailCreate", "emailPwd"))
@@ -214,7 +239,7 @@ class EmailControllerTest {
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content(BODY_VALID)
                     )
-                    .andExpect(status().isOk())
+                    .andExpect(status().isNoContent())
                     .andExpect(content().string(""));
 
 
@@ -238,6 +263,27 @@ class EmailControllerTest {
                                     .as("modified")
                                     .isCloseTo(now(), byLessThan(Duration.ofSeconds(1)))
                     );
+        }
+
+        @Test
+        void ifNoBodyShouldReturn400() throws Exception {
+            mvc.perform(
+                            put(ID_ENDPOINT)
+                                    .with(httpBasic("emailUpdate", "emailPwd"))
+                                    .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        void ifInvalidBodyShouldReturn400() throws Exception {
+            mvc.perform(
+                            put(ID_ENDPOINT)
+                                    .with(httpBasic("emailUpdate", "emailPwd"))
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("toto")
+                    )
+                    .andExpect(status().isBadRequest());
         }
 
         @Test
@@ -272,7 +318,7 @@ class EmailControllerTest {
         }
 
         @Test
-        void ifEmailDoesNotExistShouldReturn400() throws Exception {
+        void ifEmailDoesNotExistShouldReturn404() throws Exception {
             mvc.perform(
                             put(BASE_ENDPOINT + "/10")
                                     .with(httpBasic("emailUpdate", "emailPwd"))
@@ -324,12 +370,12 @@ class EmailControllerTest {
         }
 
         @Test
-        void shouldUpdateEmail() throws Exception {
+        void shouldDeleteEmail() throws Exception {
             mvc.perform(
                             delete(ID_ENDPOINT)
                                     .with(httpBasic("emailDelete", "emailPwd"))
                     )
-                    .andExpect(status().isOk())
+                    .andExpect(status().isNoContent())
                     .andExpect(content().string(""));
 
 
