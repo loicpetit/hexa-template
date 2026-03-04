@@ -5,17 +5,21 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class UserTest {
     @Test
     void mustCreateUser() {
+        final var modified = LocalDateTime.now().minusDays(1);
         final var user = User.builder()
                 .id(1L)
                 .firstName("Chuck")
                 .name("Norris")
                 .emailId(2L)
+                .modified(modified)
                 .build();
 
         assertThat(user)
@@ -43,7 +47,15 @@ class UserTest {
                             .as("if email id")
                             .isPresent()
                             .get()
-                            .isEqualTo(2L)
+                            .isEqualTo(2L),
+                    u -> assertThat(u.modified())
+                            .as("modified")
+                            .isEqualTo(modified),
+                        u -> assertThat(u.ifModified())
+                                .as("if modified")
+                                .isPresent()
+                                .get()
+                                .isEqualTo(modified)
                 );
     }
 
@@ -69,7 +81,13 @@ class UserTest {
                             .isNull(),
                     u -> assertThat(u.ifEmailId())
                             .as("if email id")
-                            .isEmpty()
+                            .isEmpty(),
+                        u -> assertThat(u.modified())
+                                .as("modified")
+                                .isNull(),
+                        u -> assertThat(u.ifModified())
+                                .as("if modified")
+                                .isEmpty()
                 );
     }
 

@@ -2,6 +2,7 @@ package hexa.template.user.core.model;
 
 import lombok.Builder;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Builder
@@ -9,7 +10,8 @@ public record User (
     Long id,
     String firstName,
     String name,
-    Long emailId
+    Long emailId,
+    LocalDateTime modified
 ) {
     public User {
         if (firstName == null || firstName.trim().isEmpty()) {
@@ -26,5 +28,9 @@ public record User (
 
     public Optional<Long> ifEmailId() {
         return Optional.ofNullable(emailId);
+    }
+
+    public Optional<LocalDateTime> ifModified() {
+        return Optional.ofNullable(modified);
     }
 }
