@@ -14,3 +14,25 @@ dependencies {
     implementation project(":email:security")
     implementation libs.picocli
 }
+
+tasks.register("batFile") {
+    dependsOn "bootJar"
+    def javaPath = "%JAVA_HOME%\\bin\\java.exe"
+    def moduleBuildDir = layout.buildDirectory.asFile.get().getAbsolutePath()
+    def jarFilename = "email-console-%s.jar".formatted(globalVersion)
+    def jarPath = layout.buildDirectory.file("libs\\%s".formatted(jarFilename)).get().asFile.getAbsolutePath()
+    def batPath = layout.buildDirectory.file("email.bat").get().asFile.getAbsolutePath()
+//    println "java path: %s".formatted(javaPath)
+//    println "module build path: %s".formatted(moduleBuildDir)
+//    println "jar path: %s".formatted(jarPath)
+//    println "bat path: %s".formatted(batPath)
+    doLast {
+        println "generate bat file"
+        def batFile = new File(batPath)
+        batFile.createNewFile()
+        batFile.text = """
+            "%s" -jar "%s" %%*
+        """.formatted(javaPath, jarPath).strip()
+    }
+}
+tasks.build.dependsOn "batFile"

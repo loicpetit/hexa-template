@@ -14,9 +14,9 @@ Two jars will be generated in the `email/console/build/libs` directory:
 
 ## Run the application
 
+A bat file is generated to facilitate the execution
+
 * Generate the boot jar with gradle build
 * From the project root directory, run the following command in powershell:  
-  `& "$($env:JAVA_HOME)\bin\java.exe" -jar "email/console/build/libs/email-console-1.0.0-SNAPSHOT.jar"`    
-  Point to the correct JDK in your JAVA_HOME or change the command ;)  
-  Adapt the version as well
+  `& "email\console\build\email" -h`
 * Follow the application instructions
