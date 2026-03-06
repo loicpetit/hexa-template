@@ -1,0 +1,16 @@
+plugins {
+    id 'hexa-java'
+    id 'org.springframework.boot'
+}
+
+base {
+    archivesName = "email-console"
+    version = globalVersion
+}
+
+dependencies {
+    implementation project(":email:core")
+    implementation project(":email:persistence")
+    implementation project(":email:security")
+    implementation libs.picocli
+}
