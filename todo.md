@@ -3,7 +3,8 @@
 ## Docker
 docker compose pour démarrer l'app avec
 * images
-  * mongodb
+  * postgresql
+  * elastic search
   * rabbitmq
   * webapp springboot
   * cache redis
@@ -34,10 +35,14 @@ Mise en place de dev containers pour faciliter la mise en place de l'environneme
 	* ajouter
 	* supprimer
 * persistence
-	* event store pour mutations (dans mongodb)
+	* event store pour mutations (dans postgresql)
 	* envoie un event et le stock pour la rejouabilité
-	* mongodb  
-	  ecoute les events pour construire les vues
+    * on pourrait sauver l event dans le store puis ecouter le store pour envoyer dans rabbitmq  
+      les api qui cache des donnees ecoutent ces event pous construire les vues (tables)
+	* postgresql  
+	  ecoute les events pour construire les vues (tables)
+    * recherche multi criteres via elactic search  
+      faire un batch pour remplir la bd de données de test (ou script sql)
 	* faire procédure pour extraire le store et le rejouer pour remonter une bd
 	* tester avec db en memoire
 * command line
