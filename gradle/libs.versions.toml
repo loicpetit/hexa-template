@@ -8,6 +8,7 @@ lombok = "1.18.42"
 mapstruct = "1.6.3"
 mockito = "5.+"
 picocli = "4.7.7"
+spring = "7.0.2"
 springboot = "4.0.2"
 
 [libraries]
@@ -23,11 +24,10 @@ picocli-springboot-starter = { module = "info.picocli:picocli-spring-boot-starte
 springboot =                 { module = "org.springframework.boot:spring-boot-starter",               version.ref = "springboot" }
 springboot-web =             { module = "org.springframework.boot:spring-boot-starter-web",           version.ref = "springboot" }
 springboot-security =        { module = "org.springframework.boot:spring-boot-starter-security",      version.ref = "springboot" }
+springboot-security-core =   { module = "org.springframework.security:spring-security-core",          version.ref = "spring"     }
 springboot-test =            { module = "org.springframework.boot:spring-boot-starter-test",          version.ref = "springboot" }
 springboot-web-test =        { module = "org.springframework.boot:spring-boot-starter-webmvc-test",   version.ref = "springboot" }
 springboot-security-test =   { module = "org.springframework.boot:spring-boot-starter-security-test", version.ref = "springboot" }
 
 [bundles]
 mockito = ["mockito-core", "mockito-junit"]
-springboot = ["springboot", "springboot-security"]
-springboottest = ["springboot-test", "springboot-security-test"]

@@ -3,6 +3,8 @@ plugins {
 }
 
 dependencies {
+    implementation      libs.springboot.security
     implementation      libs.springboot.web
+    testImplementation  libs.springboot.security.test
     testImplementation  libs.springboot.web.test
 }

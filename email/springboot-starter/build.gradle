@@ -11,5 +11,6 @@ dependencies {
     implementation project(":email:core")
     implementation project(":email:persistence")
     implementation project(":email:security")
+    testImplementation libs.springboot.security.test
     testImplementation libs.springboot.web.test
 }
