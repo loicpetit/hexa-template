@@ -12,6 +12,7 @@ include(
         'email:persistence',
         'email:security',
         'email:springboot-starter',
+        'email:console',
         'email:api',
         'user:core'
 )

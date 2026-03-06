@@ -1,0 +1,8 @@
+plugins {
+    id 'hexa-springboot'
+}
+
+dependencies {
+    implementation      libs.springboot.web
+    testImplementation  libs.springboot.web.test
+}

@@ -1,9 +1,10 @@
 plugins {
     id 'hexa-springboot'
+    id 'org.springframework.boot'
 }
 
 base {
-    archivesName = "email-springboot-starter"
+    archivesName = "email-console"
     version = globalVersion
 }
 
@@ -11,5 +12,6 @@ dependencies {
     implementation project(":email:core")
     implementation project(":email:persistence")
     implementation project(":email:security")
-    testImplementation libs.springboot.web.test
+    implementation project(":email:springboot-starter")
+    implementation libs.picocli.springboot.starter
 }

@@ -1,4 +1,4 @@
-package hexa.template.email.springboot.testapp;
+package hexa.template.email.springboot.testapp.web;
 
 import hexa.template.email.core.model.Email;
 import hexa.template.email.core.usecase.GetEmails;

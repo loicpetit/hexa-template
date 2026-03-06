@@ -1,4 +1,4 @@
-package hexa.template.email.springboot.testapp;
+package hexa.template.email.springboot.testapp.web;
 
 import hexa.template.email.persistence.adapter.EmailDao;
 import hexa.template.email.persistence.model.EmailEntity;

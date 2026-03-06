@@ -8,7 +8,7 @@ import hexa.template.email.persistence.model.EmailEntity;
 import hexa.template.email.persistence.port.UserProvider;
 import hexa.template.email.security.usecase.GetEmailsSecurityProxy;
 import hexa.template.email.springboot.adapter.SpringbootUserProvider;
-import hexa.template.email.springboot.testapp.Application;
+import hexa.template.email.springboot.testapp.web.Application;
 import jakarta.annotation.Nullable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

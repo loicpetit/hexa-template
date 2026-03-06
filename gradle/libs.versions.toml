@@ -7,24 +7,27 @@ junit = "6.0.2"
 lombok = "1.18.42"
 mapstruct = "1.6.3"
 mockito = "5.+"
+picocli = "4.7.7"
 springboot = "4.0.2"
 
 [libraries]
-lombok =                   { module = "org.projectlombok:lombok",                                   version.ref = "lombok"     }
-junit =                    { module = "org.junit.jupiter:junit-jupiter",                            version.ref = "junit"      }
-junit-platform =           { module = "org.junit.platform:junit-platform-launcher",                 version.ref = "junit"      }
-assertj =                  { module = "org.assertj:assertj-core",                                   version.ref = "assertj"    }
-mapstruct =                { module = "org.mapstruct:mapstruct",                                    version.ref = "mapstruct"  }
-mapstruct-processor =      { module = "org.mapstruct:mapstruct-processor",                          version.ref = "mapstruct"  }
-mockito-core =             { module = "org.mockito:mockito-core",                                   version.ref = "mockito"    }
-mockito-junit =            { module = "org.mockito:mockito-junit-jupiter",                          version.ref = "mockito"    }
-springboot-web =           { module = "org.springframework.boot:spring-boot-starter-web",           version.ref = "springboot" }
-springboot-security =      { module = "org.springframework.boot:spring-boot-starter-security",      version.ref = "springboot" }
-springboot-test =          { module = "org.springframework.boot:spring-boot-starter-test",          version.ref = "springboot" }
-springboot-webmvc-test =   { module = "org.springframework.boot:spring-boot-starter-webmvc-test",   version.ref = "springboot" }
-springboot-security-test = { module = "org.springframework.boot:spring-boot-starter-security-test", version.ref = "springboot" }
+lombok =                     { module = "org.projectlombok:lombok",                                   version.ref = "lombok"     }
+junit =                      { module = "org.junit.jupiter:junit-jupiter",                            version.ref = "junit"      }
+junit-platform =             { module = "org.junit.platform:junit-platform-launcher",                 version.ref = "junit"      }
+assertj =                    { module = "org.assertj:assertj-core",                                   version.ref = "assertj"    }
+mapstruct =                  { module = "org.mapstruct:mapstruct",                                    version.ref = "mapstruct"  }
+mapstruct-processor =        { module = "org.mapstruct:mapstruct-processor",                          version.ref = "mapstruct"  }
+mockito-core =               { module = "org.mockito:mockito-core",                                   version.ref = "mockito"    }
+mockito-junit =              { module = "org.mockito:mockito-junit-jupiter",                          version.ref = "mockito"    }
+picocli-springboot-starter = { module = "info.picocli:picocli-spring-boot-starter",                   version.ref = "picocli"    }
+springboot =                 { module = "org.springframework.boot:spring-boot-starter",               version.ref = "springboot" }
+springboot-web =             { module = "org.springframework.boot:spring-boot-starter-web",           version.ref = "springboot" }
+springboot-security =        { module = "org.springframework.boot:spring-boot-starter-security",      version.ref = "springboot" }
+springboot-test =            { module = "org.springframework.boot:spring-boot-starter-test",          version.ref = "springboot" }
+springboot-web-test =        { module = "org.springframework.boot:spring-boot-starter-webmvc-test",   version.ref = "springboot" }
+springboot-security-test =   { module = "org.springframework.boot:spring-boot-starter-security-test", version.ref = "springboot" }
 
 [bundles]
 mockito = ["mockito-core", "mockito-junit"]
-springboot = ["springboot-web", "springboot-security"]
-springboottest = ["springboot-test", "springboot-webmvc-test", "springboot-security-test"]
+springboot = ["springboot", "springboot-security"]
+springboottest = ["springboot-test", "springboot-security-test"]
