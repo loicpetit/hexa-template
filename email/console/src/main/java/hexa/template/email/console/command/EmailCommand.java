@@ -1,11 +1,17 @@
 package hexa.template.email.console.command;
 
+import hexa.template.email.console.command.create.CreateCommand;
+import hexa.template.email.console.command.get.GetCommand;
 import picocli.CommandLine.Command;
 
 @Command(
         name ="email",
         description = "Email CLI",
-        mixinStandardHelpOptions = true
+        subcommands = {
+                CreateCommand.class,
+                ExitCommand.class,
+                GetCommand.class
+        }
 )
 public class EmailCommand implements Runnable {
     @Override

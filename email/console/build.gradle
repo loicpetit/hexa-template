@@ -12,7 +12,7 @@ dependencies {
     implementation project(":email:core")
     implementation project(":email:persistence")
     implementation project(":email:security")
-    implementation libs.picocli
+    implementation libs.picocli.jline
 }
 
 tasks.register("batFile") {

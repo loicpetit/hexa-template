@@ -21,6 +21,7 @@ mapstruct-processor =        { module = "org.mapstruct:mapstruct-processor",    
 mockito-core =               { module = "org.mockito:mockito-core",                                   version.ref = "mockito"    }
 mockito-junit =              { module = "org.mockito:mockito-junit-jupiter",                          version.ref = "mockito"    }
 picocli =                    { module = "info.picocli:picocli",                                       version.ref = "picocli"    }
+picocli-jline =              { module = "info.picocli:picocli-shell-jline3",                          version.ref = "picocli"    }
 picocli-springboot-starter = { module = "info.picocli:picocli-spring-boot-starter",                   version.ref = "picocli"    }
 springboot =                 { module = "org.springframework.boot:spring-boot-starter",               version.ref = "springboot" }
 springboot-web =             { module = "org.springframework.boot:spring-boot-starter-web",           version.ref = "springboot" }
