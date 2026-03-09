@@ -18,8 +18,8 @@ import java.io.IOException;
 
 public class EmailShell {
     public void start() {
-        final var commandline = new CommandLine(new EmailCommand());
         try (Terminal terminal = createTerminal()) {
+            final var commandline = new CommandLine(new EmailCommand());
             final var reader = createLineReader(
                     terminal,
                     createCompleter(commandline)
