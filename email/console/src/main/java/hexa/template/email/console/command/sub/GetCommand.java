@@ -1,7 +1,6 @@
-package hexa.template.email.console.command.get;
+package hexa.template.email.console.command.sub;
 
 import hexa.template.email.console.command.SafeCommand;
-import hexa.template.email.console.core.EmailFactory;
 import hexa.template.email.core.usecase.GetEmails;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -21,14 +20,10 @@ public class GetCommand extends SafeCommand {
     )
     Long id;
 
-    public GetCommand() {
-        this(EmailFactory.get());
-    }
-
     public GetCommand(
-            final EmailFactory factory
+            final GetEmails getter
     ) {
-        getter = factory.getEmails();
+        this.getter = getter;
     }
 
     @Override

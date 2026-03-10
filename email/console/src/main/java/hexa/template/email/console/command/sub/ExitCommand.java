@@ -1,13 +1,12 @@
-package hexa.template.email.console.command;
+package hexa.template.email.console.command.sub;
 
+import hexa.template.email.console.command.SafeCommand;
 import picocli.CommandLine.Command;
 
 @Command(
-        name = ExitCommand.COMMAND
+        name = "exit"
 )
 public class ExitCommand extends SafeCommand {
-    public static final String COMMAND = "exit";
-
     private boolean exit = false;
 
     public boolean isExit() {

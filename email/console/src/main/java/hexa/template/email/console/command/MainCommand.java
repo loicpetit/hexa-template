@@ -1,7 +1,8 @@
 package hexa.template.email.console.command;
 
-import hexa.template.email.console.command.create.CreateCommand;
-import hexa.template.email.console.command.get.GetCommand;
+import hexa.template.email.console.command.sub.CreateCommand;
+import hexa.template.email.console.command.sub.ExitCommand;
+import hexa.template.email.console.command.sub.GetCommand;
 import picocli.CommandLine.Command;
 
 @Command(
@@ -13,7 +14,7 @@ import picocli.CommandLine.Command;
                 GetCommand.class
         }
 )
-public class EmailCommand implements Runnable {
+public class MainCommand implements Runnable {
     @Override
     public void run() {
         System.out.println("EmailCommand executed");

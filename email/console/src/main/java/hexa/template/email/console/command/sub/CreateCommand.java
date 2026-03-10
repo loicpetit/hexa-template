@@ -1,7 +1,6 @@
-package hexa.template.email.console.command.create;
+package hexa.template.email.console.command.sub;
 
 import hexa.template.email.console.command.SafeCommand;
-import hexa.template.email.console.core.EmailFactory;
 import hexa.template.email.core.model.Email;
 import hexa.template.email.core.usecase.SaveEmail;
 import picocli.CommandLine.Command;
@@ -22,14 +21,10 @@ public class CreateCommand extends SafeCommand {
     )
     String emailValue;
 
-    public CreateCommand() {
-        this(EmailFactory.get());
-    }
-
     public CreateCommand(
-            final EmailFactory factory
+            final SaveEmail save
     ) {
-        save = factory.saveEmail();
+        this.save = save;
     }
 
     @Override
