@@ -24,11 +24,9 @@ public class EmailShell {
                     terminal,
                     createCompleter(commandline)
             );
-            while (true) {
+            final var exitCommand = getExitCommand(commandline);
+            while (!exitCommand.isExit()) {
                 final String command = reader.readLine("email> ");
-                if (ExitCommand.isExit(command)) {
-                    break;
-                }
                 commandline.execute(parseCommandArgs(
                         reader.getParser(),
                         command
@@ -61,6 +59,13 @@ public class EmailShell {
         final var picocliCompleter = new PicocliJLineCompleter(commandline.getCommandSpec());
         final var exitCompleter = new StringsCompleter(ExitCommand.COMMAND);
         return new AggregateCompleter(picocliCompleter, exitCompleter);
+    }
+
+    private ExitCommand getExitCommand(final CommandLine mainCommand) {
+        return (ExitCommand) mainCommand.getSubcommands()
+                .get(ExitCommand.COMMAND)
+                .getCommandSpec()
+                .userObject();
     }
 
     private String[] parseCommandArgs(

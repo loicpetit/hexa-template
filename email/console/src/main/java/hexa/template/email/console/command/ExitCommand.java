@@ -1,19 +1,21 @@
 package hexa.template.email.console.command;
 
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
 
-import java.util.Optional;
-
-@CommandLine.Command(
+@Command(
         name = ExitCommand.COMMAND
 )
-public class ExitCommand {
+public class ExitCommand extends SafeCommand {
     public static final String COMMAND = "exit";
 
-    public static boolean isExit(final String command) {
-        return Optional.ofNullable(command)
-                .map(String::trim)
-                .map(COMMAND::equalsIgnoreCase)
-                .orElse(false);
+    private boolean exit = false;
+
+    public boolean isExit() {
+        return this.exit;
+    }
+
+    @Override
+    public void runSafe() {
+        exit = true;
     }
 }
