@@ -30,14 +30,18 @@ class AddUserCoreTest {
                 .firstName(FIRSTNAME)
                 .name(NAME)
                 .build();
-        final long newId = 10L;
-        when(writer.add(same(user))).thenReturn(newId);
+        final var savedUser = User.builder()
+                .id(10L)
+                .firstName(FIRSTNAME)
+                .name(NAME)
+                .build();
+        when(writer.add(same(user))).thenReturn(savedUser);
 
-        final long result = add.from(user);
+        final User result = add.from(user);
 
         assertThat(result)
                 .as("result")
-                .isEqualTo(newId);
+                .isSameAs(savedUser);
     }
 
     @Test

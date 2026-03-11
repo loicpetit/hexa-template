@@ -9,7 +9,7 @@ public class AddUserCore implements AddUser {
     final UserWriter writer;
 
     @Override
-    public Long from(User user) {
+    public User from(User user) {
         if (user == null) {
             throw new IllegalArgumentException("user must not be null");
         }

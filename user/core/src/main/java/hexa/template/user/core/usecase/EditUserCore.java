@@ -9,13 +9,13 @@ public class EditUserCore implements EditUser {
     private final UserWriter writer;
 
     @Override
-    public void from(User user) {
+    public User from(User user) {
         if (user == null) {
             throw new IllegalArgumentException("user must not be null");
         }
         if (user.id() == null) {
             throw new IllegalArgumentException("user id must not be null");
         }
-        writer.update(user);
+        return writer.update(user);
     }
 }

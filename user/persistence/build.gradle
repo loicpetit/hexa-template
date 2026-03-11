@@ -1,0 +1,12 @@
+plugins {
+    id 'hexa-java'
+}
+
+base {
+    archivesName = "user-persistence"
+    version = globalVersion
+}
+
+dependencies {
+    implementation project(":user:core")
+}

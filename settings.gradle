@@ -15,5 +15,6 @@ include(
         'email:console-boot',
         'email:console',
         'email:api',
-        'user:core'
+        'user:core',
+        'user:persistence'
 )
