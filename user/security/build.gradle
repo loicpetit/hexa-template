@@ -1,0 +1,13 @@
+plugins {
+    id 'hexa-java'
+}
+
+base {
+    archivesName = "user-security"
+    version = globalVersion
+}
+
+dependencies {
+    implementation project(":user:core")
+}
+

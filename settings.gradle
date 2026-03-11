@@ -16,5 +16,6 @@ include(
         'email:console',
         'email:api',
         'user:core',
-        'user:persistence'
+        'user:persistence',
+        'user:security'
 )
