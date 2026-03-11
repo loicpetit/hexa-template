@@ -17,5 +17,6 @@ include(
         'email:api',
         'user:core',
         'user:persistence',
-        'user:security'
+        'user:security',
+        'user:springboot-starter'
 )

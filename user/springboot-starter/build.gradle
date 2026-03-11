@@ -1,0 +1,17 @@
+plugins {
+    id 'hexa-springboot'
+}
+
+base {
+    archivesName = "user-springboot-starter"
+    version = globalVersion
+}
+
+dependencies {
+    implementation project(":user:core")
+    implementation project(":user:persistence")
+    implementation project(":user:security")
+    testImplementation libs.springboot.security.test
+    testImplementation libs.springboot.web.test
+}
+
