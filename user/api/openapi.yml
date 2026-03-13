@@ -153,6 +153,11 @@ components:
     User:
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
+          description: The unique identifier of the user.
+          example: 1
         firstName:
           type: string
           description: The first name of the user.

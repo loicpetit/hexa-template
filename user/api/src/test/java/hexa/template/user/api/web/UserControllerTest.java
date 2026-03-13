@@ -111,7 +111,8 @@ class UserControllerTest {
                     .andExpect(header().exists("ETag"))
                     .andExpect(jsonPath("$.firstName").value("Chuck"))
                     .andExpect(jsonPath("$.name").value("Norris"))
-                    .andExpect(jsonPath("$.id").doesNotExist());
+                    .andExpect(jsonPath("$.id").value(1L))
+                    .andExpect(jsonPath("$.modified").exists());
         }
 
         @Test

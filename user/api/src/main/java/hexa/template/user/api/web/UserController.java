@@ -1,6 +1,7 @@
 package hexa.template.user.api.web;
 
 import hexa.template.user.api.dto.UserDto;
+import hexa.template.user.api.mapper.UserDtoMapper;
 import hexa.template.user.api.mapper.UserMapper;
 import hexa.template.user.core.model.User;
 import hexa.template.user.core.usecase.AddUser;
@@ -22,17 +23,14 @@ public class UserController implements hexa.template.user.api.web.UsersApi {
     final EditUser edit;
     final GetUser get;
     final DeleteUser delete;
-    final UserMapper mapper;
+    final UserMapper modelMapper;
+    final UserDtoMapper dtoMapper;
 
     @Override
     public ResponseEntity<List<UserDto>> getUsers() {
         log.info("Get all users");
         final List<UserDto> users = get.all()
-                .map(user -> new UserDto()
-                        .firstName(user.firstName())
-                        .name(user.name())
-                        .emailId(user.emailId())
-                        .modified(user.modified()))
+                .map(dtoMapper::toDto)
                 .toList();
         return ResponseEntity.ok(users);
     }
@@ -46,11 +44,7 @@ public class UserController implements hexa.template.user.api.web.UsersApi {
         } catch (IllegalArgumentException e) {
             throw new UserNotFoundException(e.getMessage());
         }
-        final UserDto dto = new UserDto()
-                .firstName(user.firstName())
-                .name(user.name())
-                .emailId(user.emailId())
-                .modified(user.modified());
+        final UserDto dto = dtoMapper.toDto(user);
         return ResponseEntity.ok()
                 .eTag(Integer.toString(dto.hashCode()))
                 .body(dto);
@@ -60,14 +54,14 @@ public class UserController implements hexa.template.user.api.web.UsersApi {
     public ResponseEntity<Long> createUser(UserDto dto) {
         log.info("Create user");
         log.debug("User to create: {}", dto);
-        final User savedUser = add.from(mapper.toUser(dto));
+        final User savedUser = add.from(modelMapper.toUser(dto));
         return ResponseEntity.ok().body(savedUser.id());
     }
 
     @Override
     public ResponseEntity<Void> updateUserById(Long id, UserDto dto) {
         log.info("Update user with id {}", id);
-        final User userToUpdate = mapper.toUser(id, dto);
+        final User userToUpdate = modelMapper.toUser(id, dto);
         try {
             edit.from(userToUpdate);
         } catch (IllegalArgumentException e) {
@@ -89,5 +83,3 @@ public class UserController implements hexa.template.user.api.web.UsersApi {
         return ResponseEntity.noContent().build();
     }
 }
-
-
