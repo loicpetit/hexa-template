@@ -1,3 +1,9 @@
+api:
+  users:
+    #- login: admin
+    #  password: '...'
+    #  authorities: '...,...'
+
 clients:
   email:
     url: http://localhost:8010
@@ -9,7 +15,7 @@ clients:
     password:
 
 server:
-  port: 8020
+  port: 8030
 
 spring:
   application:
