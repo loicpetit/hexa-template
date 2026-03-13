@@ -19,5 +19,6 @@ include(
         'user:persistence',
         'user:security',
         'user:springboot-starter',
-        'user:api'
+        'user:api',
+        'graphql'
 )

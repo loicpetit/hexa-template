@@ -1,0 +1,13 @@
+plugins {
+    id 'hexa-springboot-web'
+    id 'org.springframework.boot'
+}
+
+base {
+    archivesName = "graphql"
+    version = globalVersion
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-graphql:4.0.2'
+}

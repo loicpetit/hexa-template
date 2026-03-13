@@ -1,0 +1,19 @@
+clients:
+  email:
+    url: http://localhost:8010
+    username:
+    password:
+  user:
+    url: http://localhost:8020
+    username:
+    password:
+
+server:
+  port: 8020
+
+spring:
+  application:
+    name: graphql
+  graphql:
+    graphiql:
+      enabled: true
