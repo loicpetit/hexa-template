@@ -1,0 +1,82 @@
+### Create user
+POST http://{{machine}}/api/users
+Authorization: Basic {{auth.user}} {{auth.password}}
+Content-Type: application/json
+
+{
+  "firstName": "Chuck",
+  "name": "Norris"
+}
+
+> {%
+    const userId = response.body
+    client.log("user id", userId)
+    client.global.set("user-id", userId)
+%}
+
+### Get all users
+GET http://{{machine}}/api/users
+Authorization: Basic {{auth.user}} {{auth.password}}
+
+### Get user by id
+GET http://{{machine}}/api/users/{{user-id}}
+Authorization: Basic {{auth.user}} {{auth.password}}
+
+> {%
+    const etag = response.headers.valueOf("ETag")
+    client.log("etag", etag)
+    client.global.set("user-get-etag", etag)
+    const modified = response.body.modified
+    client.log("modified", modified)
+    client.global.set("user-modified", modified)
+%}
+
+### Get user by id - with etag
+GET http://{{machine}}/api/users/{{user-id}}
+Authorization: Basic {{auth.user}} {{auth.password}}
+If-None-Match: {{user-get-etag}}
+
+### Get user by id - bad id
+GET http://{{machine}}/api/users/1000
+Authorization: Basic {{auth.user}} {{auth.password}}
+
+### Get user by id - forbidden
+GET http://{{machine}}/api/users/{{user-id}}
+Authorization: Basic {{forbidden.user}} {{forbidden.password}}
+
+### Update user
+PUT http://{{machine}}/api/users/{{user-id}}
+Authorization: Basic {{auth.user}} {{auth.password}}
+Content-Type: application/json
+
+{
+  "firstName": "Bruce",
+  "name": "Lee",
+  "modified": "{{user-modified}}"
+}
+
+### Update user - bad request - modified is missing
+PUT http://{{machine}}/api/users/{{user-id}}
+Authorization: Basic {{auth.user}} {{auth.password}}
+Content-Type: application/json
+
+{
+  "firstName": "Bruce",
+  "name": "Lee"
+}
+
+### Update user - bad id
+PUT http://{{machine}}/api/users/1000
+Authorization: Basic {{auth.user}} {{auth.password}}
+Content-Type: application/json
+
+{
+  "firstName": "Bruce",
+  "name": "Lee",
+  "modified": "{{user-modified}}"
+}
+
+### Delete user by id
+DELETE http://{{machine}}/api/users/{{user-id}}
+Authorization: Basic {{auth.user}} {{auth.password}}
+

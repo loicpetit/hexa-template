@@ -209,6 +209,24 @@ class UserMemoryDaoTest {
     }
 
     @Nested
+    class Clear {
+        @Test
+        void mustClear() {
+            assertThat(dao.findAll())
+                    .as("find all before clear")
+                    .isNotEmpty();
+            dao.clear();
+            assertThat(dao.findAll())
+                    .as("find all after clear")
+                    .isEmpty();
+            final var nextEntity = dao.add(createUserEntity(null));
+            assertThat(nextEntity.id())
+                    .as("next id after clear")
+                    .isEqualTo(1L);
+        }
+    }
+
+    @Nested
     class FindAll {
         @Test
         void mustFindAll() {

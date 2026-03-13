@@ -1,0 +1,61 @@
+plugins {
+    id 'hexa-springboot-web'
+    id 'org.springframework.boot'
+    id 'org.openapi.generator'
+}
+
+base {
+    archivesName = "user-api"
+    version = globalVersion
+}
+
+dependencies {
+    implementation project(":user:core")
+    implementation project(":user:persistence")
+    implementation project(":user:security")
+    implementation project(":user:springboot-starter")
+    compileOnly 'io.swagger.core.v3:swagger-annotations:2.2.43'
+    implementation 'jakarta.validation:jakarta.validation-api:3.1.1'
+}
+
+def openApiBuildDir = 'build/generated/sources/openapi'
+def openApiBasePackage = "hexa.template.user.api"
+openApiGenerate {
+    generatorName.set("spring")
+    inputSpec.set(file("openapi.yml").getAbsolutePath())
+    outputDir.set(file(openApiBuildDir).getAbsolutePath())
+    apiPackage.set("${openApiBasePackage}.web")
+    modelPackage.set("${openApiBasePackage}.dto")
+    modelNameSuffix.set("Dto")
+    globalProperties.set([
+        apis: "",
+        models: ""
+    ])
+    configOptions.set([
+        useSpringBoot3: "true",
+        dateLibrary: "java8",
+        interfaceOnly: "true",
+        useTags: "true",
+        skipDefaultInterface: "true",
+        useBeanValidation: "true",
+        openApiNullable: "false",
+        sourceFolder: "java/main",
+        useSealed: "true"
+    ])
+    typeMappings.set([
+            "localdatetime": "LocalDateTime"
+    ])
+    importMappings.set([
+        "LocalDateTime": "java.time.LocalDateTime"
+    ])
+}
+compileJava.dependsOn("openApiGenerate")
+
+sourceSets {
+    main {
+        java {
+            srcDir("${openApiBuildDir}/java/main")
+        }
+    }
+}
+

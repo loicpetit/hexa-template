@@ -71,6 +71,12 @@ public class UserMemoryDao implements UserDao {
     }
 
     @Override
+    public void clear() {
+        cache.clear();
+        nextId = 1L;
+    }
+
+    @Override
     public Optional<UserEntity> findById(long id) {
         return Optional.ofNullable(cache.get(id));
     }

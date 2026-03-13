@@ -1,0 +1,21 @@
+server:
+  port: 8020
+
+api:
+  users:
+    - login: simpleUser
+      password: "{noop}simplePwd"
+      authorities: USER
+    - login: userReader
+      password: "{noop}userPwd"
+      authorities: USER,USER_READ
+    - login: userCreate
+      password: "{noop}userPwd"
+      authorities: USER,USER_CREATE
+    - login: userUpdate
+      password: "{noop}userPwd"
+      authorities: USER,USER_UPDATE
+    - login: userDelete
+      password: "{noop}userPwd"
+      authorities: USER,USER_DELETE
+

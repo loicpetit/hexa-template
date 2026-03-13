@@ -1,0 +1,7 @@
+server:
+  port: 8020
+
+spring:
+  jackson:
+    default-property-inclusion: non_null
+
