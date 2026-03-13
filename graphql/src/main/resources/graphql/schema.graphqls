@@ -5,13 +5,8 @@ type Query {
 type Mutation {
   addEmailToUser(userId: ID!, email: String!): UserView
   removeEmailFromUser(userId: ID!): UserView
-  addUser(input: AddUserInput!): UserView
+  addUser(firstName: String!, name: String!): UserView
   deleteUser(id: ID!): Boolean!
-}
-
-input AddUserInput {
-  firstName: String!
-  name: String!
 }
 
 type UserView {

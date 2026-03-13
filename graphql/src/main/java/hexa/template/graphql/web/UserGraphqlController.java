@@ -1,6 +1,5 @@
 package hexa.template.graphql.web;
 
-import hexa.template.graphql.model.AddUserInput;
 import hexa.template.graphql.model.UserView;
 import hexa.template.graphql.service.UserEmailFacade;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +29,8 @@ public class UserGraphqlController {
     }
 
     @MutationMapping
-    public UserView addUser(@Argument final AddUserInput input) {
-        return facade.addUser(input.firstName(), input.name());
+    public UserView addUser(@Argument final String firstName, @Argument final String name) {
+        return facade.addUser(firstName, name);
     }
 
     @MutationMapping
