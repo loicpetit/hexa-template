@@ -57,6 +57,22 @@ public class UserEmailFacade {
         );
     }
 
+    public UserView addUser(final String firstName, final String name) {
+        final var createdUser = userHttpClient.createUser(new UserHttpDto(
+                null,
+                firstName,
+                name,
+                null,
+                null
+        ));
+        return toView(createdUser);
+    }
+
+    public boolean deleteUser(final Long userId) {
+        userHttpClient.deleteUser(userId);
+        return true;
+    }
+
     private UserView toView(final UserHttpDto user) {
         final EmailView email = user.emailId() == null
                 ? null
@@ -68,4 +84,3 @@ public class UserEmailFacade {
         return new EmailView(emailId, email.value(), email.modified());
     }
 }
-

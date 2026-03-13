@@ -1,5 +1,6 @@
 package hexa.template.graphql.web;
 
+import hexa.template.graphql.model.AddUserInput;
 import hexa.template.graphql.model.UserView;
 import hexa.template.graphql.service.UserEmailFacade;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +28,14 @@ public class UserGraphqlController {
     public UserView removeEmailFromUser(@Argument final Long userId) {
         return facade.removeEmailFromUser(userId);
     }
-}
 
+    @MutationMapping
+    public UserView addUser(@Argument final AddUserInput input) {
+        return facade.addUser(input.firstName(), input.name());
+    }
+
+    @MutationMapping
+    public boolean deleteUser(@Argument final Long id) {
+        return facade.deleteUser(id);
+    }
+}
