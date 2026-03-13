@@ -5,11 +5,12 @@ Content-Type: application/json
 
 {
   "firstName": "Chuck",
-  "name": "Norris"
+  "name": "Norris",
+  "emailId": 10
 }
 
 > {%
-    const userId = response.body
+    const userId = response.body.id
     client.log("user id", userId)
     client.global.set("user-id", userId)
 %}

@@ -1,5 +1,6 @@
 package hexa.template.user.core.usecase;
 
+import hexa.template.user.core.exception.UserNotFoundException;
 import hexa.template.user.core.model.User;
 import hexa.template.user.core.port.UserReader;
 import org.junit.jupiter.api.Nested;
@@ -41,9 +42,9 @@ class GetUserCoreTest {
 
         @Test
         void ifUserNotFoundShouldThrowException() {
-            assertThatExceptionOfType(IllegalArgumentException.class)
+            assertThatExceptionOfType(UserNotFoundException.class)
                     .isThrownBy(() -> get.byId(10L))
-                    .withMessage("user not found for id 10");
+                    .withMessage("user with id 10 was not found");
         }
     }
 

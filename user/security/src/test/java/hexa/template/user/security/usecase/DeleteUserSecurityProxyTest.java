@@ -8,9 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DeleteUserSecurityProxyTest {
@@ -25,14 +23,10 @@ class DeleteUserSecurityProxyTest {
 
     @Test
     void deleteMustValidate() {
-        when(delete.byId(1L)).thenReturn(true);
+        proxy.byId(1L);
 
-        final var result = proxy.byId(1L);
-
-        assertThat(result)
-                .as("result")
-                .isTrue();
         verify(validator).validateUserCanDelete(1L);
+        verify(delete).byId(1L);
     }
 }
 

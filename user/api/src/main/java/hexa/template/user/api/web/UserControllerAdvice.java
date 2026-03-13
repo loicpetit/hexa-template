@@ -1,6 +1,7 @@
 package hexa.template.user.api.web;
 
 import hexa.template.user.api.dto.ErrorDto;
+import hexa.template.user.core.exception.UserNotFoundException;
 import hexa.template.user.security.validator.ForbiddenException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

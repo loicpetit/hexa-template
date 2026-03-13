@@ -178,7 +178,11 @@ class UserControllerTest {
                                             """)
                     )
                     .andExpect(status().isOk())
-                    .andExpect(content().string(EXPECTED_ID.toString()));
+                    .andExpect(jsonPath("$.id").value(EXPECTED_ID))
+                    .andExpect(jsonPath("$.emailId").doesNotExist())
+                    .andExpect(jsonPath("$.firstName").value("Chuck"))
+                    .andExpect(jsonPath("$.name").value("Norris"))
+                    .andExpect(jsonPath("$.modified").exists());
 
             assertThat(dao.findById(EXPECTED_ID))
                     .as("after create")
@@ -282,10 +286,15 @@ class UserControllerTest {
                                                 "name": "Lee",
                                                 "modified": "%s"
                                             }
-                                            """.formatted(MODIFIED.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)))
+                                            """.formatted(MODIFIED.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                                    )
                     )
-                    .andExpect(status().isNoContent())
-                    .andExpect(content().string(""));
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(ID))
+                    .andExpect(jsonPath("$.emailId").doesNotExist())
+                    .andExpect(jsonPath("$.firstName").value("Bruce"))
+                    .andExpect(jsonPath("$.name").value("Lee"))
+                    .andExpect(jsonPath("$.modified").exists());
 
             assertThat(dao.findById(ID))
                     .as("after update")

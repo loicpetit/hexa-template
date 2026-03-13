@@ -1,5 +1,6 @@
 package hexa.template.user.persistence.adapter;
 
+import hexa.template.user.core.exception.UserNotFoundException;
 import hexa.template.user.persistence.model.UserEntity;
 import hexa.template.user.persistence.port.UserProvider;
 import org.junit.jupiter.api.BeforeEach;
@@ -177,9 +178,9 @@ class UserMemoryDaoTest {
         void ifIdMatchAnyEntityMustThrowException() {
             final var entity = createUserEntity(10L);
 
-            assertThatExceptionOfType(IllegalArgumentException.class)
+            assertThatExceptionOfType(UserNotFoundException.class)
                     .isThrownBy(() -> dao.update(entity))
-                    .withMessage("user not found in order to update");
+                    .withMessage("user with id 10 was not found");
         }
     }
 

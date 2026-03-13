@@ -10,9 +10,9 @@ public class DeleteUserSecurityProxy implements DeleteUser {
     private final UserPermissionValidator validator;
 
     @Override
-    public boolean byId(final long id) {
+    public void byId(final long id) {
         validator.validateUserCanDelete(id);
-        return delete.byId(id);
+        delete.byId(id);
     }
 }
 

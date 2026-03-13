@@ -51,13 +51,11 @@ paths:
               $ref: '#/components/schemas/User'
       responses:
         '200':
-          description: The user was created successfully
+          description: The created user
           content:
             application/json:
               schema:
-                type: integer
-                format: int64
-                description: The unique identifier of the created user.
+                $ref: '#/components/schemas/User'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -107,8 +105,12 @@ paths:
             schema:
               $ref: '#/components/schemas/User'
       responses:
-        '204':
-          description: The user was updated successfully
+        '200':
+          description: The updated user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':

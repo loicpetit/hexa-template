@@ -1,5 +1,6 @@
 package hexa.template.user.persistence.adapter;
 
+import hexa.template.user.core.exception.UserNotFoundException;
 import hexa.template.user.persistence.model.UserEntity;
 import hexa.template.user.persistence.port.UserProvider;
 
@@ -55,7 +56,7 @@ public class UserMemoryDao implements UserDao {
             throw new IllegalArgumentException("user id must not be null in order to update");
         }
         if (!cache.containsKey(entity.id())) {
-            throw new IllegalArgumentException("user not found in order to update");
+            throw new UserNotFoundException(entity.id());
         }
         final var entityWithMetadata = entity.copy()
                 .author(userProvider.getUserName())

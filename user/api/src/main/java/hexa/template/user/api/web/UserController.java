@@ -38,12 +38,7 @@ public class UserController implements hexa.template.user.api.web.UsersApi {
     @Override
     public ResponseEntity<UserDto> getUserById(Long id) {
         log.info("Get user from id {}", id);
-        final User user;
-        try {
-            user = get.byId(id);
-        } catch (IllegalArgumentException e) {
-            throw new UserNotFoundException(e.getMessage());
-        }
+        final User user = get.byId(id);
         final UserDto dto = dtoMapper.toDto(user);
         return ResponseEntity.ok()
                 .eTag(Integer.toString(dto.hashCode()))
@@ -51,35 +46,25 @@ public class UserController implements hexa.template.user.api.web.UsersApi {
     }
 
     @Override
-    public ResponseEntity<Long> createUser(UserDto dto) {
+    public ResponseEntity<UserDto> createUser(UserDto dto) {
         log.info("Create user");
         log.debug("User to create: {}", dto);
         final User savedUser = add.from(modelMapper.toUser(dto));
-        return ResponseEntity.ok().body(savedUser.id());
+        return ResponseEntity.ok().body(dtoMapper.toDto(savedUser));
     }
 
     @Override
-    public ResponseEntity<Void> updateUserById(Long id, UserDto dto) {
+    public ResponseEntity<UserDto> updateUserById(Long id, UserDto dto) {
         log.info("Update user with id {}", id);
         final User userToUpdate = modelMapper.toUser(id, dto);
-        try {
-            edit.from(userToUpdate);
-        } catch (IllegalArgumentException e) {
-            if (e.getMessage() != null && e.getMessage().contains("not found")) {
-                throw new UserNotFoundException(e.getMessage());
-            }
-            throw e;
-        }
-        return ResponseEntity.noContent().build();
+        final User updatedUser = edit.from(userToUpdate);
+        return ResponseEntity.ok().body(dtoMapper.toDto(updatedUser));
     }
 
     @Override
     public ResponseEntity<Void> deleteUserById(Long id) {
         log.info("Delete user with id {}", id);
-        final boolean deleted = delete.byId(id);
-        if (!deleted) {
-            throw new UserNotFoundException("user not found for id " + id);
-        }
+        delete.byId(id);
         return ResponseEntity.noContent().build();
     }
 }
