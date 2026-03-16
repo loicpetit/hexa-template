@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserEmailFacade {
+public class UserService {
     private final UserHttpClient userHttpClient;
     private final EmailHttpClient emailHttpClient;
 

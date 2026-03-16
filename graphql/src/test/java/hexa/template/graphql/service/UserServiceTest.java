@@ -22,7 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class UserEmailFacadeTest {
+class UserServiceTest {
     @Mock
     UserHttpClient userHttpClient;
 
@@ -30,7 +30,7 @@ class UserEmailFacadeTest {
     EmailHttpClient emailHttpClient;
 
     @InjectMocks
-    UserEmailFacade facade;
+    UserService service;
 
     @Test
     void shouldGetUserWithEmail() {
@@ -38,7 +38,7 @@ class UserEmailFacadeTest {
         when(userHttpClient.getUser(1L)).thenReturn(new UserHttpDto(1L, "Chuck", "Norris", 5L, modified));
         when(emailHttpClient.getEmail(5L)).thenReturn(new EmailHttpDto("chuck@norris.test", modified));
 
-        final var result = facade.getUser(1L);
+        final var result = service.getUser(1L);
 
         assertThat(result.id()).isEqualTo(1L);
         assertThat(result.email()).isNotNull();
@@ -55,7 +55,7 @@ class UserEmailFacadeTest {
                 .thenReturn(new UserHttpDto(1L, "Chuck", "Norris", 7L, modified));
         when(emailHttpClient.getEmail(7L)).thenReturn(new EmailHttpDto("chuck@norris.test", modified));
 
-        final var result = facade.addEmailToUser(1L, "chuck@norris.test");
+        final var result = service.addEmailToUser(1L, "chuck@norris.test");
 
         assertThat(result.email()).isNotNull();
         assertThat(result.email().id()).isEqualTo(7L);
@@ -66,7 +66,7 @@ class UserEmailFacadeTest {
     void shouldFailWhenUserAlreadyHasEmail() {
         when(userHttpClient.getUser(1L)).thenReturn(new UserHttpDto(1L, "Chuck", "Norris", 9L, LocalDateTime.now()));
 
-        assertThatThrownBy(() -> facade.addEmailToUser(1L, "chuck@norris.test"))
+        assertThatThrownBy(() -> service.addEmailToUser(1L, "chuck@norris.test"))
                 .isInstanceOf(GraphqlBusinessException.class)
                 .hasMessage("The user already has an email");
 
@@ -80,7 +80,7 @@ class UserEmailFacadeTest {
         when(userHttpClient.updateUser(eq(1L), any(UserHttpDto.class)))
                 .thenReturn(new UserHttpDto(1L, "Chuck", "Norris", null, modified));
 
-        final var result = facade.removeEmailFromUser(1L);
+        final var result = service.removeEmailFromUser(1L);
 
         verify(emailHttpClient).deleteEmail(4L);
         assertThat(result.email()).isNull();
