@@ -12,24 +12,26 @@ spring = "7.0.2"
 springboot = "4.0.2"
 
 [libraries]
-lombok =                     { module = "org.projectlombok:lombok",                                   version.ref = "lombok"     }
-junit =                      { module = "org.junit.jupiter:junit-jupiter",                            version.ref = "junit"      }
-junit-platform =             { module = "org.junit.platform:junit-platform-launcher",                 version.ref = "junit"      }
-assertj =                    { module = "org.assertj:assertj-core",                                   version.ref = "assertj"    }
-mapstruct =                  { module = "org.mapstruct:mapstruct",                                    version.ref = "mapstruct"  }
-mapstruct-processor =        { module = "org.mapstruct:mapstruct-processor",                          version.ref = "mapstruct"  }
-mockito-core =               { module = "org.mockito:mockito-core",                                   version.ref = "mockito"    }
-mockito-junit =              { module = "org.mockito:mockito-junit-jupiter",                          version.ref = "mockito"    }
-picocli =                    { module = "info.picocli:picocli",                                       version.ref = "picocli"    }
-picocli-jline =              { module = "info.picocli:picocli-shell-jline3",                          version.ref = "picocli"    }
-picocli-springboot-starter = { module = "info.picocli:picocli-spring-boot-starter",                   version.ref = "picocli"    }
-springboot =                 { module = "org.springframework.boot:spring-boot-starter",               version.ref = "springboot" }
-springboot-web =             { module = "org.springframework.boot:spring-boot-starter-web",           version.ref = "springboot" }
-springboot-security =        { module = "org.springframework.boot:spring-boot-starter-security",      version.ref = "springboot" }
-springboot-security-core =   { module = "org.springframework.security:spring-security-core",          version.ref = "spring"     }
-springboot-test =            { module = "org.springframework.boot:spring-boot-starter-test",          version.ref = "springboot" }
-springboot-web-test =        { module = "org.springframework.boot:spring-boot-starter-webmvc-test",   version.ref = "springboot" }
-springboot-security-test =   { module = "org.springframework.boot:spring-boot-starter-security-test", version.ref = "springboot" }
+lombok =                     { module = "org.projectlombok:lombok",                                     version.ref = "lombok"        }
+junit =                      { module = "org.junit.jupiter:junit-jupiter",                              version.ref = "junit"         }
+junit-platform =             { module = "org.junit.platform:junit-platform-launcher",                   version.ref = "junit"         }
+assertj =                    { module = "org.assertj:assertj-core",                                     version.ref = "assertj"       }
+mapstruct =                  { module = "org.mapstruct:mapstruct",                                      version.ref = "mapstruct"     }
+mapstruct-processor =        { module = "org.mapstruct:mapstruct-processor",                            version.ref = "mapstruct"     }
+mockito-core =               { module = "org.mockito:mockito-core",                                     version.ref = "mockito"       }
+mockito-junit =              { module = "org.mockito:mockito-junit-jupiter",                            version.ref = "mockito"       }
+picocli =                    { module = "info.picocli:picocli",                                         version.ref = "picocli"       }
+picocli-jline =              { module = "info.picocli:picocli-shell-jline3",                            version.ref = "picocli"       }
+picocli-springboot-starter = { module = "info.picocli:picocli-spring-boot-starter",                     version.ref = "picocli"       }
+springboot =                 { module = "org.springframework.boot:spring-boot-starter",                 version.ref = "springboot"    }
+springboot-test =            { module = "org.springframework.boot:spring-boot-starter-test",            version.ref = "springboot"    }
+springboot-graphql =         { module = "org.springframework.boot:spring-boot-starter-graphql",         version.ref = "springboot"    }
+springboot-graphql-test =    { module = "org.springframework.boot:spring-boot-starter-graphql-test",    version.ref = "springboot"    }
+springboot-security =        { module = "org.springframework.boot:spring-boot-starter-security",        version.ref = "springboot"    }
+springboot-security-core =   { module = "org.springframework.security:spring-security-core",            version.ref = "spring"        }
+springboot-security-test =   { module = "org.springframework.boot:spring-boot-starter-security-test",   version.ref = "springboot"    }
+springboot-web =             { module = "org.springframework.boot:spring-boot-starter-web",             version.ref = "springboot"    }
+springboot-web-test =        { module = "org.springframework.boot:spring-boot-starter-webmvc-test",     version.ref = "springboot"    }
 
 [bundles]
 mockito = ["mockito-core", "mockito-junit"]

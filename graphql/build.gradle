@@ -9,6 +9,6 @@ base {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-graphql:4.0.2'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation libs.springboot.graphql
+    testImplementation libs.springboot.graphql.test
 }

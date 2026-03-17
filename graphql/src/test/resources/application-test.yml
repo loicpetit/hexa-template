@@ -1,0 +1,5 @@
+api:
+  users:
+    - login: test
+      password: '{noop}testPwd'
+      authorities: 'ROLE_TEST'
