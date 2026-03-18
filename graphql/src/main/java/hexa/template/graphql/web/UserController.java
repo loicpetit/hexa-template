@@ -19,16 +19,6 @@ public class UserController {
     }
 
     @MutationMapping
-    public UserView addEmailToUser(@Argument final Long userId, @Argument final String email) {
-        return service.addEmailToUser(userId, email);
-    }
-
-    @MutationMapping
-    public UserView removeEmailFromUser(@Argument final Long userId) {
-        return service.removeEmailFromUser(userId);
-    }
-
-    @MutationMapping
     public UserView addUser(@Argument final String firstName, @Argument final String name) {
         return service.addUser(firstName, name);
     }
@@ -36,5 +26,15 @@ public class UserController {
     @MutationMapping
     public boolean deleteUser(@Argument final Long id) {
         return service.deleteUser(id);
+    }
+
+    @MutationMapping
+    public UserView addEmailToUser(@Argument final Long userId, @Argument final String email) {
+        return service.addEmailToUser(userId, email);
+    }
+
+    @MutationMapping
+    public UserView removeEmailFromUser(@Argument final Long userId) {
+        return service.removeEmailFromUser(userId);
     }
 }
