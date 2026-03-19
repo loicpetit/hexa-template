@@ -74,6 +74,9 @@ public class UserService {
     }
 
     private UserView toView(final UserHttpDto user) {
+        if (user == null) {
+            return null;
+        }
         final EmailView email = user.emailId() == null
                 ? null
                 : toEmailView(user.emailId(), emailHttpClient.getEmail(user.emailId()));
@@ -81,6 +84,9 @@ public class UserService {
     }
 
     private EmailView toEmailView(final Long emailId, final EmailHttpDto email) {
+        if (email == null) {
+            return null;
+        }
         return new EmailView(emailId, email.value(), email.modified());
     }
 }
