@@ -1,7 +1,7 @@
 package hexa.template.graphql.config;
 
 import hexa.template.graphql.BaseIntegrationTest;
-import hexa.template.graphql.client.dto.UserHttpDto;
+import hexa.template.graphql.client.user.UserHttpDto;
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.when;

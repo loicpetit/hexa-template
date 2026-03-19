@@ -23,3 +23,5 @@ spring:
   graphql:
     graphiql:
       enabled: true
+  jackson:
+    default-property-inclusion: non_null

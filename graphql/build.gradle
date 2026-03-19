@@ -11,4 +11,5 @@ base {
 dependencies {
     implementation libs.springboot.graphql
     testImplementation libs.springboot.graphql.test
+    testImplementation libs.wiremock
 }

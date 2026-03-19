@@ -1,4 +1,4 @@
-package hexa.template.graphql.client.dto;
+package hexa.template.graphql.client.email;
 
 import java.time.LocalDateTime;
 

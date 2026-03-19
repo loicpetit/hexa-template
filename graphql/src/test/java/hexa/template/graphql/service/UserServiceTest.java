@@ -1,9 +1,9 @@
 package hexa.template.graphql.service;
 
-import hexa.template.graphql.client.EmailHttpClient;
-import hexa.template.graphql.client.UserHttpClient;
-import hexa.template.graphql.client.dto.EmailHttpDto;
-import hexa.template.graphql.client.dto.UserHttpDto;
+import hexa.template.graphql.client.email.EmailHttpClient;
+import hexa.template.graphql.client.email.EmailHttpDto;
+import hexa.template.graphql.client.user.UserHttpClient;
+import hexa.template.graphql.client.user.UserHttpDto;
 import hexa.template.graphql.exception.GraphqlBusinessException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,5 @@
-package hexa.template.graphql.client;
+package hexa.template.graphql.client.user;
 
-import hexa.template.graphql.client.dto.UserHttpDto;
 import hexa.template.graphql.exception.GraphqlBusinessException;
 import hexa.template.graphql.exception.UpstreamServiceException;
 import lombok.RequiredArgsConstructor;

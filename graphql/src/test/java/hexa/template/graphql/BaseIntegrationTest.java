@@ -1,7 +1,7 @@
 package hexa.template.graphql;
 
-import hexa.template.graphql.client.EmailHttpClient;
-import hexa.template.graphql.client.UserHttpClient;
+import hexa.template.graphql.client.email.EmailHttpClient;
+import hexa.template.graphql.client.user.UserHttpClient;
 import hexa.template.graphql.config.ApiConfig;
 import hexa.template.graphql.config.SecurityConfig;
 import org.junit.jupiter.api.BeforeEach;

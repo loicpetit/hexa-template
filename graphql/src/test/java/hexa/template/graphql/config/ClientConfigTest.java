@@ -2,6 +2,7 @@ package hexa.template.graphql.config;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.json.AutoConfigureJson;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
@@ -16,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         "clients.email.username=email-login",
         "clients.email.password=email-password"
 })
+@AutoConfigureJson
 class ClientConfigTest {
     @Autowired
     ClientConfig.ClientProperties properties;
