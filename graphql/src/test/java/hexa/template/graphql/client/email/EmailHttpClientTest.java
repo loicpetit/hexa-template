@@ -2,7 +2,7 @@ package hexa.template.graphql.client.email;
 
 import com.github.tomakehurst.wiremock.client.BasicCredentials;
 import hexa.template.graphql.client.BaseClientTest;
-import hexa.template.graphql.exception.RequestException;
+import hexa.template.graphql.exception.ClientException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -62,7 +62,7 @@ public class EmailHttpClientTest extends BaseClientTest {
                     get("/api/emails/1").willReturn(status(401))
             );
 
-            assertThatExceptionOfType(RequestException.class)
+            assertThatExceptionOfType(ClientException.class)
                     .isThrownBy(() -> emailHttpClient.getEmail(1L))
                     .withMessage("request failed with status 401")
                     .satisfies(
@@ -89,7 +89,7 @@ public class EmailHttpClientTest extends BaseClientTest {
                             """))
             );
 
-            assertThatExceptionOfType(RequestException.class)
+            assertThatExceptionOfType(ClientException.class)
                     .isThrownBy(() -> emailHttpClient.getEmail(1L))
                     .withMessage("request failed with status 500")
                     .satisfies(
@@ -154,7 +154,7 @@ public class EmailHttpClientTest extends BaseClientTest {
                     post("/api/emails").willReturn(status(401))
             );
 
-            assertThatExceptionOfType(RequestException.class)
+            assertThatExceptionOfType(ClientException.class)
                     .isThrownBy(() -> emailHttpClient.createEmail(EMAIL_VALUE))
                     .withMessage("request failed with status 401")
                     .satisfies(
@@ -181,7 +181,7 @@ public class EmailHttpClientTest extends BaseClientTest {
                             """))
             );
 
-            assertThatExceptionOfType(RequestException.class)
+            assertThatExceptionOfType(ClientException.class)
                     .isThrownBy(() -> emailHttpClient.createEmail(EMAIL_VALUE))
                     .withMessage("request failed with status 500")
                     .satisfies(
@@ -235,7 +235,7 @@ public class EmailHttpClientTest extends BaseClientTest {
                     delete("/api/emails/1").willReturn(status(401))
             );
 
-            assertThatExceptionOfType(RequestException.class)
+            assertThatExceptionOfType(ClientException.class)
                     .isThrownBy(() -> emailHttpClient.deleteEmail(1L))
                     .withMessage("request failed with status 401")
                     .satisfies(
@@ -262,7 +262,7 @@ public class EmailHttpClientTest extends BaseClientTest {
                             """))
             );
 
-            assertThatExceptionOfType(RequestException.class)
+            assertThatExceptionOfType(ClientException.class)
                     .isThrownBy(() -> emailHttpClient.deleteEmail(1L))
                     .withMessage("request failed with status 500")
                     .satisfies(

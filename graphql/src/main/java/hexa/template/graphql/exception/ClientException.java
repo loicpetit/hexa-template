@@ -2,16 +2,16 @@ package hexa.template.graphql.exception;
 
 import java.util.Optional;
 
-public class RequestException extends RuntimeException {
+public class ClientException extends RuntimeException {
     private final int status;
     private final String code;
     private final String message;
 
-    public RequestException(final int status) {
+    public ClientException(final int status) {
         this(status, null, null);
     }
 
-    public RequestException(final int status, final String code, final String message) {
+    public ClientException(final int status, final String code, final String message) {
         super("request failed with status %d".formatted(status));
         this.status = status;
         this.code = code;

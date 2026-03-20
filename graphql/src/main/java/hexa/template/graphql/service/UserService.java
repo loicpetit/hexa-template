@@ -4,7 +4,7 @@ import hexa.template.graphql.client.email.EmailHttpClient;
 import hexa.template.graphql.client.email.EmailHttpDto;
 import hexa.template.graphql.client.user.UserHttpClient;
 import hexa.template.graphql.client.user.UserHttpDto;
-import hexa.template.graphql.exception.GraphqlBusinessException;
+import hexa.template.graphql.exception.UserHasEmailException;
 import hexa.template.graphql.model.EmailView;
 import hexa.template.graphql.model.UserView;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class UserService {
     public UserView addEmailToUser(final Long userId, final String email) {
         final var user = userHttpClient.getUser(userId);
         if (user.emailId() != null) {
-            throw new GraphqlBusinessException("USER_ALREADY_HAS_EMAIL", "The user already has an email");
+            throw new UserHasEmailException(userId);
         }
         final var emailId = emailHttpClient.createEmail(email);
         final var updatedUser = userHttpClient.updateUser(userId, new UserHttpDto(

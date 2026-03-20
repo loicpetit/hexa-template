@@ -1,7 +1,7 @@
 package hexa.template.graphql.config;
 
 import hexa.template.graphql.client.ErrorHttpDto;
-import hexa.template.graphql.exception.RequestException;
+import hexa.template.graphql.exception.ClientException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -59,11 +59,11 @@ public class ClientConfig {
         final int status = response.getStatusCode().value();
         final byte[] body = response.getBody().readAllBytes();
         if (body.length == 0) {
-            throw new RequestException(status);
+            throw new ClientException(status);
         }
         throw parseError(body)
-                .map(dto -> new RequestException(status, dto.code(), dto.message()))
-                .orElse(new RequestException(status, null, new String(body)));
+                .map(dto -> new ClientException(status, dto.code(), dto.message()))
+                .orElse(new ClientException(status, null, new String(body)));
     }
 
     private Optional<ErrorHttpDto> parseError(final byte[] body) {

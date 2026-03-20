@@ -4,7 +4,7 @@ import hexa.template.graphql.client.email.EmailHttpClient;
 import hexa.template.graphql.client.email.EmailHttpDto;
 import hexa.template.graphql.client.user.UserHttpClient;
 import hexa.template.graphql.client.user.UserHttpDto;
-import hexa.template.graphql.exception.GraphqlBusinessException;
+import hexa.template.graphql.exception.UserHasEmailException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -75,8 +75,8 @@ class UserServiceTest {
             when(userHttpClient.getUser(1L)).thenReturn(new UserHttpDto(1L, "Chuck", "Norris", 9L, LocalDateTime.now()));
 
             assertThatThrownBy(() -> service.addEmailToUser(1L, "chuck@norris.test"))
-                    .isInstanceOf(GraphqlBusinessException.class)
-                    .hasMessage("The user already has an email");
+                    .isInstanceOf(UserHasEmailException.class)
+                    .hasMessage("the user 1 already has an email");
 
             verify(emailHttpClient, never()).createEmail(any());
         }
