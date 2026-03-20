@@ -1,10 +1,10 @@
 package hexa.template.graphql.service;
 
-import hexa.template.graphql.client.email.EmailHttpClient;
-import hexa.template.graphql.client.email.EmailHttpDto;
-import hexa.template.graphql.client.user.UserHttpClient;
-import hexa.template.graphql.client.user.UserHttpDto;
 import hexa.template.graphql.exception.UserHasEmailException;
+import hexa.template.graphql.restclient.email.EmailClient;
+import hexa.template.graphql.restclient.email.EmailDto;
+import hexa.template.graphql.restclient.user.UserClient;
+import hexa.template.graphql.restclient.user.UserDto;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,10 +27,10 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
     @Mock
-    UserHttpClient userHttpClient;
+    UserClient userClient;
 
     @Mock
-    EmailHttpClient emailHttpClient;
+    EmailClient emailClient;
 
     @InjectMocks
     UserService service;
@@ -40,8 +40,8 @@ class UserServiceTest {
         @Test
         void shouldGetUserWithEmail() {
             final var modified = LocalDateTime.now();
-            when(userHttpClient.getUser(1L)).thenReturn(new UserHttpDto(1L, "Chuck", "Norris", 5L, modified));
-            when(emailHttpClient.getEmail(5L)).thenReturn(new EmailHttpDto("chuck@norris.test", modified));
+            when(userClient.getUser(1L)).thenReturn(new UserDto(1L, "Chuck", "Norris", 5L, modified));
+            when(emailClient.getEmail(5L)).thenReturn(new EmailDto("chuck@norris.test", modified));
 
             final var result = service.getUser(1L);
 
@@ -57,11 +57,11 @@ class UserServiceTest {
         @Test
         void shouldAddEmailToUser() {
             final var modified = LocalDateTime.now();
-            when(userHttpClient.getUser(1L)).thenReturn(new UserHttpDto(1L, "Chuck", "Norris", null, modified));
-            when(emailHttpClient.createEmail("chuck@norris.test")).thenReturn(7L);
-            when(userHttpClient.updateUser(eq(1L), any(UserHttpDto.class)))
-                    .thenReturn(new UserHttpDto(1L, "Chuck", "Norris", 7L, modified));
-            when(emailHttpClient.getEmail(7L)).thenReturn(new EmailHttpDto("chuck@norris.test", modified));
+            when(userClient.getUser(1L)).thenReturn(new UserDto(1L, "Chuck", "Norris", null, modified));
+            when(emailClient.createEmail("chuck@norris.test")).thenReturn(7L);
+            when(userClient.updateUser(eq(1L), any(UserDto.class)))
+                    .thenReturn(new UserDto(1L, "Chuck", "Norris", 7L, modified));
+            when(emailClient.getEmail(7L)).thenReturn(new EmailDto("chuck@norris.test", modified));
 
             final var result = service.addEmailToUser(1L, "chuck@norris.test");
 
@@ -72,13 +72,13 @@ class UserServiceTest {
 
         @Test
         void shouldFailWhenUserAlreadyHasEmail() {
-            when(userHttpClient.getUser(1L)).thenReturn(new UserHttpDto(1L, "Chuck", "Norris", 9L, LocalDateTime.now()));
+            when(userClient.getUser(1L)).thenReturn(new UserDto(1L, "Chuck", "Norris", 9L, LocalDateTime.now()));
 
             assertThatThrownBy(() -> service.addEmailToUser(1L, "chuck@norris.test"))
                     .isInstanceOf(UserHasEmailException.class)
                     .hasMessage("the user 1 already has an email");
 
-            verify(emailHttpClient, never()).createEmail(any());
+            verify(emailClient, never()).createEmail(any());
         }
     }
 
@@ -87,13 +87,13 @@ class UserServiceTest {
         @Test
         void shouldRemoveEmailFromUser() {
             final var modified = LocalDateTime.now();
-            when(userHttpClient.getUser(1L)).thenReturn(new UserHttpDto(1L, "Chuck", "Norris", 4L, modified));
-            when(userHttpClient.updateUser(eq(1L), any(UserHttpDto.class)))
-                    .thenReturn(new UserHttpDto(1L, "Chuck", "Norris", null, modified));
+            when(userClient.getUser(1L)).thenReturn(new UserDto(1L, "Chuck", "Norris", 4L, modified));
+            when(userClient.updateUser(eq(1L), any(UserDto.class)))
+                    .thenReturn(new UserDto(1L, "Chuck", "Norris", null, modified));
 
             final var result = service.removeEmailFromUser(1L);
 
-            verify(emailHttpClient).deleteEmail(4L);
+            verify(emailClient).deleteEmail(4L);
             assertThat(result.email()).isNull();
         }
     }
@@ -106,8 +106,8 @@ class UserServiceTest {
         @Test
         void shouldAddUser() {
             final var modified = LocalDateTime.now();
-            final var userCreated = new UserHttpDto(42L, FIRST_NAME, NAME, null, modified);
-            when(userHttpClient.createUser(argThatUserMatch(FIRST_NAME, NAME, null))).thenReturn(userCreated);
+            final var userCreated = new UserDto(42L, FIRST_NAME, NAME, null, modified);
+            when(userClient.createUser(argThatUserMatch(FIRST_NAME, NAME, null))).thenReturn(userCreated);
 
             final var result = service.addUser(FIRST_NAME, NAME);
 
@@ -131,11 +131,11 @@ class UserServiceTest {
                                             .as("id")
                                             .isEqualTo(modified)
                     );
-            verifyNoInteractions(emailHttpClient);
+            verifyNoInteractions(emailClient);
         }
 
-        private UserHttpDto argThatUserMatch(final String firstName, final String name, final Long emailId) {
-            return argThat((UserHttpDto param) ->
+        private UserDto argThatUserMatch(final String firstName, final String name, final Long emailId) {
+            return argThat((UserDto param) ->
                     param.firstName().equals(firstName)
                             && param.name().equals(name)
                             && ((emailId == null && param.emailId() == null) || (emailId != null && emailId.equals(param.emailId())))
@@ -149,8 +149,8 @@ class UserServiceTest {
         void shouldDelete() {
             service.deleteUser(1L);
 
-            verify(emailHttpClient, never()).deleteEmail(any());
-            verify(userHttpClient).deleteUser(1L);
+            verify(emailClient, never()).deleteEmail(any());
+            verify(userClient).deleteUser(1L);
         }
     }
 }

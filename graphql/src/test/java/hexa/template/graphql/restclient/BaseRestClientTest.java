@@ -1,9 +1,9 @@
-package hexa.template.graphql.client;
+package hexa.template.graphql.restclient;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
-import hexa.template.graphql.client.email.EmailHttpClient;
-import hexa.template.graphql.client.user.UserHttpClient;
-import hexa.template.graphql.config.ClientConfig;
+import hexa.template.graphql.config.RestClientConfig;
+import hexa.template.graphql.restclient.email.EmailClient;
+import hexa.template.graphql.restclient.user.UserClient;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJson;
@@ -13,9 +13,9 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 
 @SpringBootTest(
         classes = {
-                ClientConfig.class,
-                EmailHttpClient.class,
-                UserHttpClient.class
+                RestClientConfig.class,
+                EmailClient.class,
+                UserClient.class
         },
         properties = {
                 "clients.email.url=http://localhost:8080",
@@ -27,7 +27,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
         }
 )
 @AutoConfigureJson
-public class BaseClientTest {
+public class BaseRestClientTest {
     public static final int WIREMOCK_PORT = 8080;
 
     @RegisterExtension
@@ -39,8 +39,8 @@ public class BaseClientTest {
             .build();
 
     @Autowired
-    protected EmailHttpClient emailHttpClient;
+    protected EmailClient emailClient;
 
     @Autowired
-    protected UserHttpClient userHttpClient;
+    protected UserClient userClient;
 }

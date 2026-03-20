@@ -1,8 +1,8 @@
-package hexa.template.graphql.client.user;
+package hexa.template.graphql.restclient.user;
 
 import java.time.LocalDateTime;
 
-public record UserHttpDto(
+public record UserDto(
         Long id,
         String firstName,
         String name,

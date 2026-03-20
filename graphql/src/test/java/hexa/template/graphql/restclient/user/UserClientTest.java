@@ -1,8 +1,8 @@
-package hexa.template.graphql.client.user;
+package hexa.template.graphql.restclient.user;
 
 import com.github.tomakehurst.wiremock.client.BasicCredentials;
-import hexa.template.graphql.client.BaseClientTest;
-import hexa.template.graphql.exception.ClientException;
+import hexa.template.graphql.exception.RestClientException;
+import hexa.template.graphql.restclient.BaseRestClientTest;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +23,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-public class UserHttpClientTest extends BaseClientTest {
+public class UserClientTest extends BaseRestClientTest {
 
     @Nested
     class GetUser {
@@ -31,7 +31,7 @@ public class UserHttpClientTest extends BaseClientTest {
         void shouldReturnUser() {
             stub();
 
-            final var userDto = userHttpClient.getUser(1L);
+            final var userDto = userClient.getUser(1L);
 
             assertThat(userDto)
                     .as("userDto")
@@ -59,7 +59,7 @@ public class UserHttpClientTest extends BaseClientTest {
         void shouldUseBasicAuth() {
             stub();
 
-            userHttpClient.getUser(1L);
+            userClient.getUser(1L);
 
             wiremock.verify(
                     getRequestedFor(urlPathEqualTo("/api/users/1"))
@@ -73,8 +73,8 @@ public class UserHttpClientTest extends BaseClientTest {
                     get("/api/users/1").willReturn(status(401))
             );
 
-            assertThatExceptionOfType(ClientException.class)
-                    .isThrownBy(() -> userHttpClient.getUser(1L))
+            assertThatExceptionOfType(RestClientException.class)
+                    .isThrownBy(() -> userClient.getUser(1L))
                     .withMessage("request failed with status 401")
                     .satisfies(
                             ex -> assertThat(ex.status())
@@ -100,8 +100,8 @@ public class UserHttpClientTest extends BaseClientTest {
                             """))
             );
 
-            assertThatExceptionOfType(ClientException.class)
-                    .isThrownBy(() -> userHttpClient.getUser(1L))
+            assertThatExceptionOfType(RestClientException.class)
+                    .isThrownBy(() -> userClient.getUser(1L))
                     .withMessage("request failed with status 500")
                     .satisfies(
                             ex -> assertThat(ex.status())
@@ -137,13 +137,13 @@ public class UserHttpClientTest extends BaseClientTest {
 
     @Nested
     class CreateUser {
-        public static final UserHttpDto USER = new UserHttpDto(null, "Chuck", "Norris", 42L, null);
+        public static final UserDto USER = new UserDto(null, "Chuck", "Norris", 42L, null);
 
         @Test
         void shouldCreateUser() {
             stub();
 
-            final var createdUser = userHttpClient.createUser(USER);
+            final var createdUser = userClient.createUser(USER);
 
             assertThat(createdUser)
                     .as("createdUser")
@@ -171,7 +171,7 @@ public class UserHttpClientTest extends BaseClientTest {
         void shouldUseBasicAuth() {
             stub();
 
-            userHttpClient.createUser(USER);
+            userClient.createUser(USER);
 
             wiremock.verify(
                     postRequestedFor(urlPathEqualTo("/api/users"))
@@ -185,8 +185,8 @@ public class UserHttpClientTest extends BaseClientTest {
                     post("/api/users").willReturn(status(401))
             );
 
-            assertThatExceptionOfType(ClientException.class)
-                    .isThrownBy(() -> userHttpClient.createUser(USER))
+            assertThatExceptionOfType(RestClientException.class)
+                    .isThrownBy(() -> userClient.createUser(USER))
                     .withMessage("request failed with status 401")
                     .satisfies(
                             ex -> assertThat(ex.status())
@@ -212,8 +212,8 @@ public class UserHttpClientTest extends BaseClientTest {
                             """))
             );
 
-            assertThatExceptionOfType(ClientException.class)
-                    .isThrownBy(() -> userHttpClient.createUser(USER))
+            assertThatExceptionOfType(RestClientException.class)
+                    .isThrownBy(() -> userClient.createUser(USER))
                     .withMessage("request failed with status 500")
                     .satisfies(
                             ex -> assertThat(ex.status())
@@ -249,13 +249,13 @@ public class UserHttpClientTest extends BaseClientTest {
 
     @Nested
     class UpdateUser {
-        public static final UserHttpDto USER = new UserHttpDto(1L, "Chuck", "Norris", 42L, null);
+        public static final UserDto USER = new UserDto(1L, "Chuck", "Norris", 42L, null);
 
         @Test
         void shouldUpdateUser() {
             stub();
 
-            final var updatedUser = userHttpClient.updateUser(1L, USER);
+            final var updatedUser = userClient.updateUser(1L, USER);
 
             assertThat(updatedUser)
                     .as("updatedUser")
@@ -283,7 +283,7 @@ public class UserHttpClientTest extends BaseClientTest {
         void shouldUseBasicAuth() {
             stub();
 
-            userHttpClient.updateUser(1L, USER);
+            userClient.updateUser(1L, USER);
 
             wiremock.verify(
                     putRequestedFor(urlPathEqualTo("/api/users/1"))
@@ -297,8 +297,8 @@ public class UserHttpClientTest extends BaseClientTest {
                     put("/api/users/1").willReturn(status(401))
             );
 
-            assertThatExceptionOfType(ClientException.class)
-                    .isThrownBy(() -> userHttpClient.updateUser(1L, USER))
+            assertThatExceptionOfType(RestClientException.class)
+                    .isThrownBy(() -> userClient.updateUser(1L, USER))
                     .withMessage("request failed with status 401")
                     .satisfies(
                             ex -> assertThat(ex.status())
@@ -324,8 +324,8 @@ public class UserHttpClientTest extends BaseClientTest {
                             """))
             );
 
-            assertThatExceptionOfType(ClientException.class)
-                    .isThrownBy(() -> userHttpClient.updateUser(1L, USER))
+            assertThatExceptionOfType(RestClientException.class)
+                    .isThrownBy(() -> userClient.updateUser(1L, USER))
                     .withMessage("request failed with status 500")
                     .satisfies(
                             ex -> assertThat(ex.status())
@@ -365,7 +365,7 @@ public class UserHttpClientTest extends BaseClientTest {
         void shouldDeleteWithBasicAuth() {
             stub();
 
-            userHttpClient.deleteUser(1L);
+            userClient.deleteUser(1L);
 
             wiremock.verify(
                     deleteRequestedFor(urlPathEqualTo("/api/users/1"))
@@ -379,8 +379,8 @@ public class UserHttpClientTest extends BaseClientTest {
                     delete("/api/users/1").willReturn(status(401))
             );
 
-            assertThatExceptionOfType(ClientException.class)
-                    .isThrownBy(() -> userHttpClient.deleteUser(1L))
+            assertThatExceptionOfType(RestClientException.class)
+                    .isThrownBy(() -> userClient.deleteUser(1L))
                     .withMessage("request failed with status 401")
                     .satisfies(
                             ex -> assertThat(ex.status())
@@ -406,8 +406,8 @@ public class UserHttpClientTest extends BaseClientTest {
                             """))
             );
 
-            assertThatExceptionOfType(ClientException.class)
-                    .isThrownBy(() -> userHttpClient.deleteUser(1L))
+            assertThatExceptionOfType(RestClientException.class)
+                    .isThrownBy(() -> userClient.deleteUser(1L))
                     .withMessage("request failed with status 500")
                     .satisfies(
                             ex -> assertThat(ex.status())

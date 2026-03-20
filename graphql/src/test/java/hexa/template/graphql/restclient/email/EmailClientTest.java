@@ -1,8 +1,8 @@
-package hexa.template.graphql.client.email;
+package hexa.template.graphql.restclient.email;
 
 import com.github.tomakehurst.wiremock.client.BasicCredentials;
-import hexa.template.graphql.client.BaseClientTest;
-import hexa.template.graphql.exception.ClientException;
+import hexa.template.graphql.exception.RestClientException;
+import hexa.template.graphql.restclient.BaseRestClientTest;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -22,14 +22,14 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-public class EmailHttpClientTest extends BaseClientTest {
+public class EmailClientTest extends BaseRestClientTest {
     @Nested
     class GetEmail {
         @Test
         void shouldReturnEmail() {
             stub();
 
-            final var emailDto = emailHttpClient.getEmail(1L);
+            final var emailDto = emailClient.getEmail(1L);
 
             assertThat(emailDto)
                     .as("emailDto")
@@ -48,7 +48,7 @@ public class EmailHttpClientTest extends BaseClientTest {
         void shouldUseBasicAuth() {
             stub();
 
-            emailHttpClient.getEmail(1L);
+            emailClient.getEmail(1L);
 
             wiremock.verify(
                     getRequestedFor(urlPathEqualTo("/api/emails/1"))
@@ -62,8 +62,8 @@ public class EmailHttpClientTest extends BaseClientTest {
                     get("/api/emails/1").willReturn(status(401))
             );
 
-            assertThatExceptionOfType(ClientException.class)
-                    .isThrownBy(() -> emailHttpClient.getEmail(1L))
+            assertThatExceptionOfType(RestClientException.class)
+                    .isThrownBy(() -> emailClient.getEmail(1L))
                     .withMessage("request failed with status 401")
                     .satisfies(
                             ex -> assertThat(ex.status())
@@ -89,8 +89,8 @@ public class EmailHttpClientTest extends BaseClientTest {
                             """))
             );
 
-            assertThatExceptionOfType(ClientException.class)
-                    .isThrownBy(() -> emailHttpClient.getEmail(1L))
+            assertThatExceptionOfType(RestClientException.class)
+                    .isThrownBy(() -> emailClient.getEmail(1L))
                     .withMessage("request failed with status 500")
                     .satisfies(
                             ex -> assertThat(ex.status())
@@ -129,7 +129,7 @@ public class EmailHttpClientTest extends BaseClientTest {
         void shouldCreateEmail() {
             stub();
 
-            final var id = emailHttpClient.createEmail(EMAIL_VALUE);
+            final var id = emailClient.createEmail(EMAIL_VALUE);
 
             assertThat(id)
                     .as("id")
@@ -140,7 +140,7 @@ public class EmailHttpClientTest extends BaseClientTest {
         void shouldUseBasicAuth() {
             stub();
 
-            emailHttpClient.createEmail(EMAIL_VALUE);
+            emailClient.createEmail(EMAIL_VALUE);
 
             wiremock.verify(
                     postRequestedFor(urlPathEqualTo("/api/emails"))
@@ -154,8 +154,8 @@ public class EmailHttpClientTest extends BaseClientTest {
                     post("/api/emails").willReturn(status(401))
             );
 
-            assertThatExceptionOfType(ClientException.class)
-                    .isThrownBy(() -> emailHttpClient.createEmail(EMAIL_VALUE))
+            assertThatExceptionOfType(RestClientException.class)
+                    .isThrownBy(() -> emailClient.createEmail(EMAIL_VALUE))
                     .withMessage("request failed with status 401")
                     .satisfies(
                             ex -> assertThat(ex.status())
@@ -181,8 +181,8 @@ public class EmailHttpClientTest extends BaseClientTest {
                             """))
             );
 
-            assertThatExceptionOfType(ClientException.class)
-                    .isThrownBy(() -> emailHttpClient.createEmail(EMAIL_VALUE))
+            assertThatExceptionOfType(RestClientException.class)
+                    .isThrownBy(() -> emailClient.createEmail(EMAIL_VALUE))
                     .withMessage("request failed with status 500")
                     .satisfies(
                             ex -> assertThat(ex.status())
@@ -221,7 +221,7 @@ public class EmailHttpClientTest extends BaseClientTest {
         void shouldDeleteWithBasicAuth() {
             stub();
 
-            emailHttpClient.deleteEmail(1L);
+            emailClient.deleteEmail(1L);
 
             wiremock.verify(
                     deleteRequestedFor(urlPathEqualTo("/api/emails/1"))
@@ -235,8 +235,8 @@ public class EmailHttpClientTest extends BaseClientTest {
                     delete("/api/emails/1").willReturn(status(401))
             );
 
-            assertThatExceptionOfType(ClientException.class)
-                    .isThrownBy(() -> emailHttpClient.deleteEmail(1L))
+            assertThatExceptionOfType(RestClientException.class)
+                    .isThrownBy(() -> emailClient.deleteEmail(1L))
                     .withMessage("request failed with status 401")
                     .satisfies(
                             ex -> assertThat(ex.status())
@@ -262,8 +262,8 @@ public class EmailHttpClientTest extends BaseClientTest {
                             """))
             );
 
-            assertThatExceptionOfType(ClientException.class)
-                    .isThrownBy(() -> emailHttpClient.deleteEmail(1L))
+            assertThatExceptionOfType(RestClientException.class)
+                    .isThrownBy(() -> emailClient.deleteEmail(1L))
                     .withMessage("request failed with status 500")
                     .satisfies(
                             ex -> assertThat(ex.status())

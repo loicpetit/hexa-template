@@ -8,7 +8,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(classes = ClientConfig.class)
+@SpringBootTest(classes = RestClientConfig.class)
 @TestPropertySource(properties = {
         "clients.user.url=http://user-service",
         "clients.user.username=user-login",
@@ -18,9 +18,9 @@ import static org.assertj.core.api.Assertions.assertThat;
         "clients.email.password=email-password"
 })
 @AutoConfigureJson
-class ClientConfigTest {
+class RestClientConfigTest {
     @Autowired
-    ClientConfig.ClientProperties properties;
+    RestClientConfig.ClientProperties properties;
 
     @Test
     void shouldBindProperties() {

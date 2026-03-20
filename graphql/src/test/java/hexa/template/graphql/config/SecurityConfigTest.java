@@ -1,7 +1,7 @@
 package hexa.template.graphql.config;
 
 import hexa.template.graphql.BaseIntegrationTest;
-import hexa.template.graphql.client.user.UserHttpDto;
+import hexa.template.graphql.restclient.user.UserDto;
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.when;
@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class SecurityConfigTest extends BaseIntegrationTest {
     @Test
     void ifAuthenticatedShouldReturn200() throws Exception {
-        when(userHttpClient.getUser(api.getUserId())).thenReturn(new UserHttpDto(null, "chuck", "norris", null, null));
+        when(userClient.getUser(api.getUserId())).thenReturn(new UserDto(null, "chuck", "norris", null, null));
 
         api.getUser()
                 .andExpect(status().isOk())

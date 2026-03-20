@@ -1,8 +1,8 @@
-package hexa.template.graphql.client.email;
+package hexa.template.graphql.restclient.email;
 
 import java.time.LocalDateTime;
 
-public record EmailHttpDto(
+public record EmailDto(
         String value,
         LocalDateTime modified
 ) {

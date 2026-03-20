@@ -1,32 +1,32 @@
 package hexa.template.graphql.service;
 
-import hexa.template.graphql.client.email.EmailHttpClient;
-import hexa.template.graphql.client.email.EmailHttpDto;
-import hexa.template.graphql.client.user.UserHttpClient;
-import hexa.template.graphql.client.user.UserHttpDto;
 import hexa.template.graphql.exception.UserHasEmailException;
 import hexa.template.graphql.model.EmailView;
 import hexa.template.graphql.model.UserView;
+import hexa.template.graphql.restclient.email.EmailClient;
+import hexa.template.graphql.restclient.email.EmailDto;
+import hexa.template.graphql.restclient.user.UserClient;
+import hexa.template.graphql.restclient.user.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UserHttpClient userHttpClient;
-    private final EmailHttpClient emailHttpClient;
+    private final UserClient userClient;
+    private final EmailClient emailClient;
 
     public UserView getUser(final Long userId) {
-        return toView(userHttpClient.getUser(userId));
+        return toView(userClient.getUser(userId));
     }
 
     public UserView addEmailToUser(final Long userId, final String email) {
-        final var user = userHttpClient.getUser(userId);
+        final var user = userClient.getUser(userId);
         if (user.emailId() != null) {
             throw new UserHasEmailException(userId);
         }
-        final var emailId = emailHttpClient.createEmail(email);
-        final var updatedUser = userHttpClient.updateUser(userId, new UserHttpDto(
+        final var emailId = emailClient.createEmail(email);
+        final var updatedUser = userClient.updateUser(userId, new UserDto(
                 user.id(),
                 user.firstName(),
                 user.name(),
@@ -37,11 +37,11 @@ public class UserService {
     }
 
     public UserView removeEmailFromUser(final Long userId) {
-        final var user = userHttpClient.getUser(userId);
+        final var user = userClient.getUser(userId);
         if (user.emailId() != null) {
-            emailHttpClient.deleteEmail(user.emailId());
+            emailClient.deleteEmail(user.emailId());
         }
-        final var updatedUser = userHttpClient.updateUser(userId, new UserHttpDto(
+        final var updatedUser = userClient.updateUser(userId, new UserDto(
                 user.id(),
                 user.firstName(),
                 user.name(),
@@ -58,7 +58,7 @@ public class UserService {
     }
 
     public UserView addUser(final String firstName, final String name) {
-        final var createdUser = userHttpClient.createUser(new UserHttpDto(
+        final var createdUser = userClient.createUser(new UserDto(
                 null,
                 firstName,
                 name,
@@ -69,21 +69,21 @@ public class UserService {
     }
 
     public boolean deleteUser(final Long userId) {
-        userHttpClient.deleteUser(userId);
+        userClient.deleteUser(userId);
         return true;
     }
 
-    private UserView toView(final UserHttpDto user) {
+    private UserView toView(final UserDto user) {
         if (user == null) {
             return null;
         }
         final EmailView email = user.emailId() == null
                 ? null
-                : toEmailView(user.emailId(), emailHttpClient.getEmail(user.emailId()));
+                : toEmailView(user.emailId(), emailClient.getEmail(user.emailId()));
         return new UserView(user.id(), user.firstName(), user.name(), user.modified(), email);
     }
 
-    private EmailView toEmailView(final Long emailId, final EmailHttpDto email) {
+    private EmailView toEmailView(final Long emailId, final EmailDto email) {
         if (email == null) {
             return null;
         }

@@ -1,9 +1,9 @@
 package hexa.template.graphql;
 
-import hexa.template.graphql.client.email.EmailHttpClient;
-import hexa.template.graphql.client.user.UserHttpClient;
 import hexa.template.graphql.config.ApiConfig;
 import hexa.template.graphql.config.SecurityConfig;
+import hexa.template.graphql.restclient.email.EmailClient;
+import hexa.template.graphql.restclient.user.UserClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,10 +19,10 @@ import org.springframework.test.web.servlet.MockMvc;
 @ActiveProfiles("test")
 public class BaseIntegrationTest {
     @MockitoBean
-    protected EmailHttpClient emailHttpClient;
+    protected EmailClient emailClient;
 
     @MockitoBean
-    protected UserHttpClient userHttpClient;
+    protected UserClient userClient;
 
     protected ApiClient api;
 

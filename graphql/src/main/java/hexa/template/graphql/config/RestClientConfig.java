@@ -1,7 +1,7 @@
 package hexa.template.graphql.config;
 
-import hexa.template.graphql.client.ErrorHttpDto;
-import hexa.template.graphql.exception.ClientException;
+import hexa.template.graphql.exception.RestClientException;
+import hexa.template.graphql.restclient.ErrorDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -23,10 +23,10 @@ import java.util.Base64;
 import java.util.Optional;
 
 @Configuration
-@EnableConfigurationProperties(ClientConfig.ClientProperties.class)
+@EnableConfigurationProperties(RestClientConfig.ClientProperties.class)
 @RequiredArgsConstructor
 @Slf4j
-public class ClientConfig {
+public class RestClientConfig {
     private final ObjectMapper mapper;
 
     @Bean
@@ -59,16 +59,16 @@ public class ClientConfig {
         final int status = response.getStatusCode().value();
         final byte[] body = response.getBody().readAllBytes();
         if (body.length == 0) {
-            throw new ClientException(status);
+            throw new RestClientException(status);
         }
         throw parseError(body)
-                .map(dto -> new ClientException(status, dto.code(), dto.message()))
-                .orElse(new ClientException(status, null, new String(body)));
+                .map(dto -> new RestClientException(status, dto.code(), dto.message()))
+                .orElse(new RestClientException(status, null, new String(body)));
     }
 
-    private Optional<ErrorHttpDto> parseError(final byte[] body) {
+    private Optional<ErrorDto> parseError(final byte[] body) {
         try {
-            final ErrorHttpDto dto = mapper.readValue(body, ErrorHttpDto.class);
+            final ErrorDto dto = mapper.readValue(body, ErrorDto.class);
             return Optional.of(dto);
         } catch (JacksonException ex) {
             log.warn("failed to parse error response", ex);
