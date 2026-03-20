@@ -1,0 +1,72 @@
+### Create user
+GRAPHQL {{baseUrl}}/graphql
+Authorization: Basic {{auth.usr}} {{auth.pwd}}
+
+mutation {
+    addUser(firstName: "bruce", name: "lee") {
+      id
+      modified
+    }
+}
+
+> {%
+    const userId = response.body.data.addUser.id
+    client.log("user id:", userId)
+    client.global.set("userId", userId)
+%}
+
+### Get user
+GRAPHQL {{baseUrl}}/graphql
+Authorization: Basic {{auth.usr}} {{auth.pwd}}
+
+query {
+    user(id: {{userId}}) {
+        id
+        firstName
+        name
+        modified
+        email {
+            id
+            value
+            modified
+        }
+    }
+}
+
+### Add user email
+GRAPHQL {{baseUrl}}/graphql
+Authorization: Basic {{auth.usr}} {{auth.pwd}}
+
+mutation {
+    addEmailToUser(userId: {{userId}}, email: "bruce.lee@kickass.com") {
+        id
+        modified
+        email {
+            id
+            value
+            modified
+        }
+    }
+}
+
+### Remove user email
+GRAPHQL {{baseUrl}}/graphql
+Authorization: Basic {{auth.usr}} {{auth.pwd}}
+
+mutation {
+    removeEmailFromUser(userId: {{userId}}) {
+        id
+        modified
+        email {
+            id
+        }
+    }
+}
+
+### Delete user
+GRAPHQL {{baseUrl}}/graphql
+Authorization: Basic {{auth.usr}} {{auth.pwd}}
+
+mutation {
+    deleteUser(id: {{userId}})
+}

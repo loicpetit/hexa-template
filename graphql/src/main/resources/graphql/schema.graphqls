@@ -6,7 +6,7 @@ type Mutation {
   addEmailToUser(userId: ID!, email: String!): UserView
   removeEmailFromUser(userId: ID!): UserView
   addUser(firstName: String!, name: String!): UserView
-  deleteUser(id: ID!): Boolean!
+  deleteUser(id: ID!): Boolean
 }
 
 type UserView {

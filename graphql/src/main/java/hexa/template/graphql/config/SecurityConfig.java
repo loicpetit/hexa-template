@@ -33,7 +33,10 @@ public class SecurityConfig {
                 .sessionManagement(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         matcher -> matcher
-                                .requestMatchers("/graphiql", "/graphiql/**").permitAll()
+                                .requestMatchers(
+                                        "/graphiql",
+                                        "/graphiql/**"
+                                ).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .build();

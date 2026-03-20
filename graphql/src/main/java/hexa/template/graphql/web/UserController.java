@@ -24,7 +24,7 @@ public class UserController {
     }
 
     @MutationMapping
-    public boolean deleteUser(@Argument final Long id) {
+    public Boolean deleteUser(@Argument final Long id) {
         return service.deleteUser(id);
     }
 
