@@ -9,6 +9,7 @@ import hexa.template.graphql.restclient.user.UserClient;
 import hexa.template.graphql.restclient.user.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -16,11 +17,11 @@ public class UserService {
     private final UserClient userClient;
     private final EmailClient emailClient;
 
-    public UserView getUser(final Long userId) {
-        return toView(userClient.getUser(userId));
+    public Mono<UserView> getUser(final Long userId) {
+        return Mono.just(toView(userClient.getUser(userId)));
     }
 
-    public UserView addEmailToUser(final Long userId, final String email) {
+    public Mono<UserView> addEmailToUser(final Long userId, final String email) {
         final var user = userClient.getUser(userId);
         if (user.emailId() != null) {
             throw new UserHasEmailException(userId);
@@ -33,10 +34,10 @@ public class UserService {
                 emailId,
                 user.modified()
         ));
-        return toView(updatedUser);
+        return Mono.just(toView(updatedUser));
     }
 
-    public UserView removeEmailFromUser(final Long userId) {
+    public Mono<UserView> removeEmailFromUser(final Long userId) {
         final var user = userClient.getUser(userId);
         if (user.emailId() != null) {
             emailClient.deleteEmail(user.emailId());
@@ -48,16 +49,16 @@ public class UserService {
                 null,
                 user.modified()
         ));
-        return new UserView(
+        return Mono.just(new UserView(
                 updatedUser.id(),
                 updatedUser.firstName(),
                 updatedUser.name(),
                 updatedUser.modified(),
                 null
-        );
+        ));
     }
 
-    public UserView addUser(final String firstName, final String name) {
+    public Mono<UserView> addUser(final String firstName, final String name) {
         final var createdUser = userClient.createUser(new UserDto(
                 null,
                 firstName,
@@ -65,12 +66,12 @@ public class UserService {
                 null,
                 null
         ));
-        return toView(createdUser);
+        return Mono.just(toView(createdUser));
     }
 
-    public boolean deleteUser(final Long userId) {
+    public Mono<Boolean> deleteUser(final Long userId) {
         userClient.deleteUser(userId);
-        return true;
+        return Mono.just(true);
     }
 
     private UserView toView(final UserDto user) {

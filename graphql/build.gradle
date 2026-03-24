@@ -1,5 +1,5 @@
 plugins {
-    id 'hexa-springboot-web'
+    id 'hexa-springboot'
     id 'org.springframework.boot'
 }
 
@@ -9,7 +9,13 @@ base {
 }
 
 dependencies {
-    implementation libs.springboot.graphql
-    testImplementation libs.springboot.graphql.test
-    testImplementation libs.wiremock
+    implementation      libs.springboot.security
+    implementation      libs.springboot.webflux
+    implementation      libs.springboot.graphql
+    testImplementation  libs.springboot.test
+    testImplementation  libs.springboot.security.test
+    testImplementation  libs.springboot.web.test
+    testImplementation  libs.springboot.webflux.test
+    testImplementation  libs.springboot.graphql.test
+    testImplementation  libs.wiremock
 }

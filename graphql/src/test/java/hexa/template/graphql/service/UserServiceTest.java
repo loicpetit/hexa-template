@@ -43,7 +43,7 @@ class UserServiceTest {
             when(userClient.getUser(1L)).thenReturn(new UserDto(1L, "Chuck", "Norris", 5L, modified));
             when(emailClient.getEmail(5L)).thenReturn(new EmailDto("chuck@norris.test", modified));
 
-            final var result = service.getUser(1L);
+            final var result = service.getUser(1L).block();
 
             assertThat(result.id()).isEqualTo(1L);
             assertThat(result.email()).isNotNull();
@@ -63,7 +63,7 @@ class UserServiceTest {
                     .thenReturn(new UserDto(1L, "Chuck", "Norris", 7L, modified));
             when(emailClient.getEmail(7L)).thenReturn(new EmailDto("chuck@norris.test", modified));
 
-            final var result = service.addEmailToUser(1L, "chuck@norris.test");
+            final var result = service.addEmailToUser(1L, "chuck@norris.test").block();
 
             assertThat(result.email()).isNotNull();
             assertThat(result.email().id()).isEqualTo(7L);
@@ -91,7 +91,7 @@ class UserServiceTest {
             when(userClient.updateUser(eq(1L), any(UserDto.class)))
                     .thenReturn(new UserDto(1L, "Chuck", "Norris", null, modified));
 
-            final var result = service.removeEmailFromUser(1L);
+            final var result = service.removeEmailFromUser(1L).block();
 
             verify(emailClient).deleteEmail(4L);
             assertThat(result.email()).isNull();
@@ -109,7 +109,7 @@ class UserServiceTest {
             final var userCreated = new UserDto(42L, FIRST_NAME, NAME, null, modified);
             when(userClient.createUser(argThatUserMatch(FIRST_NAME, NAME, null))).thenReturn(userCreated);
 
-            final var result = service.addUser(FIRST_NAME, NAME);
+            final var result = service.addUser(FIRST_NAME, NAME).block();
 
             assertThat(result)
                     .as("result")
@@ -147,7 +147,7 @@ class UserServiceTest {
     class DeleteUser {
         @Test
         void shouldDelete() {
-            service.deleteUser(1L);
+            service.deleteUser(1L).block();
 
             verify(emailClient, never()).deleteEmail(any());
             verify(userClient).deleteUser(1L);

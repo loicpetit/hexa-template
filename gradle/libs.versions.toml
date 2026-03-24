@@ -33,6 +33,8 @@ springboot-security-core =   { module = "org.springframework.security:spring-sec
 springboot-security-test =   { module = "org.springframework.boot:spring-boot-starter-security-test",   version.ref = "springboot"    }
 springboot-web =             { module = "org.springframework.boot:spring-boot-starter-web",             version.ref = "springboot"    }
 springboot-web-test =        { module = "org.springframework.boot:spring-boot-starter-webmvc-test",     version.ref = "springboot"    }
+springboot-webflux =         { module = "org.springframework.boot:spring-boot-starter-webflux",         version.ref = "springboot"    }
+springboot-webflux-test =    { module = "org.springframework.boot:spring-boot-starter-webflux-test",    version.ref = "springboot"    }
 wiremock =                   { module = "org.wiremock:wiremock-standalone",                             version.ref = "wiremock"      }
 
 [bundles]

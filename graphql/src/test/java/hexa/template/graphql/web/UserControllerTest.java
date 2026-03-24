@@ -4,6 +4,7 @@ import hexa.template.graphql.model.EmailView;
 import hexa.template.graphql.model.UserView;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 
@@ -41,7 +42,7 @@ class UserControllerTest extends BaseGraphQlTest {
         @Test
         void shouldReturnUser() {
             final var user = createUserView(createEmailView());
-            when(userService.getUser(ID)).thenReturn(user);
+            when(userService.getUser(ID)).thenReturn(Mono.just(user));
 
             tester.document(QUERY)
                     .execute()
@@ -87,7 +88,7 @@ class UserControllerTest extends BaseGraphQlTest {
         @Test
         void shouldReturnUser() {
             final var user = createUserView();
-            when(userService.addUser(FIRST_NAME, NAME)).thenReturn(user);
+            when(userService.addUser(FIRST_NAME, NAME)).thenReturn(Mono.just(user));
 
             tester.document(MUTATION)
                     .execute()
@@ -115,7 +116,7 @@ class UserControllerTest extends BaseGraphQlTest {
 
         @Test
         void shouldReturnTrue() {
-            when(userService.deleteUser(ID)).thenReturn(true);
+            when(userService.deleteUser(ID)).thenReturn(Mono.just(true));
 
             tester.document(MUTATION)
                     .execute()
@@ -145,7 +146,7 @@ class UserControllerTest extends BaseGraphQlTest {
         @Test
         void shouldReturnUser() {
             final var user = createUserView(createEmailView());
-            when(userService.addEmailToUser(ID, EMAIL)).thenReturn(user);
+            when(userService.addEmailToUser(ID, EMAIL)).thenReturn(Mono.just(user));
 
             tester.document(MUTATION)
                     .execute()
@@ -188,7 +189,7 @@ class UserControllerTest extends BaseGraphQlTest {
         @Test
         void shouldReturnUser() {
             final var user = createUserView();
-            when(userService.removeEmailFromUser(ID)).thenReturn(user);
+            when(userService.removeEmailFromUser(ID)).thenReturn(Mono.just(user));
 
             tester.document(MUTATION)
                     .execute()
