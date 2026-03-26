@@ -4,6 +4,7 @@ import hexa.template.graphql.config.ApiConfig;
 import hexa.template.graphql.config.SecurityConfig;
 import hexa.template.graphql.external.email.EmailRestApi;
 import hexa.template.graphql.external.user.UserRestApi;
+import hexa.template.graphql.external.user.UserWebApi;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +24,9 @@ public class BaseIntegrationTest {
 
     @MockitoBean
     protected UserRestApi userRestApi;
+
+    @MockitoBean
+    protected UserWebApi userWebApi;
 
     protected ApiClient api;
 

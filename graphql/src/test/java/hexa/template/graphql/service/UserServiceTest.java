@@ -5,12 +5,14 @@ import hexa.template.graphql.external.email.EmailDto;
 import hexa.template.graphql.external.email.EmailRestApi;
 import hexa.template.graphql.external.user.UserDto;
 import hexa.template.graphql.external.user.UserRestApi;
+import hexa.template.graphql.external.user.UserWebApi;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 
@@ -30,6 +32,9 @@ class UserServiceTest {
     UserRestApi userRestApi;
 
     @Mock
+    UserWebApi userWebApi;
+
+    @Mock
     EmailRestApi emailRestApi;
 
     @InjectMocks
@@ -40,8 +45,10 @@ class UserServiceTest {
         @Test
         void shouldGetUserWithEmail() {
             final var modified = LocalDateTime.now();
-            when(userRestApi.getUser(1L)).thenReturn(new UserDto(1L, "Chuck", "Norris", 5L, modified));
-            when(emailRestApi.getEmail(5L)).thenReturn(new EmailDto("chuck@norris.test", modified));
+            final var emailDto = new EmailDto("chuck@norris.test", modified);
+            final var userDto = new UserDto(1L, "Chuck", "Norris", 5L, modified);
+            when(userWebApi.getUser(1L)).thenReturn(Mono.just(userDto));
+            when(emailRestApi.getEmail(5L)).thenReturn(emailDto);
 
             final var result = service.getUser(1L).block();
 
@@ -107,7 +114,8 @@ class UserServiceTest {
         void shouldAddUser() {
             final var modified = LocalDateTime.now();
             final var userCreated = new UserDto(42L, FIRST_NAME, NAME, null, modified);
-            when(userRestApi.createUser(argThatUserMatch(FIRST_NAME, NAME, null))).thenReturn(userCreated);
+            when(userWebApi.createUser(argThatUserMatch(FIRST_NAME, NAME, null)))
+                    .thenReturn(Mono.just(userCreated));
 
             final var result = service.addUser(FIRST_NAME, NAME).block();
 
@@ -147,10 +155,12 @@ class UserServiceTest {
     class DeleteUser {
         @Test
         void shouldDelete() {
-            service.deleteUser(1L).block();
+            when(userWebApi.deleteUser(1L)).thenReturn(Mono.empty());
 
+            final Boolean result = service.deleteUser(1L).block();
+
+            assertThat(result).isTrue();
             verify(emailRestApi, never()).deleteEmail(any());
-            verify(userRestApi).deleteUser(1L);
         }
     }
 }

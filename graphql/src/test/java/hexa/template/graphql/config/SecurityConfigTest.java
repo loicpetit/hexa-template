@@ -3,13 +3,15 @@ package hexa.template.graphql.config;
 import hexa.template.graphql.BaseIntegrationTest;
 import hexa.template.graphql.external.user.UserDto;
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Mono;
 
 import static org.mockito.Mockito.when;
 
 public class SecurityConfigTest extends BaseIntegrationTest {
     @Test
     void ifAuthenticatedShouldReturn200() throws Exception {
-        when(userRestApi.getUser(api.getUserId())).thenReturn(new UserDto(null, "chuck", "norris", null, null));
+        final var userDto = new UserDto(null, "chuck", "norris", null, null);
+        when(userWebApi.getUser(api.getUserId())).thenReturn(Mono.just(userDto));
 
         api.getUser()
                 .expectStatus().isOk()

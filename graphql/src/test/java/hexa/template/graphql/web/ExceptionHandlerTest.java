@@ -24,7 +24,7 @@ class ExceptionHandlerTest extends BaseIntegrationTest {
 
     @Test
     void shouldHandleRestClientException() throws Exception {
-        when(userRestApi.getUser(api.getUserId())).thenThrow(new RestClientException(500, "hexa.user.kaput", "test"));
+        when(userWebApi.getUser(api.getUserId())).thenThrow(new RestClientException(500, "hexa.user.kaput", "test"));
 
         api.getUser()
                 .expectStatus().isOk()
@@ -38,7 +38,7 @@ class ExceptionHandlerTest extends BaseIntegrationTest {
 
     @Test
     void shouldHandleUserHasEmailException() throws Exception {
-        when(userRestApi.getUser(api.getUserId())).thenThrow(new UserHasEmailException(2L));
+        when(userWebApi.getUser(api.getUserId())).thenThrow(new UserHasEmailException(2L));
 
         api.getUser()
                 .expectStatus().isOk()

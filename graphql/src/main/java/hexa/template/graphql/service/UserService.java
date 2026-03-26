@@ -5,6 +5,7 @@ import hexa.template.graphql.external.email.EmailDto;
 import hexa.template.graphql.external.email.EmailRestApi;
 import hexa.template.graphql.external.user.UserDto;
 import hexa.template.graphql.external.user.UserRestApi;
+import hexa.template.graphql.external.user.UserWebApi;
 import hexa.template.graphql.model.EmailView;
 import hexa.template.graphql.model.UserView;
 import lombok.RequiredArgsConstructor;
@@ -15,10 +16,11 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRestApi userRestApi;
+    private final UserWebApi userWebApi;
     private final EmailRestApi emailRestApi;
 
     public Mono<UserView> getUser(final Long userId) {
-        return Mono.just(toView(userRestApi.getUser(userId)));
+        return userWebApi.getUser(userId).map(this::toView);
     }
 
     public Mono<UserView> addEmailToUser(final Long userId, final String email) {
@@ -59,19 +61,18 @@ public class UserService {
     }
 
     public Mono<UserView> addUser(final String firstName, final String name) {
-        final var createdUser = userRestApi.createUser(new UserDto(
+        final var dto = new UserDto(
                 null,
                 firstName,
                 name,
                 null,
                 null
-        ));
-        return Mono.just(toView(createdUser));
+        );
+        return userWebApi.createUser(dto).map(this::toView);
     }
 
     public Mono<Boolean> deleteUser(final Long userId) {
-        userRestApi.deleteUser(userId);
-        return Mono.just(true);
+        return userWebApi.deleteUser(userId).thenReturn(true);
     }
 
     private UserView toView(final UserDto user) {
