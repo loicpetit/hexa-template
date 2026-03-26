@@ -1,4 +1,4 @@
-package hexa.template.graphql.restclient;
+package hexa.template.graphql.external;
 
 public record ErrorDto(
         String code,

@@ -1,4 +1,4 @@
-package hexa.template.graphql.restclient.email;
+package hexa.template.graphql.external.email;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -6,7 +6,7 @@ import org.springframework.web.client.RestClient;
 
 @Component
 @RequiredArgsConstructor
-public class EmailClient {
+public class EmailRestApi {
     private final RestClient emailRestClient;
 
     public EmailDto getEmail(final Long emailId) {

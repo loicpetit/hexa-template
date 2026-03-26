@@ -1,12 +1,12 @@
 package hexa.template.graphql.service;
 
 import hexa.template.graphql.exception.UserHasEmailException;
+import hexa.template.graphql.external.email.EmailDto;
+import hexa.template.graphql.external.email.EmailRestApi;
+import hexa.template.graphql.external.user.UserDto;
+import hexa.template.graphql.external.user.UserRestApi;
 import hexa.template.graphql.model.EmailView;
 import hexa.template.graphql.model.UserView;
-import hexa.template.graphql.restclient.email.EmailClient;
-import hexa.template.graphql.restclient.email.EmailDto;
-import hexa.template.graphql.restclient.user.UserClient;
-import hexa.template.graphql.restclient.user.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -14,20 +14,20 @@ import reactor.core.publisher.Mono;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UserClient userClient;
-    private final EmailClient emailClient;
+    private final UserRestApi userRestApi;
+    private final EmailRestApi emailRestApi;
 
     public Mono<UserView> getUser(final Long userId) {
-        return Mono.just(toView(userClient.getUser(userId)));
+        return Mono.just(toView(userRestApi.getUser(userId)));
     }
 
     public Mono<UserView> addEmailToUser(final Long userId, final String email) {
-        final var user = userClient.getUser(userId);
+        final var user = userRestApi.getUser(userId);
         if (user.emailId() != null) {
             throw new UserHasEmailException(userId);
         }
-        final var emailId = emailClient.createEmail(email);
-        final var updatedUser = userClient.updateUser(userId, new UserDto(
+        final var emailId = emailRestApi.createEmail(email);
+        final var updatedUser = userRestApi.updateUser(userId, new UserDto(
                 user.id(),
                 user.firstName(),
                 user.name(),
@@ -38,11 +38,11 @@ public class UserService {
     }
 
     public Mono<UserView> removeEmailFromUser(final Long userId) {
-        final var user = userClient.getUser(userId);
+        final var user = userRestApi.getUser(userId);
         if (user.emailId() != null) {
-            emailClient.deleteEmail(user.emailId());
+            emailRestApi.deleteEmail(user.emailId());
         }
-        final var updatedUser = userClient.updateUser(userId, new UserDto(
+        final var updatedUser = userRestApi.updateUser(userId, new UserDto(
                 user.id(),
                 user.firstName(),
                 user.name(),
@@ -59,7 +59,7 @@ public class UserService {
     }
 
     public Mono<UserView> addUser(final String firstName, final String name) {
-        final var createdUser = userClient.createUser(new UserDto(
+        final var createdUser = userRestApi.createUser(new UserDto(
                 null,
                 firstName,
                 name,
@@ -70,7 +70,7 @@ public class UserService {
     }
 
     public Mono<Boolean> deleteUser(final Long userId) {
-        userClient.deleteUser(userId);
+        userRestApi.deleteUser(userId);
         return Mono.just(true);
     }
 
@@ -80,7 +80,7 @@ public class UserService {
         }
         final EmailView email = user.emailId() == null
                 ? null
-                : toEmailView(user.emailId(), emailClient.getEmail(user.emailId()));
+                : toEmailView(user.emailId(), emailRestApi.getEmail(user.emailId()));
         return new UserView(user.id(), user.firstName(), user.name(), user.modified(), email);
     }
 

@@ -1,4 +1,4 @@
-package hexa.template.graphql.restclient.user;
+package hexa.template.graphql.external.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -6,7 +6,7 @@ import org.springframework.web.client.RestClient;
 
 @Component
 @RequiredArgsConstructor
-public class UserClient {
+public class UserRestApi {
     private final RestClient userRestClient;
 
     public UserDto getUser(final Long userId) {

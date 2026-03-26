@@ -1,7 +1,7 @@
 package hexa.template.graphql.config;
 
 import hexa.template.graphql.exception.RestClientException;
-import hexa.template.graphql.restclient.ErrorDto;
+import hexa.template.graphql.external.ErrorDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;

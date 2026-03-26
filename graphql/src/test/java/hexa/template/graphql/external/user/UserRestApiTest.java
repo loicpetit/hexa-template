@@ -1,8 +1,8 @@
-package hexa.template.graphql.restclient.user;
+package hexa.template.graphql.external.user;
 
 import com.github.tomakehurst.wiremock.client.BasicCredentials;
 import hexa.template.graphql.exception.RestClientException;
-import hexa.template.graphql.restclient.BaseRestClientTest;
+import hexa.template.graphql.external.BaseRestClientTest;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +23,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-public class UserClientTest extends BaseRestClientTest {
+public class UserRestApiTest extends BaseRestClientTest {
 
     @Nested
     class GetUser {
@@ -31,7 +31,7 @@ public class UserClientTest extends BaseRestClientTest {
         void shouldReturnUser() {
             stub();
 
-            final var userDto = userClient.getUser(1L);
+            final var userDto = userRestApi.getUser(1L);
 
             assertThat(userDto)
                     .as("userDto")
@@ -59,7 +59,7 @@ public class UserClientTest extends BaseRestClientTest {
         void shouldUseBasicAuth() {
             stub();
 
-            userClient.getUser(1L);
+            userRestApi.getUser(1L);
 
             wiremock.verify(
                     getRequestedFor(urlPathEqualTo("/api/users/1"))
@@ -74,7 +74,7 @@ public class UserClientTest extends BaseRestClientTest {
             );
 
             assertThatExceptionOfType(RestClientException.class)
-                    .isThrownBy(() -> userClient.getUser(1L))
+                    .isThrownBy(() -> userRestApi.getUser(1L))
                     .withMessage("request failed with status 401")
                     .satisfies(
                             ex -> assertThat(ex.status())
@@ -101,7 +101,7 @@ public class UserClientTest extends BaseRestClientTest {
             );
 
             assertThatExceptionOfType(RestClientException.class)
-                    .isThrownBy(() -> userClient.getUser(1L))
+                    .isThrownBy(() -> userRestApi.getUser(1L))
                     .withMessage("request failed with status 500")
                     .satisfies(
                             ex -> assertThat(ex.status())
@@ -143,7 +143,7 @@ public class UserClientTest extends BaseRestClientTest {
         void shouldCreateUser() {
             stub();
 
-            final var createdUser = userClient.createUser(USER);
+            final var createdUser = userRestApi.createUser(USER);
 
             assertThat(createdUser)
                     .as("createdUser")
@@ -171,7 +171,7 @@ public class UserClientTest extends BaseRestClientTest {
         void shouldUseBasicAuth() {
             stub();
 
-            userClient.createUser(USER);
+            userRestApi.createUser(USER);
 
             wiremock.verify(
                     postRequestedFor(urlPathEqualTo("/api/users"))
@@ -186,7 +186,7 @@ public class UserClientTest extends BaseRestClientTest {
             );
 
             assertThatExceptionOfType(RestClientException.class)
-                    .isThrownBy(() -> userClient.createUser(USER))
+                    .isThrownBy(() -> userRestApi.createUser(USER))
                     .withMessage("request failed with status 401")
                     .satisfies(
                             ex -> assertThat(ex.status())
@@ -213,7 +213,7 @@ public class UserClientTest extends BaseRestClientTest {
             );
 
             assertThatExceptionOfType(RestClientException.class)
-                    .isThrownBy(() -> userClient.createUser(USER))
+                    .isThrownBy(() -> userRestApi.createUser(USER))
                     .withMessage("request failed with status 500")
                     .satisfies(
                             ex -> assertThat(ex.status())
@@ -255,7 +255,7 @@ public class UserClientTest extends BaseRestClientTest {
         void shouldUpdateUser() {
             stub();
 
-            final var updatedUser = userClient.updateUser(1L, USER);
+            final var updatedUser = userRestApi.updateUser(1L, USER);
 
             assertThat(updatedUser)
                     .as("updatedUser")
@@ -283,7 +283,7 @@ public class UserClientTest extends BaseRestClientTest {
         void shouldUseBasicAuth() {
             stub();
 
-            userClient.updateUser(1L, USER);
+            userRestApi.updateUser(1L, USER);
 
             wiremock.verify(
                     putRequestedFor(urlPathEqualTo("/api/users/1"))
@@ -298,7 +298,7 @@ public class UserClientTest extends BaseRestClientTest {
             );
 
             assertThatExceptionOfType(RestClientException.class)
-                    .isThrownBy(() -> userClient.updateUser(1L, USER))
+                    .isThrownBy(() -> userRestApi.updateUser(1L, USER))
                     .withMessage("request failed with status 401")
                     .satisfies(
                             ex -> assertThat(ex.status())
@@ -325,7 +325,7 @@ public class UserClientTest extends BaseRestClientTest {
             );
 
             assertThatExceptionOfType(RestClientException.class)
-                    .isThrownBy(() -> userClient.updateUser(1L, USER))
+                    .isThrownBy(() -> userRestApi.updateUser(1L, USER))
                     .withMessage("request failed with status 500")
                     .satisfies(
                             ex -> assertThat(ex.status())
@@ -365,7 +365,7 @@ public class UserClientTest extends BaseRestClientTest {
         void shouldDeleteWithBasicAuth() {
             stub();
 
-            userClient.deleteUser(1L);
+            userRestApi.deleteUser(1L);
 
             wiremock.verify(
                     deleteRequestedFor(urlPathEqualTo("/api/users/1"))
@@ -380,7 +380,7 @@ public class UserClientTest extends BaseRestClientTest {
             );
 
             assertThatExceptionOfType(RestClientException.class)
-                    .isThrownBy(() -> userClient.deleteUser(1L))
+                    .isThrownBy(() -> userRestApi.deleteUser(1L))
                     .withMessage("request failed with status 401")
                     .satisfies(
                             ex -> assertThat(ex.status())
@@ -407,7 +407,7 @@ public class UserClientTest extends BaseRestClientTest {
             );
 
             assertThatExceptionOfType(RestClientException.class)
-                    .isThrownBy(() -> userClient.deleteUser(1L))
+                    .isThrownBy(() -> userRestApi.deleteUser(1L))
                     .withMessage("request failed with status 500")
                     .satisfies(
                             ex -> assertThat(ex.status())
