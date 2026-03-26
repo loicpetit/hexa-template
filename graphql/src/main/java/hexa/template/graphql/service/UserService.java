@@ -1,8 +1,10 @@
 package hexa.template.graphql.service;
 
 import hexa.template.graphql.exception.UserHasEmailException;
+import hexa.template.graphql.exception.UserWithoutEmailException;
 import hexa.template.graphql.external.email.EmailDto;
 import hexa.template.graphql.external.email.EmailRestApi;
+import hexa.template.graphql.external.email.EmailWebApi;
 import hexa.template.graphql.external.user.UserDto;
 import hexa.template.graphql.external.user.UserRestApi;
 import hexa.template.graphql.external.user.UserWebApi;
@@ -18,46 +20,48 @@ public class UserService {
     private final UserRestApi userRestApi;
     private final UserWebApi userWebApi;
     private final EmailRestApi emailRestApi;
+    private final EmailWebApi emailWebApi;
 
     public Mono<UserView> getUser(final Long userId) {
         return userWebApi.getUser(userId).map(this::toView);
     }
 
     public Mono<UserView> addEmailToUser(final Long userId, final String email) {
-        final var user = userRestApi.getUser(userId);
-        if (user.emailId() != null) {
-            throw new UserHasEmailException(userId);
-        }
-        final var emailId = emailRestApi.createEmail(email);
-        final var updatedUser = userRestApi.updateUser(userId, new UserDto(
-                user.id(),
-                user.firstName(),
-                user.name(),
-                emailId,
-                user.modified()
-        ));
-        return Mono.just(toView(updatedUser));
+        return userWebApi.getUser(userId)
+                .flatMap(user -> {
+                    if (user.emailId() != null) {
+                        return Mono.error(new UserHasEmailException(userId));
+                    }
+                    return Mono.just(user);
+                })
+                .flatMap(user -> emailWebApi.createEmail(email).map(emailId -> new UserDto(
+                        user.id(),
+                        user.firstName(),
+                        user.name(),
+                        emailId,
+                        user.modified()
+                )))
+                .flatMap(user -> userWebApi.updateUser(userId, user))
+                .map(this::toView);
     }
 
     public Mono<UserView> removeEmailFromUser(final Long userId) {
-        final var user = userRestApi.getUser(userId);
-        if (user.emailId() != null) {
-            emailRestApi.deleteEmail(user.emailId());
-        }
-        final var updatedUser = userRestApi.updateUser(userId, new UserDto(
-                user.id(),
-                user.firstName(),
-                user.name(),
-                null,
-                user.modified()
-        ));
-        return Mono.just(new UserView(
-                updatedUser.id(),
-                updatedUser.firstName(),
-                updatedUser.name(),
-                updatedUser.modified(),
-                null
-        ));
+        return userWebApi.getUser(userId)
+                .flatMap(user -> {
+                    if (user.emailId() == null) {
+                        return Mono.error(new UserWithoutEmailException(userId));
+                    }
+                    return Mono.just(user);
+                })
+                .flatMap(user -> emailWebApi.deleteEmail(user.emailId()).thenReturn(new UserDto(
+                        user.id(),
+                        user.firstName(),
+                        user.name(),
+                        null,
+                        user.modified()
+                )))
+                .flatMap(user -> userWebApi.updateUser(userId, user))
+                .map(this::toView);
     }
 
     public Mono<UserView> addUser(final String firstName, final String name) {

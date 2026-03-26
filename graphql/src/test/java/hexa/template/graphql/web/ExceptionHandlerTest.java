@@ -3,6 +3,7 @@ package hexa.template.graphql.web;
 import hexa.template.graphql.BaseIntegrationTest;
 import hexa.template.graphql.exception.RestClientException;
 import hexa.template.graphql.exception.UserHasEmailException;
+import hexa.template.graphql.exception.UserWithoutEmailException;
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.when;
@@ -48,5 +49,19 @@ class ExceptionHandlerTest extends BaseIntegrationTest {
                 .jsonPath("$.errors[0].message").isEqualTo("The user already has an email")
                 .jsonPath("$.errors[0].extensions.classification").isEqualTo("BUSINESS")
                 .jsonPath("$.errors[0].extensions.code").isEqualTo("hexa.user.has.email");
+    }
+
+    @Test
+    void shouldHandleUserWithoutEmailException() throws Exception {
+        when(userWebApi.getUser(api.getUserId())).thenThrow(new UserWithoutEmailException(2L));
+
+        api.getUser()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.errors").isArray()
+                .jsonPath("$.errors.length()").isEqualTo(1)
+                .jsonPath("$.errors[0].message").isEqualTo("The user does not have an email")
+                .jsonPath("$.errors[0].extensions.classification").isEqualTo("BUSINESS")
+                .jsonPath("$.errors[0].extensions.code").isEqualTo("hexa.user.without.email");
     }
 }

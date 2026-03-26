@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import hexa.template.graphql.config.RestClientConfig;
 import hexa.template.graphql.config.WebClientConfig;
 import hexa.template.graphql.external.email.EmailRestApi;
+import hexa.template.graphql.external.email.EmailWebApi;
 import hexa.template.graphql.external.user.UserRestApi;
 import hexa.template.graphql.external.user.UserWebApi;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -18,6 +19,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
                 RestClientConfig.class,
                 WebClientConfig.class,
                 EmailRestApi.class,
+                EmailWebApi.class,
                 UserRestApi.class,
                 UserWebApi.class
         },
@@ -44,6 +46,9 @@ public class BaseRestClientTest {
 
     @Autowired
     protected EmailRestApi emailRestApi;
+
+    @Autowired
+    protected EmailWebApi emailWebApi;
 
     @Autowired
     protected UserRestApi userRestApi;

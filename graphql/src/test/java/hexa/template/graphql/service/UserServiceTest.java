@@ -1,8 +1,10 @@
 package hexa.template.graphql.service;
 
 import hexa.template.graphql.exception.UserHasEmailException;
+import hexa.template.graphql.exception.UserWithoutEmailException;
 import hexa.template.graphql.external.email.EmailDto;
 import hexa.template.graphql.external.email.EmailRestApi;
+import hexa.template.graphql.external.email.EmailWebApi;
 import hexa.template.graphql.external.user.UserDto;
 import hexa.template.graphql.external.user.UserRestApi;
 import hexa.template.graphql.external.user.UserWebApi;
@@ -17,8 +19,10 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
@@ -36,6 +40,9 @@ class UserServiceTest {
 
     @Mock
     EmailRestApi emailRestApi;
+
+    @Mock
+    EmailWebApi emailWebApi;
 
     @InjectMocks
     UserService service;
@@ -64,11 +71,13 @@ class UserServiceTest {
         @Test
         void shouldAddEmailToUser() {
             final var modified = LocalDateTime.now();
-            when(userRestApi.getUser(1L)).thenReturn(new UserDto(1L, "Chuck", "Norris", null, modified));
-            when(emailRestApi.createEmail("chuck@norris.test")).thenReturn(7L);
-            when(userRestApi.updateUser(eq(1L), any(UserDto.class)))
-                    .thenReturn(new UserDto(1L, "Chuck", "Norris", 7L, modified));
-            when(emailRestApi.getEmail(7L)).thenReturn(new EmailDto("chuck@norris.test", modified));
+            final var initialUserDto = new UserDto(1L, "Chuck", "Norris", null, modified);
+            final var updatedUserDto = new UserDto(1L, "Chuck", "Norris", 7L, modified);
+            final var emailDto = new EmailDto("chuck@norris.test", modified);
+            when(userWebApi.getUser(1L)).thenReturn(Mono.just(initialUserDto));
+            when(emailWebApi.createEmail("chuck@norris.test")).thenReturn(Mono.just(7L));
+            when(userWebApi.updateUser(eq(1L), argThat(dto -> dto.emailId() == 7L))).thenReturn(Mono.just(updatedUserDto));
+            when(emailRestApi.getEmail(7L)).thenReturn(emailDto);
 
             final var result = service.addEmailToUser(1L, "chuck@norris.test").block();
 
@@ -78,14 +87,33 @@ class UserServiceTest {
         }
 
         @Test
-        void shouldFailWhenUserAlreadyHasEmail() {
-            when(userRestApi.getUser(1L)).thenReturn(new UserDto(1L, "Chuck", "Norris", 9L, LocalDateTime.now()));
+        void ifUserHasEmailShouldFail() {
+            final var modified = LocalDateTime.now();
+            final var initialUserDto = new UserDto(1L, "Chuck", "Norris", 5L, modified);
+            when(userWebApi.getUser(1L)).thenReturn(Mono.just(initialUserDto));
 
-            assertThatThrownBy(() -> service.addEmailToUser(1L, "chuck@norris.test"))
+            assertThatThrownBy(() -> service.addEmailToUser(1L, "chuck@norris.test").block())
                     .isInstanceOf(UserHasEmailException.class)
                     .hasMessage("the user 1 already has an email");
 
-            verify(emailRestApi, never()).createEmail(any());
+            verify(emailWebApi, never()).createEmail(any());
+            verify(emailWebApi, never()).getEmail(anyLong());
+            verify(userWebApi, never()).updateUser(anyLong(), any());
+        }
+
+        @Test
+        void ifCreateEmailFailShouldFail() {
+            final var modified = LocalDateTime.now();
+            final var initialUserDto = new UserDto(1L, "Chuck", "Norris", null, modified);
+            when(userWebApi.getUser(1L)).thenReturn(Mono.just(initialUserDto));
+            when(emailWebApi.createEmail("chuck@norris.test")).thenReturn(Mono.error(new RuntimeException("test")));
+
+            assertThatThrownBy(() -> service.addEmailToUser(1L, "chuck@norris.test").block())
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessage("test");
+
+            verify(emailWebApi, never()).getEmail(anyLong());
+            verify(userWebApi, never()).updateUser(anyLong(), any());
         }
     }
 
@@ -94,14 +122,46 @@ class UserServiceTest {
         @Test
         void shouldRemoveEmailFromUser() {
             final var modified = LocalDateTime.now();
-            when(userRestApi.getUser(1L)).thenReturn(new UserDto(1L, "Chuck", "Norris", 4L, modified));
-            when(userRestApi.updateUser(eq(1L), any(UserDto.class)))
-                    .thenReturn(new UserDto(1L, "Chuck", "Norris", null, modified));
+            final var initialUserDto = new UserDto(1L, "Chuck", "Norris", 4L, modified);
+            final var updatedUserDto = new UserDto(1L, "Chuck", "Norris", null, modified);
+            when(userWebApi.getUser(1L)).thenReturn(Mono.just(initialUserDto));
+            when(emailWebApi.deleteEmail(4L)).thenReturn(Mono.empty());
+            when(userWebApi.updateUser(eq(1L), any(UserDto.class))).thenReturn(Mono.just(updatedUserDto));
 
             final var result = service.removeEmailFromUser(1L).block();
 
-            verify(emailRestApi).deleteEmail(4L);
-            assertThat(result.email()).isNull();
+            verify(emailWebApi).deleteEmail(4L);
+            assertThat(result)
+                    .as("result")
+                    .isNotNull()
+                    .satisfies(r -> assertThat(r.email())
+                            .as("email")
+                            .isNull()
+                    );
+        }
+
+        @Test
+        void ifUserWithoutEmailIdShouldFail() {
+            final var initialUserDto = new UserDto(1L, "Chuck", "Norris", null, LocalDateTime.now());
+            when(userWebApi.getUser(1L)).thenReturn(Mono.just(initialUserDto));
+
+            assertThatExceptionOfType(UserWithoutEmailException.class)
+                    .isThrownBy(() -> service.removeEmailFromUser(1L).block())
+                    .withMessage("the user 1 doesn't have an email");
+            verify(emailWebApi, never()).deleteEmail(any());
+            verify(userWebApi, never()).updateUser(anyLong(), any());
+        }
+
+        @Test
+        void ifDeleteEmailFailedShouldFail() {
+            final var initialUserDto = new UserDto(1L, "Chuck", "Norris", 4L, LocalDateTime.now());
+            when(userWebApi.getUser(1L)).thenReturn(Mono.just(initialUserDto));
+            when(emailWebApi.deleteEmail(4L)).thenReturn(Mono.error(new RuntimeException("test")));
+
+            assertThatExceptionOfType(RuntimeException.class)
+                    .isThrownBy(() -> service.removeEmailFromUser(1L).block())
+                    .withMessage("test");
+            verify(userWebApi, never()).updateUser(anyLong(), any());
         }
     }
 

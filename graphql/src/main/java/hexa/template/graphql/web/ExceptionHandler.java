@@ -5,6 +5,7 @@ import graphql.GraphQLError;
 import graphql.GraphqlErrorBuilder;
 import hexa.template.graphql.exception.RestClientException;
 import hexa.template.graphql.exception.UserHasEmailException;
+import hexa.template.graphql.exception.UserWithoutEmailException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,11 @@ public class ExceptionHandler {
         return createError(Error.USER_HAS_EMAIL, ex);
     }
 
+    @GraphQlExceptionHandler(UserWithoutEmailException.class)
+    public GraphQLError handleException(final UserWithoutEmailException ex) {
+        return createError(Error.USER_WITHOUT_EMAIL, ex);
+    }
+
     private GraphQLError createError(final Error error, final Exception ex) {
         if (error.isTechnicalError()) {
             log.error(error.getMessage(), ex);
@@ -49,7 +55,8 @@ public class ExceptionHandler {
     private enum Error {
         INTERNAL_ERROR("hexa.unexpected.error", "An unexpected error occurred", true),
         REST_CLIENT_ERROR("hexa.rest.client.error", "An error occurred during a REST request", true),
-        USER_HAS_EMAIL("hexa.user.has.email", "The user already has an email", false);
+        USER_HAS_EMAIL("hexa.user.has.email", "The user already has an email", false),
+        USER_WITHOUT_EMAIL("hexa.user.without.email", "The user does not have an email", false);
 
         private final String code;
         private final String message;
