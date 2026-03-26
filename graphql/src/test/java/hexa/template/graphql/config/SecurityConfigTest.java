@@ -5,9 +5,6 @@ import hexa.template.graphql.restclient.user.UserDto;
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class SecurityConfigTest extends BaseIntegrationTest {
     @Test
@@ -15,21 +12,23 @@ public class SecurityConfigTest extends BaseIntegrationTest {
         when(userClient.getUser(api.getUserId())).thenReturn(new UserDto(null, "chuck", "norris", null, null));
 
         api.getUser()
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.errors").doesNotExist());
+                .expectStatus().isOk()
+                .expectBody().jsonPath("$.errors").doesNotExist();
     }
 
     @Test
     void ifUnauthenticatedShouldReturn401() throws Exception {
         api.withCredentials("someone", "pwd")
                 .getUser()
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.errors").doesNotExist());
+                .expectStatus().isUnauthorized()
+                .expectBody().jsonPath("$.errors").doesNotExist();
     }
 
     @Test
     void ifGraphiqlAndUnauthenticatedShouldReturn200() throws Exception {
-        mockMvc.perform(get("/graphiql").param("path", "/graphql"))
-                .andExpect(status().isOk());
+        webClient.get()
+                .uri("/graphiql?path=/graphql")
+                .exchange()
+                .expectStatus().isOk();
     }
 }

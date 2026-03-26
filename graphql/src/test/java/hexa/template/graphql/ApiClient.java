@@ -1,18 +1,14 @@
 package hexa.template.graphql;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 @RequiredArgsConstructor
 public class ApiClient {
     private static final Long USER_ID = 1L;
 
-    private final MockMvc mockMvc;
+    private final WebTestClient webClient;
     private String username = "test";
     private String password = "testPwd";
 
@@ -22,20 +18,19 @@ public class ApiClient {
         return this;
     }
 
-    public ResultActions getUser() throws Exception {
+    public WebTestClient.ResponseSpec getUser() throws Exception {
         final String content = """
                     {
                         "query": "query { user(id: %d) { firstName name } }"
                     }
                 """.formatted(USER_ID);
 
-        return mockMvc.perform(
-                        post("/graphql")
-                                .with(httpBasic(username, password))
-                                .contentType("application/json")
-                                .content(content)
-                )
-                .andDo(print());
+        return webClient.post()
+                .uri("/graphql")
+                .headers(headers -> headers.setBasicAuth(username, password))
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(content)
+                .exchange();
     }
 
     public Long getUserId() {

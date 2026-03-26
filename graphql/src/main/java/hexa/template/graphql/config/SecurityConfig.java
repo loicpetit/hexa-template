@@ -3,15 +3,15 @@ package hexa.template.graphql.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.provisioning.UserDetailsManager;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -20,39 +20,41 @@ import java.util.List;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebFluxSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     final ApiConfig.ApiProperties properties;
 
     @Bean
-    SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
+    SecurityWebFilterChain securityFilterChain(final ServerHttpSecurity http) throws Exception {
         return http
                 .httpBasic(withDefaults())
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(
-                        matcher -> matcher
-                                .requestMatchers(
+                .securityContextRepository(NoOpServerSecurityContextRepository.getInstance()) // to have stateless api
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+                .logout(ServerHttpSecurity.LogoutSpec::disable)
+                .requestCache(ServerHttpSecurity.RequestCacheSpec::disable)
+                .authorizeExchange(
+                        exchanges -> exchanges
+                                .pathMatchers(
                                         "/graphiql",
                                         "/graphiql/**"
                                 ).permitAll()
-                                .anyRequest().authenticated()
+                                .anyExchange().authenticated()
                 )
                 .build();
     }
 
     @Bean
-    public UserDetailsManager inMemoryUserDetailsManager() throws IOException {
+    public ReactiveUserDetailsService inMemoryUserDetailsService() throws IOException {
         final List<UserDetails> users = Arrays.stream(properties.users())
-                .map(user -> (UserDetails) new User(
-                        user.login(),
-                        user.password(),
-                        Arrays.stream(user.authoritiesArray()).map(
-                                SimpleGrantedAuthority::new
-                        ).toList()
-                ))
+                .map(user -> User.withUsername(user.login())
+                        .password(user.password())
+                        .authorities(Arrays.stream(user.authoritiesArray())
+                                .map(SimpleGrantedAuthority::new)
+                                .toList())
+                        .build())
                 .toList();
-        return new InMemoryUserDetailsManager(users);
+        return new MapReactiveUserDetailsService(users);
     }
 }

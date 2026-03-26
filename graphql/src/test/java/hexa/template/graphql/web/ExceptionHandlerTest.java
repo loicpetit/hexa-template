@@ -6,8 +6,6 @@ import hexa.template.graphql.exception.UserHasEmailException;
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class ExceptionHandlerTest extends BaseIntegrationTest {
     @Test
@@ -15,12 +13,13 @@ class ExceptionHandlerTest extends BaseIntegrationTest {
         when(userClient.getUser(api.getUserId())).thenThrow(new UnsupportedOperationException("test"));
 
         api.getUser()
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.errors").isArray())
-                .andExpect(jsonPath("$.errors.length()").value(1))
-                .andExpect(jsonPath("$.errors[0].message").value("An unexpected error occurred"))
-                .andExpect(jsonPath("$.errors[0].extensions.classification").value("TECHNICAL"))
-                .andExpect(jsonPath("$.errors[0].extensions.code").value("hexa.unexpected.error"));
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.errors").isArray()
+                .jsonPath("$.errors.length()").isEqualTo(1)
+                .jsonPath("$.errors[0].message").isEqualTo("An unexpected error occurred")
+                .jsonPath("$.errors[0].extensions.classification").isEqualTo("TECHNICAL")
+                .jsonPath("$.errors[0].extensions.code").isEqualTo("hexa.unexpected.error");
     }
 
     @Test
@@ -28,12 +27,13 @@ class ExceptionHandlerTest extends BaseIntegrationTest {
         when(userClient.getUser(api.getUserId())).thenThrow(new RestClientException(500, "hexa.user.kaput", "test"));
 
         api.getUser()
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.errors").isArray())
-                .andExpect(jsonPath("$.errors.length()").value(1))
-                .andExpect(jsonPath("$.errors[0].message").value("An error occurred during a REST request"))
-                .andExpect(jsonPath("$.errors[0].extensions.classification").value("TECHNICAL"))
-                .andExpect(jsonPath("$.errors[0].extensions.code").value("hexa.rest.client.error"));
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.errors").isArray()
+                .jsonPath("$.errors.length()").isEqualTo(1)
+                .jsonPath("$.errors[0].message").isEqualTo("An error occurred during a REST request")
+                .jsonPath("$.errors[0].extensions.classification").isEqualTo("TECHNICAL")
+                .jsonPath("$.errors[0].extensions.code").isEqualTo("hexa.rest.client.error");
     }
 
     @Test
@@ -41,11 +41,12 @@ class ExceptionHandlerTest extends BaseIntegrationTest {
         when(userClient.getUser(api.getUserId())).thenThrow(new UserHasEmailException(2L));
 
         api.getUser()
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.errors").isArray())
-                .andExpect(jsonPath("$.errors.length()").value(1))
-                .andExpect(jsonPath("$.errors[0].message").value("The user already has an email"))
-                .andExpect(jsonPath("$.errors[0].extensions.classification").value("BUSINESS"))
-                .andExpect(jsonPath("$.errors[0].extensions.code").value("hexa.user.has.email"));
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.errors").isArray()
+                .jsonPath("$.errors.length()").isEqualTo(1)
+                .jsonPath("$.errors[0].message").isEqualTo("The user already has an email")
+                .jsonPath("$.errors[0].extensions.classification").isEqualTo("BUSINESS")
+                .jsonPath("$.errors[0].extensions.code").isEqualTo("hexa.user.has.email");
     }
 }

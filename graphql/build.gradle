@@ -14,7 +14,6 @@ dependencies {
     implementation      libs.springboot.graphql
     testImplementation  libs.springboot.test
     testImplementation  libs.springboot.security.test
-    testImplementation  libs.springboot.web.test
     testImplementation  libs.springboot.webflux.test
     testImplementation  libs.springboot.graphql.test
     testImplementation  libs.wiremock
