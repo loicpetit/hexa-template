@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 
 import static java.time.LocalDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 class UserControllerTest extends BaseGraphQlTest {
@@ -41,7 +42,9 @@ class UserControllerTest extends BaseGraphQlTest {
 
         @Test
         void shouldReturnUser() {
-            final var user = createUserView(createEmailView());
+            final var email = createEmailView();
+            final var user = createUserView(email);
+            when(emailService.getEmail(EMAIL_ID)).thenReturn(Mono.just(email));
             when(userService.getUser(ID)).thenReturn(Mono.just(user));
 
             tester.document(QUERY)
@@ -69,6 +72,24 @@ class UserControllerTest extends BaseGraphQlTest {
                                                 .isEqualTo(EMAIL_MODIFIED.toString())
                                 );
                     });
+        }
+
+        @Test
+        void ifWithoutEmailShouldReturnUser() {
+            final var user = createUserView(null);
+            when(userService.getUser(ID)).thenReturn(Mono.just(user));
+
+            tester.document(QUERY)
+                    .execute()
+                    .errors()
+                    .verify()
+                    .path("data.user")
+                    .entity(UserView.class)
+                    .satisfies(userView -> {
+                        assertThat(userView.id()).as("id").isEqualTo(ID);
+                        assertThat(userView.email()).as("email").isNull();
+                    });
+            verifyNoInteractions(emailService);
         }
     }
 
@@ -145,7 +166,9 @@ class UserControllerTest extends BaseGraphQlTest {
 
         @Test
         void shouldReturnUser() {
-            final var user = createUserView(createEmailView());
+            final var email = createEmailView();
+            final var user = createUserView(email);
+            when(emailService.getEmail(EMAIL_ID)).thenReturn(Mono.just(email));
             when(userService.addEmailToUser(ID, EMAIL)).thenReturn(Mono.just(user));
 
             tester.document(MUTATION)
@@ -208,7 +231,8 @@ class UserControllerTest extends BaseGraphQlTest {
     }
 
     private UserView createUserView(final EmailView emailView) {
-        return new UserView(ID, FIRST_NAME, NAME, MODIFIED, emailView);
+        final var emailIdView = emailView == null || emailView.id() == null ? null : new EmailView(emailView.id(), null, null);
+        return new UserView(ID, FIRST_NAME, NAME, MODIFIED, emailIdView);
     }
 
     private EmailView createEmailView() {

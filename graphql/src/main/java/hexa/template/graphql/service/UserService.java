@@ -2,11 +2,8 @@ package hexa.template.graphql.service;
 
 import hexa.template.graphql.exception.UserHasEmailException;
 import hexa.template.graphql.exception.UserWithoutEmailException;
-import hexa.template.graphql.external.email.EmailDto;
-import hexa.template.graphql.external.email.EmailRestApi;
 import hexa.template.graphql.external.email.EmailWebApi;
 import hexa.template.graphql.external.user.UserDto;
-import hexa.template.graphql.external.user.UserRestApi;
 import hexa.template.graphql.external.user.UserWebApi;
 import hexa.template.graphql.model.EmailView;
 import hexa.template.graphql.model.UserView;
@@ -17,9 +14,7 @@ import reactor.core.publisher.Mono;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UserRestApi userRestApi;
     private final UserWebApi userWebApi;
-    private final EmailRestApi emailRestApi;
     private final EmailWebApi emailWebApi;
 
     public Mono<UserView> getUser(final Long userId) {
@@ -76,6 +71,7 @@ public class UserService {
     }
 
     public Mono<Boolean> deleteUser(final Long userId) {
+        // todo get user check email
         return userWebApi.deleteUser(userId).thenReturn(true);
     }
 
@@ -83,16 +79,13 @@ public class UserService {
         if (user == null) {
             return null;
         }
-        final EmailView email = user.emailId() == null
-                ? null
-                : toEmailView(user.emailId(), emailRestApi.getEmail(user.emailId()));
-        return new UserView(user.id(), user.firstName(), user.name(), user.modified(), email);
+        return new UserView(user.id(), user.firstName(), user.name(), user.modified(), toEmailView(user));
     }
 
-    private EmailView toEmailView(final Long emailId, final EmailDto email) {
-        if (email == null) {
+    private EmailView toEmailView(final UserDto user) {
+        if (user == null || user.emailId() == null) {
             return null;
         }
-        return new EmailView(emailId, email.value(), email.modified());
+        return new EmailView(user.emailId(), null, null);
     }
 }

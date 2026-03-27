@@ -2,11 +2,8 @@ package hexa.template.graphql.service;
 
 import hexa.template.graphql.exception.UserHasEmailException;
 import hexa.template.graphql.exception.UserWithoutEmailException;
-import hexa.template.graphql.external.email.EmailDto;
-import hexa.template.graphql.external.email.EmailRestApi;
 import hexa.template.graphql.external.email.EmailWebApi;
 import hexa.template.graphql.external.user.UserDto;
-import hexa.template.graphql.external.user.UserRestApi;
 import hexa.template.graphql.external.user.UserWebApi;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -33,13 +30,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
     @Mock
-    UserRestApi userRestApi;
-
-    @Mock
     UserWebApi userWebApi;
-
-    @Mock
-    EmailRestApi emailRestApi;
 
     @Mock
     EmailWebApi emailWebApi;
@@ -52,17 +43,43 @@ class UserServiceTest {
         @Test
         void shouldGetUserWithEmail() {
             final var modified = LocalDateTime.now();
-            final var emailDto = new EmailDto("chuck@norris.test", modified);
             final var userDto = new UserDto(1L, "Chuck", "Norris", 5L, modified);
             when(userWebApi.getUser(1L)).thenReturn(Mono.just(userDto));
-            when(emailRestApi.getEmail(5L)).thenReturn(emailDto);
 
             final var result = service.getUser(1L).block();
 
-            assertThat(result.id()).isEqualTo(1L);
-            assertThat(result.email()).isNotNull();
-            assertThat(result.email().id()).isEqualTo(5L);
-            assertThat(result.email().value()).isEqualTo("chuck@norris.test");
+            assertThat(result)
+                    .as("result")
+                    .isNotNull()
+                    .satisfies(
+                            r -> assertThat(r.id()).as("id").isEqualTo(1L),
+                            r -> assertThat(r.firstName()).as("firstName").isEqualTo("Chuck"),
+                            r -> assertThat(r.name()).as("name").isEqualTo("Norris"),
+                            r -> assertThat(r.modified()).as("modified").isEqualTo(modified),
+                            r -> assertThat(r.email())
+                                    .as("email")
+                                    .isNotNull()
+                                    .satisfies(
+                                            e -> assertThat(e.id()).as("id").isEqualTo(5L),
+                                            e -> assertThat(e.value()).as("value").isNull(),
+                                            e -> assertThat(e.modified()).as("modified").isNull()
+                                    )
+                    );
+            verifyNoInteractions(emailWebApi);
+        }
+
+        @Test
+        void ifNoEmailShouldReturnNull() {
+            final var modified = LocalDateTime.now();
+            final var userDto = new UserDto(1L, "Chuck", "Norris", null, modified);
+            when(userWebApi.getUser(1L)).thenReturn(Mono.just(userDto));
+
+            final var result = service.getUser(1L).block();
+
+            assertThat(result)
+                    .as("result")
+                    .isNotNull()
+                    .satisfies(r -> assertThat(r.email()).as("email").isNull());
         }
     }
 
@@ -73,17 +90,14 @@ class UserServiceTest {
             final var modified = LocalDateTime.now();
             final var initialUserDto = new UserDto(1L, "Chuck", "Norris", null, modified);
             final var updatedUserDto = new UserDto(1L, "Chuck", "Norris", 7L, modified);
-            final var emailDto = new EmailDto("chuck@norris.test", modified);
             when(userWebApi.getUser(1L)).thenReturn(Mono.just(initialUserDto));
             when(emailWebApi.createEmail("chuck@norris.test")).thenReturn(Mono.just(7L));
             when(userWebApi.updateUser(eq(1L), argThat(dto -> dto.emailId() == 7L))).thenReturn(Mono.just(updatedUserDto));
-            when(emailRestApi.getEmail(7L)).thenReturn(emailDto);
 
             final var result = service.addEmailToUser(1L, "chuck@norris.test").block();
 
             assertThat(result.email()).isNotNull();
             assertThat(result.email().id()).isEqualTo(7L);
-            assertThat(result.email().value()).isEqualTo("chuck@norris.test");
         }
 
         @Test
@@ -199,7 +213,7 @@ class UserServiceTest {
                                             .as("id")
                                             .isEqualTo(modified)
                     );
-            verifyNoInteractions(emailRestApi);
+            verifyNoInteractions(emailWebApi);
         }
 
         private UserDto argThatUserMatch(final String firstName, final String name, final Long emailId) {
@@ -220,7 +234,7 @@ class UserServiceTest {
             final Boolean result = service.deleteUser(1L).block();
 
             assertThat(result).isTrue();
-            verify(emailRestApi, never()).deleteEmail(any());
+            verifyNoInteractions(emailWebApi);
         }
     }
 }
