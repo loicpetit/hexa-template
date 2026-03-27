@@ -1,6 +1,6 @@
 package hexa.template.graphql.config;
 
-import hexa.template.graphql.exception.RestClientException;
+import hexa.template.graphql.exception.WebClientException;
 import hexa.template.graphql.external.ErrorDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,13 +62,13 @@ public class WebClientConfig {
                 .map(body -> toException(status, body));
     }
 
-    private RestClientException toException(final int status, final byte[] body) {
+    private WebClientException toException(final int status, final byte[] body) {
         if (body.length == 0) {
-            return new RestClientException(status);
+            return new WebClientException(status);
         }
         return parseError(body)
-                .map(dto -> new RestClientException(status, dto.code(), dto.message()))
-                .orElse(new RestClientException(status, null, new String(body)));
+                .map(dto -> new WebClientException(status, dto.code(), dto.message()))
+                .orElse(new WebClientException(status, null, new String(body)));
     }
 
     private Optional<ErrorDto> parseError(final byte[] body) {

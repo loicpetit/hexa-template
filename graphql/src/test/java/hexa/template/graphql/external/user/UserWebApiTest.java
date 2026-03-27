@@ -1,7 +1,7 @@
 package hexa.template.graphql.external.user;
 
 import com.github.tomakehurst.wiremock.client.BasicCredentials;
-import hexa.template.graphql.exception.RestClientException;
+import hexa.template.graphql.exception.WebClientException;
 import hexa.template.graphql.external.BaseRestClientTest;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -73,7 +73,7 @@ public class UserWebApiTest extends BaseRestClientTest {
                     get("/api/users/1").willReturn(status(401))
             );
 
-            assertThatExceptionOfType(RestClientException.class)
+            assertThatExceptionOfType(WebClientException.class)
                     .isThrownBy(() -> userWebApi.getUser(1L).block())
                     .withMessage("request failed with status 401")
                     .satisfies(
@@ -100,7 +100,7 @@ public class UserWebApiTest extends BaseRestClientTest {
                             """))
             );
 
-            assertThatExceptionOfType(RestClientException.class)
+            assertThatExceptionOfType(WebClientException.class)
                     .isThrownBy(() -> userWebApi.getUser(1L).block())
                     .withMessage("request failed with status 500")
                     .satisfies(
@@ -185,7 +185,7 @@ public class UserWebApiTest extends BaseRestClientTest {
                     post("/api/users").willReturn(status(401))
             );
 
-            assertThatExceptionOfType(RestClientException.class)
+            assertThatExceptionOfType(WebClientException.class)
                     .isThrownBy(() -> userWebApi.createUser(USER).block())
                     .withMessage("request failed with status 401")
                     .satisfies(
@@ -212,7 +212,7 @@ public class UserWebApiTest extends BaseRestClientTest {
                             """))
             );
 
-            assertThatExceptionOfType(RestClientException.class)
+            assertThatExceptionOfType(WebClientException.class)
                     .isThrownBy(() -> userWebApi.createUser(USER).block())
                     .withMessage("request failed with status 500")
                     .satisfies(
@@ -297,7 +297,7 @@ public class UserWebApiTest extends BaseRestClientTest {
                     put("/api/users/1").willReturn(status(401))
             );
 
-            assertThatExceptionOfType(RestClientException.class)
+            assertThatExceptionOfType(WebClientException.class)
                     .isThrownBy(() -> userWebApi.updateUser(1L, USER).block())
                     .withMessage("request failed with status 401")
                     .satisfies(
@@ -324,7 +324,7 @@ public class UserWebApiTest extends BaseRestClientTest {
                             """))
             );
 
-            assertThatExceptionOfType(RestClientException.class)
+            assertThatExceptionOfType(WebClientException.class)
                     .isThrownBy(() -> userWebApi.updateUser(1L, USER).block())
                     .withMessage("request failed with status 500")
                     .satisfies(
@@ -379,7 +379,7 @@ public class UserWebApiTest extends BaseRestClientTest {
                     delete("/api/users/1").willReturn(status(401))
             );
 
-            assertThatExceptionOfType(RestClientException.class)
+            assertThatExceptionOfType(WebClientException.class)
                     .isThrownBy(() -> userWebApi.deleteUser(1L).block())
                     .withMessage("request failed with status 401")
                     .satisfies(
@@ -406,7 +406,7 @@ public class UserWebApiTest extends BaseRestClientTest {
                             """))
             );
 
-            assertThatExceptionOfType(RestClientException.class)
+            assertThatExceptionOfType(WebClientException.class)
                     .isThrownBy(() -> userWebApi.deleteUser(1L).block())
                     .withMessage("request failed with status 500")
                     .satisfies(

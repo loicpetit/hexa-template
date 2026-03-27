@@ -3,9 +3,9 @@ package hexa.template.graphql.web;
 import graphql.ErrorClassification;
 import graphql.GraphQLError;
 import graphql.GraphqlErrorBuilder;
-import hexa.template.graphql.exception.RestClientException;
 import hexa.template.graphql.exception.UserHasEmailException;
 import hexa.template.graphql.exception.UserWithoutEmailException;
+import hexa.template.graphql.exception.WebClientException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +22,8 @@ public class ExceptionHandler {
         return createError(Error.INTERNAL_ERROR, ex);
     }
 
-    @GraphQlExceptionHandler(RestClientException.class)
-    public GraphQLError handleException(final RestClientException ex) {
+    @GraphQlExceptionHandler(WebClientException.class)
+    public GraphQLError handleException(final WebClientException ex) {
         return createError(Error.REST_CLIENT_ERROR, ex);
     }
 

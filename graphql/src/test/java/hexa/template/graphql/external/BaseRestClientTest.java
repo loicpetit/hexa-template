@@ -1,11 +1,8 @@
 package hexa.template.graphql.external;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
-import hexa.template.graphql.config.RestClientConfig;
 import hexa.template.graphql.config.WebClientConfig;
-import hexa.template.graphql.external.email.EmailRestApi;
 import hexa.template.graphql.external.email.EmailWebApi;
-import hexa.template.graphql.external.user.UserRestApi;
 import hexa.template.graphql.external.user.UserWebApi;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +13,8 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 
 @SpringBootTest(
         classes = {
-                RestClientConfig.class,
                 WebClientConfig.class,
-                EmailRestApi.class,
                 EmailWebApi.class,
-                UserRestApi.class,
                 UserWebApi.class
         },
         properties = {
@@ -45,13 +39,7 @@ public class BaseRestClientTest {
             .build();
 
     @Autowired
-    protected EmailRestApi emailRestApi;
-
-    @Autowired
     protected EmailWebApi emailWebApi;
-
-    @Autowired
-    protected UserRestApi userRestApi;
 
     @Autowired
     protected UserWebApi userWebApi;

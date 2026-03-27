@@ -1,7 +1,7 @@
 package hexa.template.graphql.external.email;
 
 import com.github.tomakehurst.wiremock.client.BasicCredentials;
-import hexa.template.graphql.exception.RestClientException;
+import hexa.template.graphql.exception.WebClientException;
 import hexa.template.graphql.external.BaseRestClientTest;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -62,7 +62,7 @@ public class EmailWebApiTest extends BaseRestClientTest {
                     get("/api/emails/1").willReturn(status(401))
             );
 
-            assertThatExceptionOfType(RestClientException.class)
+            assertThatExceptionOfType(WebClientException.class)
                     .isThrownBy(() -> emailWebApi.getEmail(1L).block())
                     .withMessage("request failed with status 401")
                     .satisfies(
@@ -89,7 +89,7 @@ public class EmailWebApiTest extends BaseRestClientTest {
                             """))
             );
 
-            assertThatExceptionOfType(RestClientException.class)
+            assertThatExceptionOfType(WebClientException.class)
                     .isThrownBy(() -> emailWebApi.getEmail(1L).block())
                     .withMessage("request failed with status 500")
                     .satisfies(
@@ -154,7 +154,7 @@ public class EmailWebApiTest extends BaseRestClientTest {
                     post("/api/emails").willReturn(status(401))
             );
 
-            assertThatExceptionOfType(RestClientException.class)
+            assertThatExceptionOfType(WebClientException.class)
                     .isThrownBy(() -> emailWebApi.createEmail(EMAIL_VALUE).block())
                     .withMessage("request failed with status 401")
                     .satisfies(
@@ -181,7 +181,7 @@ public class EmailWebApiTest extends BaseRestClientTest {
                             """))
             );
 
-            assertThatExceptionOfType(RestClientException.class)
+            assertThatExceptionOfType(WebClientException.class)
                     .isThrownBy(() -> emailWebApi.createEmail(EMAIL_VALUE).block())
                     .withMessage("request failed with status 500")
                     .satisfies(
@@ -229,7 +229,7 @@ public class EmailWebApiTest extends BaseRestClientTest {
                     delete("/api/emails/1").willReturn(status(401))
             );
 
-            assertThatExceptionOfType(RestClientException.class)
+            assertThatExceptionOfType(WebClientException.class)
                     .isThrownBy(() -> emailWebApi.deleteEmail(1L).block())
                     .withMessage("request failed with status 401")
                     .satisfies(
@@ -256,7 +256,7 @@ public class EmailWebApiTest extends BaseRestClientTest {
                             """))
             );
 
-            assertThatExceptionOfType(RestClientException.class)
+            assertThatExceptionOfType(WebClientException.class)
                     .isThrownBy(() -> emailWebApi.deleteEmail(1L).block())
                     .withMessage("request failed with status 500")
                     .satisfies(

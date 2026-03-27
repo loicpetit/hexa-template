@@ -1,9 +1,9 @@
 package hexa.template.graphql.web;
 
 import hexa.template.graphql.BaseIntegrationTest;
-import hexa.template.graphql.exception.RestClientException;
 import hexa.template.graphql.exception.UserHasEmailException;
 import hexa.template.graphql.exception.UserWithoutEmailException;
+import hexa.template.graphql.exception.WebClientException;
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.when;
@@ -11,7 +11,7 @@ import static org.mockito.Mockito.when;
 class ExceptionHandlerTest extends BaseIntegrationTest {
     @Test
     void shouldHandleUnexpectedException() throws Exception {
-        when(userRestApi.getUser(api.getUserId())).thenThrow(new UnsupportedOperationException("test"));
+        when(userWebApi.getUser(api.getUserId())).thenThrow(new UnsupportedOperationException("test"));
 
         api.getUser()
                 .expectStatus().isOk()
@@ -25,7 +25,7 @@ class ExceptionHandlerTest extends BaseIntegrationTest {
 
     @Test
     void shouldHandleRestClientException() throws Exception {
-        when(userWebApi.getUser(api.getUserId())).thenThrow(new RestClientException(500, "hexa.user.kaput", "test"));
+        when(userWebApi.getUser(api.getUserId())).thenThrow(new WebClientException(500, "hexa.user.kaput", "test"));
 
         api.getUser()
                 .expectStatus().isOk()
