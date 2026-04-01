@@ -1,0 +1,11 @@
+plugins {
+    id 'hexa-springboot-web'
+    id 'org.springframework.boot'
+}
+
+base {
+    archivesName = "cache-api"
+    version = globalVersion
+}
+
+// todo get caffeine

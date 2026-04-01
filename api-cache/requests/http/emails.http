@@ -1,0 +1,27 @@
+### Create email
+POST http://{{emailBaseUrl}}
+Authorization: Basic {{emailAuth.usr}} {{emailAuth.pwd}}
+Content-Type: application/json
+
+{
+  "value": "bruce@kickass.com"
+}
+
+> {%
+    const emailId = response.body
+    client.log("email id", emailId)
+    client.global.set("email-id", emailId)
+%}
+
+### Get email by id
+GET http://{{emailBaseUrl}}/{{email-id}}
+Authorization: Basic {{emailAuth.usr}} {{emailAuth.pwd}}
+
+> {%
+    const etag = response.headers.valueOf("ETag")
+    client.log("etag", etag)
+    client.global.set("email-get-etag", etag)
+    const modified = response.body.modified
+    client.log("modified", modified)
+    client.global.set("email-modified", modified)
+%}

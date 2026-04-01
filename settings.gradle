@@ -20,5 +20,6 @@ include(
         'user:security',
         'user:springboot-starter',
         'user:api',
+        'api-cache',
         'graphql'
 )
