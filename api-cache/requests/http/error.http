@@ -1,0 +1,12 @@
+### POST error
+POST http://{{baseUrl}}/test
+Authorization: Basic adm adm
+Content-Type: application/json
+
+{
+  "test": "toto"
+}
+
+### GET error
+GET http://{{baseUrl}}/test/123
+Authorization: Basic adm adm

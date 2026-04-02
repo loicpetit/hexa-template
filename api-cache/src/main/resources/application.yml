@@ -1,3 +1,9 @@
+apicache:
+  external:
+    email:
+      host: http://localhost:8010
+      mapping: /api/emails
+
 server:
   port: 8040
 

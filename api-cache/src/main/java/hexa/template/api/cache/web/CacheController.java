@@ -1,10 +1,12 @@
 package hexa.template.api.cache.web;
 
 import hexa.template.api.cache.domain.CacheRequest;
+import hexa.template.api.cache.domain.CacheResponse;
 import hexa.template.api.cache.domain.CacheService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,7 @@ import reactor.core.publisher.Mono;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.function.Function;
 
 @Controller
 @RequiredArgsConstructor
@@ -24,14 +27,9 @@ public class CacheController {
     @RequestMapping(path = "/**/*")
     public Mono<ResponseEntity<String>> request(final ServerHttpRequest httpRequest) throws IOException {
         return getBody(httpRequest)
-                .map(body -> new CacheRequest(
-                        httpRequest.getHeaders().getFirst(HttpHeaders.AUTHORIZATION),
-                        httpRequest.getMethod().name(),
-                        httpRequest.getURI().getPath(),
-                        body
-                ))
+                .map(toCacheRequest(httpRequest))
                 .flatMap(service::processRequest)
-                .map(response -> ResponseEntity.status(response.status()).body(response.body()));
+                .map(this::toReponseEntity);
     }
 
     private Mono<String> getBody(final ServerHttpRequest httpRequest) {
@@ -48,5 +46,21 @@ public class CacheController {
                         ByteArrayOutputStream::writeBytes
                 )
                 .map(ByteArrayOutputStream::toString);
+    }
+
+    private Function<String, CacheRequest> toCacheRequest(final ServerHttpRequest httpRequest) {
+        return body -> new CacheRequest(
+                httpRequest.getHeaders().getFirst(HttpHeaders.AUTHORIZATION),
+                httpRequest.getMethod(),
+                httpRequest.getURI().getPath(),
+                body
+        );
+    }
+
+    private ResponseEntity<String> toReponseEntity(final CacheResponse response) {
+        return ResponseEntity
+                .status(response.status())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response.body());
     }
 }

@@ -18,10 +18,21 @@ GET http://{{emailBaseUrl}}/{{email-id}}
 Authorization: Basic {{emailAuth.usr}} {{emailAuth.pwd}}
 
 > {%
-    const etag = response.headers.valueOf("ETag")
-    client.log("etag", etag)
-    client.global.set("email-get-etag", etag)
     const modified = response.body.modified
     client.log("modified", modified)
     client.global.set("email-modified", modified)
 %}
+
+### Get email by id - forbidden
+GET http://{{emailBaseUrl}}/{{email-id}}
+Authorization: Basic {{emailAuthForbidden.usr}} {{emailAuthForbidden.pwd}}
+
+### Update email
+PUT http://{{emailBaseUrl}}/{{email-id}}
+Authorization: Basic {{emailAuth.usr}} {{emailAuth.pwd}}
+Content-Type: application/json
+
+{
+  "value": "c.norris@kickass.com",
+  "modified": "{{email-modified}}"
+}
