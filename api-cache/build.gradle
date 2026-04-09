@@ -8,4 +8,7 @@ base {
     version = globalVersion
 }
 
-// todo get caffeine
+dependencies {
+    testImplementation  libs.wiremock
+    // todo get caffeine
+}

@@ -18,7 +18,7 @@ public class ApiAdapter {
         return processRequest(emailWebClient, request);
     }
 
-    public Mono<CacheResponse> processRequest(
+    private Mono<CacheResponse> processRequest(
             final WebClient webClient,
             final CacheRequest request
     ) {
