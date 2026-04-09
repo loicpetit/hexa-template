@@ -17,16 +17,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(
         classes = {
                 WebClientConfig.class,
-                ApiAdapter.class
+                EmailsApiAdapter.class
         },
         properties = {
                 "apicache.external.email.host=http://localhost:8080"
         }
 )
 @WireMockTest(httpPort = 8080)
-public class ApiAdapterTest {
+public class EmailsApiAdapterTest {
     @Autowired
-    private ApiAdapter adapter;
+    private Api emailsApiAdapter;
 
     @Test
     void shouldProcessEmailRequest() {
@@ -46,7 +46,7 @@ public class ApiAdapterTest {
                         )
         );
 
-        final var reponse = adapter.processEmailRequest(request).block();
+        final var reponse = emailsApiAdapter.processRequest(request).block();
 
         assertThat(reponse)
                 .as("reponse")
