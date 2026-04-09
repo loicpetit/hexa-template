@@ -19,20 +19,20 @@ public class CacheControllerAdvice {
 
     @ExceptionHandler(UnmanagedPathException.class)
     public ResponseEntity<ErrorDto> handle(final UnmanagedPathException ex) {
-        return handle(Error.UNMANAGED_PATH, ex);
+        return handle(Error.UNMANAGED_PATH, ex, ex.getPath());
     }
 
-    private ResponseEntity<ErrorDto> handle(final Error error, final Exception ex) {
-        log(error, ex);
-        return ResponseEntity.status(error.getStatus()).body(error.toDto());
+    private ResponseEntity<ErrorDto> handle(final Error error, final Exception ex, final Object... args) {
+        log(error, ex, args);
+        return ResponseEntity.status(error.getStatus()).body(error.toDto(args));
     }
 
-    private void log(final Error error, final Exception ex) {
+    private void log(final Error error, final Exception ex, final Object... args) {
         if (error.getStatus().is4xxClientError()) {
-            log.warn(error.message);
+            log.warn(error.message.formatted(args));
         }
         if (error.getStatus().is5xxServerError()) {
-            log.error(error.message, ex);
+            log.error(error.message.formatted(args), ex);
         }
     }
 
@@ -40,13 +40,15 @@ public class CacheControllerAdvice {
     @RequiredArgsConstructor
     private enum Error {
         INTERNAL_ERROR("hexa.cache.unexpected.error", "An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR),
-        UNMANAGED_PATH("hexa.cache.unmanaged.path.error", "An unmanaged path was requested", HttpStatus.NOT_FOUND);
+        UNMANAGED_PATH("hexa.cache.unmanaged.path.error", "An unmanaged path was requested: %s", HttpStatus.NOT_FOUND);
 
         private final String code;
         private final String message;
         private final HttpStatus status;
 
-        public ErrorDto toDto() { return new ErrorDto(code, message); }
+        public ErrorDto toDto(final Object... args) {
+            return new ErrorDto(code, message.formatted(args));
+        }
     }
 
     public record ErrorDto(
