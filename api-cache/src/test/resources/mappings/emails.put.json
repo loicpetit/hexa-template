@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "PUT",
+    "url": "/api/emails/1",
+    "bodyPatterns": [
+      {
+        "equalToJson": "{ \"value\": \"c.norris@kickass.com\", \"modified\": \"2026-04-10T14:39:40.6608024\" }"
+      }
+    ]
+  },
+  "response": {
+    "status": 204,
+    "body": ""
+  }
+}

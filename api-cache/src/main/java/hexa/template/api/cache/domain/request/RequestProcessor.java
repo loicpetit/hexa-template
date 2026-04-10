@@ -1,23 +1,25 @@
-package hexa.template.api.cache.domain;
+package hexa.template.api.cache.domain.request;
 
 import hexa.template.api.cache.config.WebClientProperties;
+import hexa.template.api.cache.domain.model.CacheRequest;
+import hexa.template.api.cache.domain.model.CacheResponse;
 import hexa.template.api.cache.external.api.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-@Service
+@Component
 @RequiredArgsConstructor
 @Slf4j
-public class CacheService {
+public class RequestProcessor {
     private final WebClientProperties properties;
-    private final Api emailsApiAdapter;
+    private final Api emailsApi;
 
     public Mono<CacheResponse> processRequest(final CacheRequest request) {
-        log.info("process {}", request);
+        log.info("process request {}", request);
         if (request.path().startsWith(properties.email().mapping())) {
-            return emailsApiAdapter.processRequest(request);
+            return emailsApi.processRequest(request);
         }
         return Mono.error(new UnmanagedPathException(request.path()));
     }

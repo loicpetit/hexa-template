@@ -9,6 +9,6 @@ base {
 }
 
 dependencies {
+    implementation      libs.caffeine
     testImplementation  libs.wiremock
-    // todo get caffeine
 }

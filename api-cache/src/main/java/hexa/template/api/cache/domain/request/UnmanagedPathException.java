@@ -1,4 +1,4 @@
-package hexa.template.api.cache.domain;
+package hexa.template.api.cache.domain.request;
 
 import lombok.Getter;
 

@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/api/emails/1"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json",
+      "ETag": "1438394038"
+    },
+    "body": "{ \"modified\": \"2026-04-10T14:39:40.6608024\", \"value\": \"bruce@kickass.com\" }"
+  }
+}

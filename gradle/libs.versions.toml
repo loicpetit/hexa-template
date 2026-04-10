@@ -3,6 +3,7 @@
 
 [versions]
 assertj = "3.27.6"
+caffeine = "3.2.3"
 junit = "6.0.2"
 lombok = "1.18.42"
 mapstruct = "1.6.3"
@@ -13,10 +14,11 @@ springboot = "4.0.2"
 wiremock = "3.13.2"
 
 [libraries]
-lombok =                     { module = "org.projectlombok:lombok",                                     version.ref = "lombok"        }
+assertj =                    { module = "org.assertj:assertj-core",                                     version.ref = "assertj"       }
+caffeine =                   { module = "com.github.ben-manes.caffeine:caffeine",                       version.ref = "caffeine"      }
 junit =                      { module = "org.junit.jupiter:junit-jupiter",                              version.ref = "junit"         }
 junit-platform =             { module = "org.junit.platform:junit-platform-launcher",                   version.ref = "junit"         }
-assertj =                    { module = "org.assertj:assertj-core",                                     version.ref = "assertj"       }
+lombok =                     { module = "org.projectlombok:lombok",                                     version.ref = "lombok"        }
 mapstruct =                  { module = "org.mapstruct:mapstruct",                                      version.ref = "mapstruct"     }
 mapstruct-processor =        { module = "org.mapstruct:mapstruct-processor",                            version.ref = "mapstruct"     }
 mockito-core =               { module = "org.mockito:mockito-core",                                     version.ref = "mockito"       }
@@ -26,6 +28,7 @@ picocli-jline =              { module = "info.picocli:picocli-shell-jline3",    
 picocli-springboot-starter = { module = "info.picocli:picocli-spring-boot-starter",                     version.ref = "picocli"       }
 springboot =                 { module = "org.springframework.boot:spring-boot-starter",                 version.ref = "springboot"    }
 springboot-test =            { module = "org.springframework.boot:spring-boot-starter-test",            version.ref = "springboot"    }
+springboot-cache =           { module = "org.springframework.boot:spring-boot-starter-cache",           version.ref = "springboot"    }
 springboot-graphql =         { module = "org.springframework.boot:spring-boot-starter-graphql",         version.ref = "springboot"    }
 springboot-graphql-test =    { module = "org.springframework.boot:spring-boot-starter-graphql-test",    version.ref = "springboot"    }
 springboot-security =        { module = "org.springframework.boot:spring-boot-starter-security",        version.ref = "springboot"    }

@@ -1,8 +1,8 @@
 package hexa.template.api.cache.web;
 
-import hexa.template.api.cache.domain.CacheRequest;
-import hexa.template.api.cache.domain.CacheResponse;
-import hexa.template.api.cache.domain.CacheService;
+import hexa.template.api.cache.domain.cache.CacheService;
+import hexa.template.api.cache.domain.model.CacheRequest;
+import hexa.template.api.cache.domain.model.CacheResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -28,7 +28,7 @@ public class CacheController {
     public Mono<ResponseEntity<String>> request(final ServerHttpRequest httpRequest) throws IOException {
         return getBody(httpRequest)
                 .map(toCacheRequest(httpRequest))
-                .flatMap(service::processRequest)
+                .flatMap(service::process)
                 .map(this::toReponseEntity);
     }
 

@@ -1,31 +1,16 @@
 package hexa.template.api.cache.web;
 
-import hexa.template.api.cache.config.SecurityConfig;
-import hexa.template.api.cache.domain.CacheService;
-import hexa.template.api.cache.domain.UnmanagedPathException;
+import hexa.template.api.cache.domain.request.UnmanagedPathException;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webflux.test.autoconfigure.WebFluxTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@WebFluxTest(controllers = CacheController.class)
-@Import({SecurityConfig.class, CacheControllerAdvice.class})
-class CacheControllerAdviceTest {
-    @Autowired
-    private WebTestClient webClient;
-
-    @MockitoBean
-    private CacheService service;
-
+class CacheControllerAdviceTest extends BaseWebFluxTest {
     @Test
     void shouldReturn404WhenPathIsUnmanaged() {
-        when(service.processRequest(any())).thenReturn(Mono.error(new UnmanagedPathException("/api/unknown")));
+        when(service.process(any())).thenReturn(Mono.error(new UnmanagedPathException("/api/unknown")));
 
         webClient.get()
                 .uri("/api/unknown")
@@ -38,7 +23,7 @@ class CacheControllerAdviceTest {
 
     @Test
     void shouldReturn500WhenUnexpectedExceptionOccurs() {
-        when(service.processRequest(any())).thenReturn(Mono.error(new RuntimeException("boom")));
+        when(service.process(any())).thenReturn(Mono.error(new RuntimeException("boom")));
 
         webClient.get()
                 .uri("/api/emails")

@@ -1,7 +1,7 @@
 package hexa.template.api.cache.external.api;
 
-import hexa.template.api.cache.domain.CacheRequest;
-import hexa.template.api.cache.domain.CacheResponse;
+import hexa.template.api.cache.domain.model.CacheRequest;
+import hexa.template.api.cache.domain.model.CacheResponse;
 import reactor.core.publisher.Mono;
 
 public interface Api {

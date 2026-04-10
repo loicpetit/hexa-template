@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/api/emails",
+    "bodyPatterns": [
+      {
+        "equalToJson": "{ \"value\": \"bruce@kickass.com\" }"
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": "1"
+  }
+}

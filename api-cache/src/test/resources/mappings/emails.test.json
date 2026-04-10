@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/api/emails",
+    "bodyPatterns": [
+      {
+        "equalToJson": "{ \"id\": 1 }"
+      }
+    ]
+  },
+  "response": {
+    "status": 201,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": "{\"result\": \"ok\"}"
+  }
+}

@@ -1,4 +1,4 @@
-package hexa.template.api.cache.domain;
+package hexa.template.api.cache.domain.model;
 
 import org.springframework.http.HttpMethod;
 

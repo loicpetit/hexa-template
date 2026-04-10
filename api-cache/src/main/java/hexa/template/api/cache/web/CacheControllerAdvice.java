@@ -1,6 +1,6 @@
 package hexa.template.api.cache.web;
 
-import hexa.template.api.cache.domain.UnmanagedPathException;
+import hexa.template.api.cache.domain.request.UnmanagedPathException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

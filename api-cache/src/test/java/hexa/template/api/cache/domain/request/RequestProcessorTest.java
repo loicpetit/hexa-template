@@ -1,6 +1,8 @@
-package hexa.template.api.cache.domain;
+package hexa.template.api.cache.domain.request;
 
 import hexa.template.api.cache.config.WebClientProperties;
+import hexa.template.api.cache.domain.model.CacheRequest;
+import hexa.template.api.cache.domain.model.CacheResponse;
 import hexa.template.api.cache.external.api.Api;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +18,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class CacheServiceTest {
+class RequestProcessorTest {
     private static final String EMAIL_MAPPING = "/api/emails";
 
     @Mock
@@ -25,11 +27,11 @@ class CacheServiceTest {
     private final WebClientProperties properties =
             new WebClientProperties(new WebClientProperties.Service("http://localhost:8010", EMAIL_MAPPING));
 
-    private CacheService service;
+    private RequestProcessor processor;
 
     @BeforeEach
     void beforeEach() {
-        service = new CacheService(properties, emailsApiAdapter);
+        processor = new RequestProcessor(properties, emailsApiAdapter);
     }
 
     @Test
@@ -38,7 +40,7 @@ class CacheServiceTest {
         final var expected = new CacheResponse(200, "");
         when(emailsApiAdapter.processRequest(same(request))).thenReturn(Mono.just(expected));
 
-        final CacheResponse response = service.processRequest(request).block();
+        final CacheResponse response = processor.processRequest(request).block();
 
         assertThat(response)
                 .as("response")
@@ -50,7 +52,7 @@ class CacheServiceTest {
         final var request = new CacheRequest(null, org.springframework.http.HttpMethod.GET, "/api/unknown", "");
 
         assertThatExceptionOfType(UnmanagedPathException.class)
-                .isThrownBy(() -> service.processRequest(request).block())
+                .isThrownBy(() -> processor.processRequest(request).block())
                 .withMessage("Unsupported path: /api/unknown")
                 .satisfies(ex -> assertThat(ex.getPath()).isEqualTo("/api/unknown"));
         verifyNoInteractions(emailsApiAdapter);

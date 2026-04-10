@@ -1,0 +1,10 @@
+{
+  "request": {
+    "method": "DELETE",
+    "url": "/api/emails/1"
+  },
+  "response": {
+    "status": 204,
+    "body": ""
+  }
+}
