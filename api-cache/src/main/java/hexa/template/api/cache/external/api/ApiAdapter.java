@@ -25,6 +25,9 @@ public class ApiAdapter implements Api {
     private Mono<CacheResponse> responseToMono(final ClientResponse response) {
         return response.bodyToMono(String.class)
                 .defaultIfEmpty("")
-                .map(body -> new CacheResponse(response.statusCode().value(), body));
+                .map(body -> CacheResponse.builder()
+                        .status(response.statusCode().value())
+                        .body(body)
+                        .build());
     }
 }

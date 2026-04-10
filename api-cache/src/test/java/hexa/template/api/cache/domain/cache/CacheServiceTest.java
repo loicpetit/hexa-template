@@ -32,8 +32,16 @@ class CacheServiceTest {
 
     @Test
     void shouldReadFromCacheWhenRequestMethodIsGet() {
-        final var request = new CacheRequest("Bearer token", HttpMethod.GET, "/api/emails/42", "");
-        final var expected = new CacheResponse(200, "{\"source\":\"cache\"}");
+        final var request = CacheRequest.builder()
+                .authorization("Bearer token")
+                .method(HttpMethod.GET)
+                .path("/api/emails/42")
+                .body("")
+                .build();
+        final var expected = CacheResponse.builder()
+                .status(200)
+                .body("{\"source\":\"cache\"}")
+                .build();
         when(cache.get(same(request))).thenReturn(Mono.just(expected));
 
         final CacheResponse response = service.process(request).block();
@@ -46,8 +54,16 @@ class CacheServiceTest {
 
     @Test
     void shouldDelegateToRequestProcessorWhenRequestMethodIsNotGet() {
-        final var request = new CacheRequest("Bearer token", HttpMethod.POST, "/api/emails", "{\"hello\":\"world\"}");
-        final var expected = new CacheResponse(201, "{\"result\":\"created\"}");
+        final var request = CacheRequest.builder()
+                .authorization("Bearer token")
+                .method(HttpMethod.POST)
+                .path("/api/emails")
+                .body("{\"hello\":\"world\"}")
+                .build();
+        final var expected = CacheResponse.builder()
+                .status(201)
+                .body("{\"result\":\"created\"}")
+                .build();
         when(requestProcessor.processRequest(same(request))).thenReturn(Mono.just(expected));
 
         final CacheResponse response = service.process(request).block();

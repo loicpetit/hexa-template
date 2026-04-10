@@ -27,12 +27,12 @@ public class EmailsApiAdapterTest {
 
     @Test
     void shouldProcessEmailRequest() {
-        final var request = new CacheRequest(
-                "emailToken",
-                HttpMethod.POST,
-                "/api/emails",
-                "{ \"id\": 1 }"
-        );
+        final var request = CacheRequest.builder()
+                .authorization("emailToken")
+                .method(HttpMethod.POST)
+                .path("/api/emails")
+                .body("{ \"id\": 1 }")
+                .build();
 
         final var reponse = emailsApi.processRequest(request).block();
 

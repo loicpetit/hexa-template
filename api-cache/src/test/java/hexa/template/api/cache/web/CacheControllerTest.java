@@ -16,7 +16,10 @@ import static org.mockito.Mockito.when;
 class CacheControllerTest extends BaseWebFluxTest {
     @Test
     void shouldForwardHttpRequestToServiceAndReturnServiceResponse() {
-        when(service.process(any())).thenReturn(Mono.just(new CacheResponse(200, "{\"result\":\"ok\"}")));
+        when(service.process(any())).thenReturn(Mono.just(CacheResponse.builder()
+                .status(200)
+                .body("{\"result\":\"ok\"}")
+                .build()));
 
         webClient.post()
                 .uri("/api/emails/42")

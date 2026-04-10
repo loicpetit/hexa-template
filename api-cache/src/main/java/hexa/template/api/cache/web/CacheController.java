@@ -49,12 +49,12 @@ public class CacheController {
     }
 
     private Function<String, CacheRequest> toCacheRequest(final ServerHttpRequest httpRequest) {
-        return body -> new CacheRequest(
-                httpRequest.getHeaders().getFirst(HttpHeaders.AUTHORIZATION),
-                httpRequest.getMethod(),
-                httpRequest.getURI().getPath(),
-                body
-        );
+        return body -> CacheRequest.builder()
+                .authorization(httpRequest.getHeaders().getFirst(HttpHeaders.AUTHORIZATION))
+                .method(httpRequest.getMethod())
+                .path(httpRequest.getURI().getPath())
+                .body(body)
+                .build();
     }
 
     private ResponseEntity<String> toReponseEntity(final CacheResponse response) {

@@ -28,8 +28,16 @@ class RequestCacheLoaderTest {
     class Load {
         @Test
         void shouldDelegateLoadToRequestProcessor() {
-            final var request = new CacheRequest("Bearer token", HttpMethod.GET, "/api/emails/42", "");
-            final var expected = new CacheResponse(200, "{\"source\":\"remote\"}");
+            final var request = CacheRequest.builder()
+                    .authorization("Bearer token")
+                    .method(HttpMethod.GET)
+                    .path("/api/emails/42")
+                    .body("")
+                    .build();
+            final var expected = CacheResponse.builder()
+                    .status(200)
+                    .body("{\"source\":\"remote\"}")
+                    .build();
             when(requestProcessor.processRequest(same(request))).thenReturn(Mono.just(expected));
 
             final CacheResponse response = loader.load(request).block();
@@ -44,9 +52,20 @@ class RequestCacheLoaderTest {
     class Reload {
         @Test
         void shouldDelegateReloadToRequestProcessor() {
-            final var request = new CacheRequest("Bearer token", HttpMethod.GET, "/api/emails/42", "");
-            final var oldResponse = new CacheResponse(304, "{\"etag\":\"abc\"}");
-            final var expected = new CacheResponse(200, "{\"source\":\"reloaded\"}");
+            final var request = CacheRequest.builder()
+                    .authorization("Bearer token")
+                    .method(HttpMethod.GET)
+                    .path("/api/emails/42")
+                    .body("")
+                    .build();
+            final var oldResponse = CacheResponse.builder()
+                    .status(304)
+                    .body("{\"etag\":\"abc\"}")
+                    .build();
+            final var expected = CacheResponse.builder()
+                    .status(200)
+                    .body("{\"source\":\"reloaded\"}")
+                    .build();
             when(requestProcessor.processRequest(same(request))).thenReturn(Mono.just(expected));
 
             final CacheResponse response = loader.reload(request, oldResponse).block();
