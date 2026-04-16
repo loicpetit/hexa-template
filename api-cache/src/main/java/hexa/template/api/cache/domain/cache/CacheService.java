@@ -30,6 +30,10 @@ public class CacheService {
                 .doOnNext(response -> evictIfNecessary(request, response));
     }
 
+    public void clear() {
+        cache.evictAll();
+    }
+
     private boolean isCacheable(final CacheRequest request) {
         return HttpMethod.GET.equals(request.method());
     }

@@ -1,0 +1,3 @@
+### Clear
+DELETE http://{{baseUrl}}/cache
+Authorization: Basic {{emailAuth.usr}} {{emailAuth.pwd}}

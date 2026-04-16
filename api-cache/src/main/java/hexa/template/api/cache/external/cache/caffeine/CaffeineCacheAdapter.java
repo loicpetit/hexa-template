@@ -38,4 +38,9 @@ public class CaffeineCacheAdapter<KEY,VALUE> implements Cache<KEY, VALUE> {
     public Stream<KEY> keys() {
         return cache.asMap().keySet().stream();
     }
+
+    @Override
+    public void evictAll() {
+        cache.synchronous().invalidateAll();
+    }
 }

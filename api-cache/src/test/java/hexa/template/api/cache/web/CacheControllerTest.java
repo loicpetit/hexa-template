@@ -45,4 +45,13 @@ class CacheControllerTest extends BaseWebFluxTest {
                     assertThat(request.body()).isEqualTo("{\"hello\":\"world\"}");
                 });
     }
+
+    @Test
+    void shouldClearCache() {
+        webClient.delete()
+                .uri("/cache")
+                .exchange()
+                .expectStatus().isNoContent();
+        verify(service).clear();
+    }
 }

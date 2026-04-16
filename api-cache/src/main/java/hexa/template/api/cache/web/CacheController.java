@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import reactor.core.publisher.Mono;
 
@@ -23,6 +24,13 @@ import java.util.function.Function;
 @Slf4j
 public class CacheController {
     private final CacheService service;
+
+    @DeleteMapping("/cache")
+    public ResponseEntity<Void> clearCache() {
+        log.info("clear cache");
+        service.clear();
+        return ResponseEntity.noContent().build();
+    }
 
     @RequestMapping(path = "/**/*")
     public Mono<ResponseEntity<String>> request(final ServerHttpRequest httpRequest) throws IOException {
