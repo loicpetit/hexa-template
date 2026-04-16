@@ -45,7 +45,29 @@ public class EmailsApiAdapterTest {
                                 .isEqualTo(201),
                         r -> assertThat(r.body())
                                 .as("body")
-                                .isEqualTo("{\"result\": \"ok\"}")
+                                .isEqualTo("{\"result\": \"ok\"}"),
+                        r -> assertThat(r.eTag())
+                                .as("eTag")
+                                .isNull()
+                );
+    }
+
+    @Test
+    void shouldExtractEtag() {
+        final var request = CacheRequest.builder()
+                .authorization("emailToken")
+                .method(HttpMethod.GET)
+                .path("/api/emails/1")
+                .build();
+
+        final var reponse = emailsApi.processRequest(request).block();
+
+        assertThat(reponse)
+                .as("reponse")
+                .isNotNull()
+                .satisfies(r -> assertThat(r.eTag())
+                        .as("eTag")
+                        .isIn("1438394038", "1438394038--gzip")
                 );
     }
 }
