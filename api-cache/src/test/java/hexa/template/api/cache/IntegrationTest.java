@@ -20,11 +20,11 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 @SpringBootTest(
         properties = {
-                "apicache.external.email.host=http://localhost:8080"
+                "apicache.external.email.host=http://localhost:8082"
         }
 )
 @AutoConfigureWebTestClient
-@WireMockTest(httpPort = 8080)
+@WireMockTest(httpPort = 8082)
 public class IntegrationTest {
     @Autowired
     protected WebTestClient webClient;
