@@ -24,9 +24,9 @@ public class RequestCacheLoader implements CacheLoader<CacheRequest, CacheRespon
     @Override
     public Mono<CacheResponse> reload(CacheRequest request, CacheResponse oldResponse) {
         log.info("reload {} with old {}", request, oldResponse);
+        // todo use old value if 304 not modified
         return requestProcessor.processRequest(
-                request
-//                request.withEtag(oldValue.etag()) TODO
+                request.toBuilder().ifNoneMatch(oldResponse.eTag()).build()
         );
     }
 }

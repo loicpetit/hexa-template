@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -21,6 +22,12 @@ public class ApiAdapter implements Api {
                 .method(request.method())
                 .uri(request.path())
                 .header(HttpHeaders.AUTHORIZATION, request.authorization())
+                .headers(headers -> {
+                    headers.put(HttpHeaders.AUTHORIZATION, List.of(request.authorization()));
+                    if (request.ifNoneMatch() != null && !request.ifNoneMatch().isBlank()) {
+                        headers.put(HttpHeaders.IF_NONE_MATCH, List.of(request.ifNoneMatch()));
+                    }
+                })
                 .bodyValue(body)
                 .exchangeToMono(this::responseToMono);
     }

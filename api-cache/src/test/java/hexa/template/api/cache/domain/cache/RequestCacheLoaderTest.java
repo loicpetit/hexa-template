@@ -6,6 +6,7 @@ import hexa.template.api.cache.domain.request.RequestProcessor;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpMethod;
 import reactor.core.publisher.Mono;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.when;
 
@@ -52,27 +54,54 @@ class RequestCacheLoaderTest {
     class Reload {
         @Test
         void shouldDelegateReloadToRequestProcessor() {
-            final var request = CacheRequest.builder()
-                    .authorization("Bearer token")
-                    .method(HttpMethod.GET)
-                    .path("/api/emails/42")
-                    .body("")
-                    .build();
-            final var oldResponse = CacheResponse.builder()
-                    .status(304)
-                    .body("{\"etag\":\"abc\"}")
-                    .build();
+            final var request = CacheRequest.builder().build();
+            final var oldResponse = CacheResponse.builder().build();
             final var expected = CacheResponse.builder()
                     .status(200)
                     .body("{\"source\":\"reloaded\"}")
                     .build();
-            when(requestProcessor.processRequest(same(request))).thenReturn(Mono.just(expected));
+            when(requestProcessor.processRequest(any())).thenReturn(Mono.just(expected));
 
             final CacheResponse response = loader.reload(request, oldResponse).block();
 
             assertThat(response)
                     .as("reload should return request processor response")
                     .isSameAs(expected);
+        }
+
+        @Test
+        void ifEtagShouldSetIfNoneMatch() {
+            final var request = CacheRequest.builder().build();
+            final var oldResponse = CacheResponse.builder()
+                    .eTag("123")
+                    .build();
+            final var captor = ArgumentCaptor.forClass(CacheRequest.class);
+            when(requestProcessor.processRequest(captor.capture())).thenReturn(Mono.empty());
+
+            loader.reload(request, oldResponse).block();
+
+            final var processedRequest = captor.getValue();
+            assertThat(processedRequest)
+                    .as("processed request")
+                    .isNotNull()
+                    .satisfies(
+                            r -> assertThat(r.authorization())
+                                    .as("authorization")
+                                    .isEqualTo(request.authorization()),
+                            r -> assertThat(r.body())
+                                    .as("body")
+                                    .isEqualTo(request.body()),
+                            r -> assertThat(r.ifNoneMatch())
+                                    .as("ifNoneMatch")
+                                    .isNotEqualTo(request.ifNoneMatch())
+                                    .isEqualTo(oldResponse.eTag()),
+                            r -> assertThat(r.method())
+                                    .as("method")
+                                    .isEqualTo(request.method()),
+                            r -> assertThat(r.path())
+                                    .as("path")
+                                    .isEqualTo(request.path())
+                    );
         }
     }
 }

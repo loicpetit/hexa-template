@@ -16,12 +16,14 @@ class CacheRequestTest {
                     .method(null)
                     .path(null)
                     .body(null)
+                    .ifNoneMatch(null)
                     .build();
             final var r2 = CacheRequest.builder()
                     .authorization(null)
                     .method(null)
                     .path(null)
                     .body(null)
+                    .ifNoneMatch(null)
                     .build();
 
             assertThat(r1.equals(r2))
@@ -31,8 +33,20 @@ class CacheRequestTest {
 
         @Test
         void requestsWithAllFieldsShouldBeEqual() {
-            final var r1 = CacheRequest.builder().authorization("a").method(HttpMethod.GET).path("p").body("b").build();
-            final var r2 = CacheRequest.builder().authorization("a").method(HttpMethod.GET).path("p").body("b").build();
+            final var r1 = CacheRequest.builder()
+                    .authorization("a")
+                    .method(HttpMethod.GET)
+                    .path("p")
+                    .body("b")
+                    .ifNoneMatch("i")
+                    .build();
+            final var r2 = CacheRequest.builder()
+                    .authorization("a")
+                    .method(HttpMethod.GET)
+                    .path("p")
+                    .body("b")
+                    .ifNoneMatch("i")
+                    .build();
 
             assertThat(r1.equals(r2))
                     .as("requests with same all fields should be equal")
@@ -41,8 +55,20 @@ class CacheRequestTest {
 
         @Test
         void requestsWithDifferentAuthorizationShouldNotBeEqual() {
-            final var r1 = CacheRequest.builder().authorization("a1").method(HttpMethod.GET).path("p").body("b").build();
-            final var r2 = CacheRequest.builder().authorization("a2").method(HttpMethod.GET).path("p").body("b").build();
+            final var r1 = CacheRequest.builder()
+                    .authorization("a1")
+                    .method(HttpMethod.GET)
+                    .path("p")
+                    .body("b")
+                    .ifNoneMatch("i")
+                    .build();
+            final var r2 = CacheRequest.builder()
+                    .authorization("a2")
+                    .method(HttpMethod.GET)
+                    .path("p")
+                    .body("b")
+                    .ifNoneMatch("i")
+                    .build();
 
             assertThat(r1.equals(r2))
                     .as("requests with different authorization should NOT be equal")
@@ -51,8 +77,20 @@ class CacheRequestTest {
 
         @Test
         void requestsWithDifferentMethodShouldNotBeEqual() {
-            final var r1 = CacheRequest.builder().authorization("a").method(HttpMethod.POST).path("p").body("b").build();
-            final var r2 = CacheRequest.builder().authorization("a").method(HttpMethod.GET).path("p").body("b").build();
+            final var r1 = CacheRequest.builder()
+                    .authorization("a")
+                    .method(HttpMethod.POST)
+                    .path("p")
+                    .body("b")
+                    .ifNoneMatch("i")
+                    .build();
+            final var r2 = CacheRequest.builder()
+                    .authorization("a")
+                    .method(HttpMethod.GET)
+                    .path("p")
+                    .body("b")
+                    .ifNoneMatch("i")
+                    .build();
 
             assertThat(r1.equals(r2))
                     .as("requests with different method should NOT be equal")
@@ -61,8 +99,18 @@ class CacheRequestTest {
 
         @Test
         void requestsWithDifferentPathShouldNotBeEqual() {
-            final var r1 = CacheRequest.builder().authorization("a").method(HttpMethod.GET).path("p1").body("b").build();
-            final var r2 = CacheRequest.builder().authorization("a").method(HttpMethod.GET).path("p2").body("b").build();
+            final var r1 = CacheRequest.builder()
+                    .authorization("a")
+                    .method(HttpMethod.GET)
+                    .path("p1")
+                    .body("b")
+                    .build();
+            final var r2 = CacheRequest.builder()
+                    .authorization("a")
+                    .method(HttpMethod.GET)
+                    .path("p2")
+                    .body("b")
+                    .build();
 
             assertThat(r1.equals(r2))
                     .as("requests with different path should NOT be equal")
@@ -71,8 +119,40 @@ class CacheRequestTest {
 
         @Test
         void requestsWithDifferentBodyShouldNotBeEqual() {
-            final var r1 = CacheRequest.builder().authorization("a").method(HttpMethod.GET).path("p").body("b1").build();
-            final var r2 = CacheRequest.builder().authorization("a").method(HttpMethod.GET).path("p").body("b2").build();
+            final var r1 = CacheRequest.builder()
+                    .authorization("a")
+                    .method(HttpMethod.GET)
+                    .path("p")
+                    .body("b1")
+                    .build();
+            final var r2 = CacheRequest.builder()
+                    .authorization("a")
+                    .method(HttpMethod.GET)
+                    .path("p")
+                    .body("b2")
+                    .build();
+
+            assertThat(r1.equals(r2))
+                    .as("requests with different body should NOT be equal")
+                    .isFalse();
+        }
+
+        @Test
+        void requestsWithDifferentIfNoneMatchShouldNotBeEqual() {
+            final var r1 = CacheRequest.builder()
+                    .authorization("a")
+                    .method(HttpMethod.GET)
+                    .path("p")
+                    .body("b")
+                    .ifNoneMatch("i1")
+                    .build();
+            final var r2 = CacheRequest.builder()
+                    .authorization("a")
+                    .method(HttpMethod.GET)
+                    .path("p")
+                    .body("b")
+                    .ifNoneMatch("i2")
+                    .build();
 
             assertThat(r1.equals(r2))
                     .as("requests with different body should NOT be equal")

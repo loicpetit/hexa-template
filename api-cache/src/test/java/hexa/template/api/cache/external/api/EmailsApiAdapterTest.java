@@ -70,4 +70,24 @@ public class EmailsApiAdapterTest {
                         .isIn("1438394038", "1438394038--gzip")
                 );
     }
+
+    @Test
+    void shouldUseIfNoneMatch() {
+        final var request = CacheRequest.builder()
+                .authorization("emailToken")
+                .method(HttpMethod.GET)
+                .path("/api/emails/2")
+                .ifNoneMatch("1438394038")
+                .build();
+
+        final var reponse = emailsApi.processRequest(request).block();
+
+        assertThat(reponse)
+                .as("reponse")
+                .isNotNull()
+                .satisfies(r -> assertThat(r.status())
+                        .as("status")
+                        .isEqualTo(304)
+                );
+    }
 }
