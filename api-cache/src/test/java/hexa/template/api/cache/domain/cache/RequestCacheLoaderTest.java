@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -102,6 +103,25 @@ class RequestCacheLoaderTest {
                                     .as("path")
                                     .isEqualTo(request.path())
                     );
+        }
+
+        @Test
+        void ifResponseStatusUnmodifiedShouldReturnOldValue() {
+            final var request = CacheRequest.builder().build();
+            final var oldResponse = CacheResponse.builder()
+                    .status(HttpStatus.OK.value())
+                    .build();
+            final var newResponse = CacheResponse.builder()
+                    .status(HttpStatus.NOT_MODIFIED.value())
+                    .build();
+            when(requestProcessor.processRequest(any())).thenReturn(Mono.just(newResponse));
+
+            final CacheResponse response = loader.reload(request, oldResponse).block();
+
+            assertThat(response)
+                    .as("reload should return old response")
+                    .isSameAs(oldResponse)
+                    .isNotSameAs(newResponse);
         }
     }
 }

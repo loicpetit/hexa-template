@@ -6,6 +6,7 @@ import hexa.template.api.cache.domain.request.RequestProcessor;
 import hexa.template.api.cache.external.cache.CacheLoader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -24,9 +25,14 @@ public class RequestCacheLoader implements CacheLoader<CacheRequest, CacheRespon
     @Override
     public Mono<CacheResponse> reload(CacheRequest request, CacheResponse oldResponse) {
         log.info("reload {} with old {}", request, oldResponse);
-        // todo use old value if 304 not modified
         return requestProcessor.processRequest(
                 request.toBuilder().ifNoneMatch(oldResponse.eTag()).build()
-        );
+        ).map(response -> {
+            if (HttpStatus.NOT_MODIFIED.value() == response.status()) {
+                log.info("not modified, return old response");
+                return oldResponse;
+            }
+            return response;
+        });
     }
 }
