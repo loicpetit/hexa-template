@@ -76,7 +76,7 @@ public class EmailsApiAdapterTest {
         final var request = CacheRequest.builder()
                 .authorization("emailToken")
                 .method(HttpMethod.GET)
-                .path("/api/emails/2")
+                .path("/api/emails/1")
                 .ifNoneMatch("1438394038")
                 .build();
 

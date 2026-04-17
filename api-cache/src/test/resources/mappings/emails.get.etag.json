@@ -1,12 +1,12 @@
 {
   "request": {
     "method": "GET",
+    "url": "/api/emails/1",
     "headers": {
       "If-None-Match": {
         "equalTo": "1438394038"
       }
-    },
-    "url": "/api/emails/2"
+    }
   },
   "response": {
     "status": 304,

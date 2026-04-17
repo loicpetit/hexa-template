@@ -1,7 +1,12 @@
 {
   "request": {
     "method": "GET",
-    "url": "/api/emails/1"
+    "url": "/api/emails/1",
+    "headers": {
+      "If-None-Match": {
+        "absent": true
+      }
+    }
   },
   "response": {
     "status": 200,
