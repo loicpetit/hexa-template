@@ -22,7 +22,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 @SpringBootTest(
         properties = {
-                "apicache.external.email.host=http://localhost:8082"
+                "apicache.external.emails.host=http://localhost:8082"
         }
 )
 @AutoConfigureWebTestClient

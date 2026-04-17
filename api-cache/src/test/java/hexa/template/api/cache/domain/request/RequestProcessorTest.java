@@ -20,13 +20,16 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RequestProcessorTest {
-    private static final String EMAIL_MAPPING = "/api/emails";
+    private static final String EMAILS_MAPPING = "/api/emails";
+    private static final String USERS_MAPPING = "/api/users";
 
     @Mock
     private Api emailsApiAdapter;
 
-    private final WebClientConfig.Properties properties =
-            new WebClientConfig.Properties(new WebClientConfig.Api("http://localhost:8010", EMAIL_MAPPING));
+    private final WebClientConfig.Properties properties = new WebClientConfig.Properties(
+                    new WebClientConfig.Api("http://localhost:8010", EMAILS_MAPPING),
+                    new WebClientConfig.Api("http://localhost:8020", USERS_MAPPING)
+    );
 
     private RequestProcessor processor;
 

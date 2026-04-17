@@ -22,7 +22,7 @@ import java.nio.charset.StandardCharsets;
 public class WebClientConfig {
     @Bean
     WebClient emailWebClient(final Properties properties) {
-        return webClient(properties.email());
+        return webClient(properties.emails());
     }
 
     private WebClient webClient(final Api api) {
@@ -44,7 +44,8 @@ public class WebClientConfig {
 
     @ConfigurationProperties(prefix = "apicache.external")
     public record Properties(
-            Api email
+            Api emails,
+            Api users
     ) {
     }
 

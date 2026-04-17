@@ -18,7 +18,7 @@ public class RequestProcessor {
 
     public Mono<CacheResponse> processRequest(final CacheRequest request) {
         log.info("process request {}", request);
-        if (request.path().startsWith(properties.email().mapping())) {
+        if (request.path().startsWith(properties.emails().mapping())) {
             return emailsApi.processRequest(request);
         }
         return Mono.error(new UnmanagedPathException(request.path()));

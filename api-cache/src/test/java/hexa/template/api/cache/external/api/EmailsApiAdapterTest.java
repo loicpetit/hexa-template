@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
                 ApiConfig.class
         },
         properties = {
-                "apicache.external.email.host=http://localhost:8081"
+                "apicache.external.emails.host=http://localhost:8081"
         }
 )
 @WireMockTest(httpPort = 8081)

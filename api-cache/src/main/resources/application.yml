@@ -1,8 +1,11 @@
 apicache:
   external:
-    email:
+    emails:
       host: http://localhost:8010
       mapping: /api/emails
+    users:
+      host: http://localhost:8020
+      mapping: /api/users
   properties:
     maximum-size: 1000
     expire-after-write-minutes: 60
