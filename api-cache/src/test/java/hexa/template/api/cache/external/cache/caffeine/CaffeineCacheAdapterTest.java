@@ -1,10 +1,11 @@
 package hexa.template.api.cache.external.cache.caffeine;
 
 import hexa.template.api.cache.external.cache.CacheLoader;
+import hexa.template.api.cache.external.cache.CacheProperties;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
@@ -18,11 +19,21 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CaffeineCacheAdapterTest {
-    @InjectMocks
     private CaffeineCacheAdapter<String, String> cache;
 
 	@Mock
 	private CacheLoader<String, String> loader;
+
+	@Mock()
+	private CacheProperties properties;
+
+	@BeforeEach
+	void before() {
+		when(properties.maximumSize()).thenReturn(100);
+		when(properties.expireAfterWriteMinutes()).thenReturn(2);
+		when(properties.refreshAfterWriteMinutes()).thenReturn(1);
+		cache = new CaffeineCacheAdapter<>(properties, loader);
+	}
 
 	@Nested
 	class Get {

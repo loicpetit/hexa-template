@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.AsyncLoadingCache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import hexa.template.api.cache.external.cache.Cache;
 import hexa.template.api.cache.external.cache.CacheLoader;
+import hexa.template.api.cache.external.cache.CacheProperties;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
@@ -14,11 +15,14 @@ import java.util.stream.Stream;
 public class CaffeineCacheAdapter<KEY,VALUE> implements Cache<KEY, VALUE> {
     private final AsyncLoadingCache<KEY, VALUE> cache;
 
-    public CaffeineCacheAdapter(CacheLoader<KEY, VALUE> loader) {
+    public CaffeineCacheAdapter(
+            final CacheProperties properties,
+            final CacheLoader<KEY, VALUE> loader
+    ) {
         this.cache = Caffeine.newBuilder()
-                .maximumSize(1000)
-                .expireAfterWrite(Duration.ofMinutes(3))
-                .refreshAfterWrite(Duration.ofMinutes(1))
+                .maximumSize(properties.maximumSize())
+                .expireAfterWrite(Duration.ofMinutes(properties.expireAfterWriteMinutes()))
+                .refreshAfterWrite(Duration.ofMinutes(properties.refreshAfterWriteMinutes()))
                 .buildAsync(new CaffeineCacheLoaderAdapter<>(loader));
     }
 

@@ -3,6 +3,10 @@ apicache:
     email:
       host: http://localhost:8010
       mapping: /api/emails
+  properties:
+    maximum-size: 1000
+    expire-after-write-minutes: 60
+    refresh-after-write-minutes: 1
 
 server:
   port: 8040
