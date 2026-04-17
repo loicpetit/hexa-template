@@ -13,7 +13,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpMethod;
 import reactor.core.publisher.Mono;
 
+import java.util.stream.Stream;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -74,8 +77,63 @@ class CacheServiceTest {
             assertThat(response)
                     .as("response should come from request processor")
                     .isSameAs(expected);
-            verify(cache, never()).get(same(request));
-            verify(cache, never()).evict(same(request));
+            verifyNoInteractions(cache);
+        }
+
+        @Nested
+        class Evict {
+            @Test
+            void ifInvalidateCacheButNoRequestToInvalidateShouldNotEvictAnything() {
+                final var request = CacheRequest.builder()
+                        .authorization("Bearer token")
+                        .method(HttpMethod.PUT)
+                        .path("/api/emails/1")
+                        .build();
+                final var cachedRequest1 = CacheRequest.builder()
+                        .authorization("Bearer other")
+                        .method(HttpMethod.GET)
+                        .path("/api/emails/1")
+                        .build();
+                final var cachedRequest2 = CacheRequest.builder()
+                        .authorization("Bearer token")
+                        .method(HttpMethod.GET)
+                        .path("/api/emails/2")
+                        .build();
+                final var apiResponse = CacheResponse.builder()
+                        .status(200)
+                        .invalidateCache("/api/emails/1")
+                        .build();
+                when(requestProcessor.processRequest(same(request))).thenReturn(Mono.just(apiResponse));
+                when(cache.keys()).thenReturn(Stream.of(cachedRequest1, cachedRequest2));
+
+                service.process(request).block();
+
+                verify(cache, never()).evict(any());
+            }
+
+            @Test
+            void ifInvalidateCacheShouldEvictCachedRequest() {
+                final var request = CacheRequest.builder()
+                        .authorization("Bearer token")
+                        .method(HttpMethod.PUT)
+                        .path("/api/emails/1")
+                        .build();
+                final var cachedRequest = CacheRequest.builder()
+                        .authorization("Bearer token")
+                        .method(HttpMethod.GET)
+                        .path("/api/emails/1")
+                        .build();
+                final var expected = CacheResponse.builder()
+                        .status(200)
+                        .invalidateCache("/api/emails/1")
+                        .build();
+                when(requestProcessor.processRequest(same(request))).thenReturn(Mono.just(expected));
+                when(cache.keys()).thenReturn(Stream.of(cachedRequest));
+
+                service.process(request).block();
+
+                verify(cache).evict(same(cachedRequest));
+            }
         }
     }
 

@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -43,16 +44,33 @@ public class CacheService {
             final CacheResponse response
     ) {
         log.info("evict if necessary {} {}", request, response);
-            getEvictHeader(response)
-                    .map(header -> toRequestToEvict(header, request.authorization()))
-                    .ifPresent(cache::evict);
+        Optional.of(response)
+                .map(CacheResponse::invalidateCache)
+                .map(invalidateCache -> new InvalidateRequest(
+                        invalidateCache,
+                        request.authorization()
+                ))
+                .map(this::getRequestsToInvalidate)
+                .ifPresent(this::evictRequests);
     }
 
-    private Optional<String> getEvictHeader(final CacheResponse response) {
-        return Optional.empty(); // TODO
+    private Collection<CacheRequest> getRequestsToInvalidate(final InvalidateRequest invalidateRequest) {
+        log.info("search requests to invalidate...");
+        return cache.keys()
+                .filter(invalidateRequest::match)
+                .toList();
     }
 
-    private CacheRequest toRequestToEvict(String header, String authorization) {
-        return null;
+    private void evictRequests(final Collection<CacheRequest> requests) {
+        requests.forEach(cache::evict);
+    }
+
+    private record InvalidateRequest(
+            String path,
+            String authorization
+    ) {
+        boolean match(final CacheRequest cacheRequest) {
+            return cacheRequest.path().equals(path) && cacheRequest.authorization().equals(authorization);
+        }
     }
 }
