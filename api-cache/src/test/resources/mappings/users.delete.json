@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "DELETE",
+    "url": "/api/users/1"
+  },
+  "response": {
+    "status": 204,
+    "headers": {
+      "X-Invalidate-Cache": "/api/users/1"
+    },
+    "body": ""
+  }
+}

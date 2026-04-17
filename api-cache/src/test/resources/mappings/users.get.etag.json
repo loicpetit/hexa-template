@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/api/users/1",
+    "headers": {
+      "If-None-Match": {
+        "equalTo": "2345970080"
+      }
+    }
+  },
+  "response": {
+    "status": 304,
+    "headers": {
+      "ETag": "2345970080"
+    },
+    "body": ""
+  }
+}

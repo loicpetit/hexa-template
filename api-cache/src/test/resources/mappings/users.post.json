@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/api/users",
+    "bodyPatterns": [
+      {
+        "equalToJson": "{ \"firstName\": \"Chuck\" }"
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": "1"
+  }
+}

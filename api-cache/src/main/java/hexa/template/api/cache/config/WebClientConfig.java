@@ -21,8 +21,13 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class WebClientConfig {
     @Bean
-    WebClient emailWebClient(final Properties properties) {
+    WebClient emailsWebClient(final Properties properties) {
         return webClient(properties.emails());
+    }
+
+    @Bean
+    WebClient usersWebClient(final Properties properties) {
+        return webClient(properties.users());
     }
 
     private WebClient webClient(final Api api) {

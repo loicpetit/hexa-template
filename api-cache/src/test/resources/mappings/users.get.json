@@ -1,0 +1,19 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/api/users/1",
+    "headers": {
+      "If-None-Match": {
+        "absent": true
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json",
+      "ETag": "2345970080"
+    },
+    "body": "{ \"modified\": \"2026-04-12T15:12:33.0129388\", \"firstName\": \"Chuck\" }"
+  }
+}

@@ -14,4 +14,11 @@ public class ApiConfig {
     ) {
         return new ApiAdapter(emailsWebClient);
     }
+
+    @Bean
+    public Api usersApi(
+            final WebClient usersWebClient
+    ) {
+        return new ApiAdapter(usersWebClient);
+    }
 }

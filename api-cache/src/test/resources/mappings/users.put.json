@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "PUT",
+    "url": "/api/users/1",
+    "bodyPatterns": [
+      {
+        "equalToJson": "{ \"firstName\": \"Bruce\", \"modified\": \"2026-04-12T15:12:33.0129388\" }"
+      }
+    ]
+  },
+  "response": {
+    "status": 204,
+    "headers": {
+      "X-Invalidate-Cache": "/api/users/1"
+    },
+    "body": ""
+  }
+}
