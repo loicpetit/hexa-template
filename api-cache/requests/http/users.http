@@ -1,0 +1,49 @@
+### Create user
+POST http://{{usersBaseUrl}}
+Authorization: Basic {{userAuth.usr}} {{userAuth.pwd}}
+Content-Type: application/json
+
+{
+  "firstName": "Chuck",
+  "name": "Norris",
+  "emailId": 10
+}
+
+> {%
+    const userId = response.body.id
+    client.log("user id", userId)
+    client.global.set("user-id", userId)
+%}
+
+### Get all users
+GET http://{{usersBaseUrl}}
+Authorization: Basic {{userAuth.usr}} {{userAuth.pwd}}
+
+### Get user by id
+GET http://{{usersBaseUrl}}/{{user-id}}
+Authorization: Basic {{userAuth.usr}} {{userAuth.pwd}}
+
+> {%
+    const modified = response.body.modified
+    client.log("modified", modified)
+    client.global.set("user-modified", modified)
+%}
+
+### Get user by id - bad id
+GET http://{{usersBaseUrl}}/1000
+Authorization: Basic {{userAuth.usr}} {{userAuth.pwd}}
+
+### Get user by id - forbidden
+GET http://{{usersBaseUrl}}/{{user-id}}
+Authorization: Basic {{userAuthForbidden.usr}} {{userAuthForbidden.pwd}}
+
+### Update user
+PUT http://{{usersBaseUrl}}/{{user-id}}
+Authorization: Basic {{userAuth.usr}} {{userAuth.pwd}}
+Content-Type: application/json
+
+{
+  "firstName": "Bruce",
+  "name": "Lee",
+  "modified": "{{user-modified}}"
+}

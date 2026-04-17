@@ -1,5 +1,5 @@
 ### Create email
-POST http://{{emailBaseUrl}}
+POST http://{{emailsBaseUrl}}
 Authorization: Basic {{emailAuth.usr}} {{emailAuth.pwd}}
 Content-Type: application/json
 
@@ -14,7 +14,7 @@ Content-Type: application/json
 %}
 
 ### Get email by id
-GET http://{{emailBaseUrl}}/{{email-id}}
+GET http://{{emailsBaseUrl}}/{{email-id}}
 Authorization: Basic {{emailAuth.usr}} {{emailAuth.pwd}}
 
 > {%
@@ -24,11 +24,11 @@ Authorization: Basic {{emailAuth.usr}} {{emailAuth.pwd}}
 %}
 
 ### Get email by id - forbidden
-GET http://{{emailBaseUrl}}/{{email-id}}
+GET http://{{emailsBaseUrl}}/{{email-id}}
 Authorization: Basic {{emailAuthForbidden.usr}} {{emailAuthForbidden.pwd}}
 
 ### Update email
-PUT http://{{emailBaseUrl}}/{{email-id}}
+PUT http://{{emailsBaseUrl}}/{{email-id}}
 Authorization: Basic {{emailAuth.usr}} {{emailAuth.pwd}}
 Content-Type: application/json
 

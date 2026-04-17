@@ -20,26 +20,26 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RequestProcessorTest {
-    private static final String EMAILS_MAPPING = "/api/emails";
-    private static final String USERS_MAPPING = "/api/users";
-
     @Mock
     private Api emailsApiAdapter;
 
+    @Mock
+    private Api usersApiAdapter;
+
     private final WebClientConfig.Properties properties = new WebClientConfig.Properties(
-                    new WebClientConfig.Api("http://localhost:8010", EMAILS_MAPPING),
-                    new WebClientConfig.Api("http://localhost:8020", USERS_MAPPING)
+                    new WebClientConfig.Api("http://localhost:8010", "/api/emails"),
+                    new WebClientConfig.Api("http://localhost:8020", "/api/users")
     );
 
     private RequestProcessor processor;
 
     @BeforeEach
     void beforeEach() {
-        processor = new RequestProcessor(properties, emailsApiAdapter);
+        processor = new RequestProcessor(properties, emailsApiAdapter, usersApiAdapter);
     }
 
     @Test
-    void shouldDelegateToEmailAdapterWhenPathMatchesEmailMapping() {
+    void shouldDelegateToEmailsAdapterWhenPathMatchesEmailMapping() {
         final var request = CacheRequest.builder()
                 .authorization("auth")
                 .method(HttpMethod.GET)
@@ -51,6 +51,27 @@ class RequestProcessorTest {
                 .body("")
                 .build();
         when(emailsApiAdapter.processRequest(same(request))).thenReturn(Mono.just(expected));
+
+        final CacheResponse response = processor.processRequest(request).block();
+
+        assertThat(response)
+                .as("response")
+                .isSameAs(expected);
+    }
+
+    @Test
+    void shouldDelegateToUsersAdapterWhenPathMatchesUserMapping() {
+        final var request = CacheRequest.builder()
+                .authorization("auth")
+                .method(HttpMethod.GET)
+                .path("/api/users/1")
+                .body("")
+                .build();
+        final var expected = CacheResponse.builder()
+                .status(200)
+                .body("")
+                .build();
+        when(usersApiAdapter.processRequest(same(request))).thenReturn(Mono.just(expected));
 
         final CacheResponse response = processor.processRequest(request).block();
 
