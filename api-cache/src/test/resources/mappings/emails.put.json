@@ -10,6 +10,9 @@
   },
   "response": {
     "status": 204,
+    "headers": {
+      "X-Invalidate-Cache": "/api/emails/1"
+    },
     "body": ""
   }
 }

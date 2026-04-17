@@ -72,6 +72,26 @@ public class EmailsApiAdapterTest {
     }
 
     @Test
+    void shouldExtractInvalidateCache() {
+        final var request = CacheRequest.builder()
+                .authorization("emailToken")
+                .method(HttpMethod.PUT)
+                .path("/api/emails/1")
+                .body("{ \"value\": \"c.norris@kickass.com\", \"modified\": \"2026-04-10T14:39:40.6608024\" }")
+                .build();
+
+        final var reponse = emailsApi.processRequest(request).block();
+
+        assertThat(reponse)
+                .as("reponse")
+                .isNotNull()
+                .satisfies(r -> assertThat(r.invalidateCache())
+                        .as("invalidate cache")
+                        .isEqualTo("/api/emails/1")
+                );
+    }
+
+    @Test
     void shouldUseIfNoneMatch() {
         final var request = CacheRequest.builder()
                 .authorization("emailToken")

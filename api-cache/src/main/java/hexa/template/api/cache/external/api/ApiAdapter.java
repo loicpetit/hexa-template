@@ -39,6 +39,7 @@ public class ApiAdapter implements Api {
                         .status(response.statusCode().value())
                         .body(body)
                         .eTag(response.headers().asHttpHeaders().getETag())
+                        .invalidateCache(response.headers().asHttpHeaders().getFirst("X-Invalidate-Cache"))
                         .build());
     }
 }

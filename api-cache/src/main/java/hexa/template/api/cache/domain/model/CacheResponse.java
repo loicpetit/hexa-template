@@ -6,6 +6,7 @@ import lombok.Builder;
 public record CacheResponse (
         int status,
         String body,
-        String eTag
+        String eTag,
+        String invalidateCache
 ) {
 }
