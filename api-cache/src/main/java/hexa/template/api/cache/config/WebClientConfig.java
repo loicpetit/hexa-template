@@ -2,6 +2,7 @@ package hexa.template.api.cache.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,18 +16,18 @@ import reactor.core.publisher.Mono;
 import java.nio.charset.StandardCharsets;
 
 @Configuration
-@EnableConfigurationProperties(WebClientProperties.class)
+@EnableConfigurationProperties(WebClientConfig.Properties.class)
 @RequiredArgsConstructor
 @Slf4j
 public class WebClientConfig {
     @Bean
-    WebClient emailWebClient(final WebClientProperties properties) {
+    WebClient emailWebClient(final Properties properties) {
         return webClient(properties.email());
     }
 
-    private WebClient webClient(final WebClientProperties.Service service) {
+    private WebClient webClient(final Api api) {
         return WebClient.builder()
-                .baseUrl(service.host())
+                .baseUrl(api.host())
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .defaultStatusHandler(status -> false, this::handleError)
@@ -39,5 +40,17 @@ public class WebClientConfig {
                 .bodyToMono(byte[].class)
                 .defaultIfEmpty(new byte[0])
                 .map(body -> WebClientResponseException.create(status, "", null, body, StandardCharsets.UTF_8));
+    }
+
+    @ConfigurationProperties(prefix = "apicache.external")
+    public record Properties(
+            Api email
+    ) {
+    }
+
+    public record Api(
+            String host,
+            String mapping
+    ) {
     }
 }

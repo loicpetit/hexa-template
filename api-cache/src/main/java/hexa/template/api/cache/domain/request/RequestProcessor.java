@@ -1,6 +1,6 @@
 package hexa.template.api.cache.domain.request;
 
-import hexa.template.api.cache.config.WebClientProperties;
+import hexa.template.api.cache.config.WebClientConfig;
 import hexa.template.api.cache.domain.model.CacheRequest;
 import hexa.template.api.cache.domain.model.CacheResponse;
 import hexa.template.api.cache.external.api.Api;
@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 @Slf4j
 public class RequestProcessor {
-    private final WebClientProperties properties;
+    private final WebClientConfig.Properties properties;
     private final Api emailsApi;
 
     public Mono<CacheResponse> processRequest(final CacheRequest request) {

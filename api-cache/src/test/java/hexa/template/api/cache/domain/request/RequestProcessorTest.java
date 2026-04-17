@@ -1,6 +1,6 @@
 package hexa.template.api.cache.domain.request;
 
-import hexa.template.api.cache.config.WebClientProperties;
+import hexa.template.api.cache.config.WebClientConfig;
 import hexa.template.api.cache.domain.model.CacheRequest;
 import hexa.template.api.cache.domain.model.CacheResponse;
 import hexa.template.api.cache.external.api.Api;
@@ -25,8 +25,8 @@ class RequestProcessorTest {
     @Mock
     private Api emailsApiAdapter;
 
-    private final WebClientProperties properties =
-            new WebClientProperties(new WebClientProperties.Service("http://localhost:8010", EMAIL_MAPPING));
+    private final WebClientConfig.Properties properties =
+            new WebClientConfig.Properties(new WebClientConfig.Api("http://localhost:8010", EMAIL_MAPPING));
 
     private RequestProcessor processor;
 
