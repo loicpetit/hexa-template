@@ -233,13 +233,13 @@ class EmailControllerTest {
 
         @Test
         void shouldUpdateEmail() throws Exception {
-            mvc.perform(
-                            put(ID_ENDPOINT)
-                                    .with(httpBasic("emailUpdate", "emailPwd"))
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .content(BODY_VALID)
+            mvc.perform(put(ID_ENDPOINT)
+                            .with(httpBasic("emailUpdate", "emailPwd"))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(BODY_VALID)
                     )
                     .andExpect(status().isNoContent())
+                    .andExpect(header().string("X-Invalidate-Cache", ID_ENDPOINT))
                     .andExpect(content().string(""));
 
 
@@ -267,63 +267,58 @@ class EmailControllerTest {
 
         @Test
         void ifNoBodyShouldReturn400() throws Exception {
-            mvc.perform(
-                            put(ID_ENDPOINT)
-                                    .with(httpBasic("emailUpdate", "emailPwd"))
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mvc.perform(put(ID_ENDPOINT)
+                            .with(httpBasic("emailUpdate", "emailPwd"))
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().isBadRequest());
         }
 
         @Test
         void ifInvalidBodyShouldReturn400() throws Exception {
-            mvc.perform(
-                            put(ID_ENDPOINT)
-                                    .with(httpBasic("emailUpdate", "emailPwd"))
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .content("toto")
+            mvc.perform(put(ID_ENDPOINT)
+                            .with(httpBasic("emailUpdate", "emailPwd"))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("toto")
                     )
                     .andExpect(status().isBadRequest());
         }
 
         @Test
         void ifInvalidValueShouldReturn400() throws Exception {
-            mvc.perform(
-                            put(ID_ENDPOINT)
-                                    .with(httpBasic("emailUpdate", "emailPwd"))
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .content("""
-                                                {
-                                                    "value": "",
-                                                    "modified": "%s"
-                                                }
-                                            """.formatted(MODIFIED.toString()))
+            mvc.perform(put(ID_ENDPOINT)
+                            .with(httpBasic("emailUpdate", "emailPwd"))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                        {
+                                            "value": "",
+                                            "modified": "%s"
+                                        }
+                                    """.formatted(MODIFIED.toString()))
                     )
                     .andExpect(status().isBadRequest());
         }
 
         @Test
         void ifInvalidModifiedShouldReturn400() throws Exception {
-            mvc.perform(
-                            put(ID_ENDPOINT)
-                                    .with(httpBasic("emailUpdate", "emailPwd"))
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .content("""
-                                                {
-                                                    "value": "bruce@kickass.com"
-                                                }
-                                            """)
+            mvc.perform(put(ID_ENDPOINT)
+                            .with(httpBasic("emailUpdate", "emailPwd"))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                        {
+                                            "value": "bruce@kickass.com"
+                                        }
+                                    """)
                     )
                     .andExpect(status().isBadRequest());
         }
 
         @Test
         void ifEmailDoesNotExistShouldReturn404() throws Exception {
-            mvc.perform(
-                            put(BASE_ENDPOINT + "/10")
-                                    .with(httpBasic("emailUpdate", "emailPwd"))
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .content(BODY_VALID)
+            mvc.perform(put(BASE_ENDPOINT + "/10")
+                            .with(httpBasic("emailUpdate", "emailPwd"))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(BODY_VALID)
                     )
                     .andExpect(status().isNotFound());
         }
@@ -336,27 +331,25 @@ class EmailControllerTest {
 
         @Test
         void ifUserWithoutRequiredRoleShouldReturn403() throws Exception {
-            mvc.perform(
-                            put(ID_ENDPOINT)
-                                    .with(httpBasic("simpleUser", "simplePwd"))
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .content(BODY_VALID)
+            mvc.perform(put(ID_ENDPOINT)
+                            .with(httpBasic("simpleUser", "simplePwd"))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(BODY_VALID)
                     )
                     .andExpect(status().isForbidden());
         }
 
         @Test
         void ifOlderDtoShouldReturn409() throws Exception {
-            mvc.perform(
-                            put(ID_ENDPOINT)
-                                    .with(httpBasic("emailUpdate", "emailPwd"))
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .content("""
-                                                {
-                                                    "value": "bruce@kickass.com",
-                                                    "modified": "%s"
-                                                }
-                                            """.formatted(MODIFIED.minusDays(1).toString()))
+            mvc.perform(put(ID_ENDPOINT)
+                            .with(httpBasic("emailUpdate", "emailPwd"))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                        {
+                                            "value": "bruce@kickass.com",
+                                            "modified": "%s"
+                                        }
+                                    """.formatted(MODIFIED.minusDays(1).toString()))
                     )
                     .andExpect(status().isConflict());
         }
@@ -371,11 +364,11 @@ class EmailControllerTest {
 
         @Test
         void shouldDeleteEmail() throws Exception {
-            mvc.perform(
-                            delete(ID_ENDPOINT)
-                                    .with(httpBasic("emailDelete", "emailPwd"))
+            mvc.perform(delete(ID_ENDPOINT)
+                            .with(httpBasic("emailDelete", "emailPwd"))
                     )
                     .andExpect(status().isNoContent())
+                    .andExpect(header().string("X-Invalidate-Cache", ID_ENDPOINT))
                     .andExpect(content().string(""));
 
 
@@ -387,26 +380,22 @@ class EmailControllerTest {
         @Test
         void ifInvalidIdShouldReturn404() throws Exception {
 
-            mvc.perform(
-                            delete(BASE_ENDPOINT + "/11")
-                                    .with(httpBasic("emailDelete", "emailPwd"))
+            mvc.perform(delete(BASE_ENDPOINT + "/11")
+                            .with(httpBasic("emailDelete", "emailPwd"))
                     )
                     .andExpect(status().isNotFound());
         }
 
         @Test
         void ifUnauthenticatedUserShouldReturn401() throws Exception {
-            mvc.perform(
-                            delete(ID_ENDPOINT))
+            mvc.perform(delete(ID_ENDPOINT))
                     .andExpect(status().isUnauthorized());
         }
 
         @Test
         void ifUserWithoutRequiredRoleShouldReturn403() throws Exception {
-            mvc.perform(
-
-                            delete(ID_ENDPOINT)
-                                    .with(httpBasic("simpleUser", "simplePwd"))
+            mvc.perform(delete(ID_ENDPOINT)
+                            .with(httpBasic("simpleUser", "simplePwd"))
                     )
                     .andExpect(status().isForbidden());
         }
