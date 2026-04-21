@@ -6,11 +6,11 @@ api:
 
 clients:
   email:
-    url: http://localhost:8010
+    url: http://localhost:8040
     username:
     password:
   user:
-    url: http://localhost:8020
+    url: http://localhost:8040
     username:
     password:
 
