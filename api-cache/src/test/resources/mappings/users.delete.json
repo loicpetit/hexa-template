@@ -6,7 +6,7 @@
   "response": {
     "status": 204,
     "headers": {
-      "X-Invalidate-Cache": "/api/users/1"
+      "X-Invalidate-Cache": ["/api/users","/api/users/1"]
     },
     "body": ""
   }

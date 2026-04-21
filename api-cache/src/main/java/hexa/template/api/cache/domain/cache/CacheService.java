@@ -12,6 +12,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -46,23 +47,19 @@ public class CacheService {
         log.info("evict if necessary {} {}", request, response);
         Optional.of(response)
                 .map(CacheResponse::invalidateCache)
+                .stream()
+                .flatMap(Collection::stream)
                 .map(invalidateCache -> new InvalidateRequest(
                         invalidateCache,
                         request.authorization()
                 ))
-                .map(this::getRequestsToInvalidate)
-                .ifPresent(this::evictRequests);
+                .flatMap(this::getRequestsToInvalidate)
+                .forEach(cache::evict);
     }
 
-    private Collection<CacheRequest> getRequestsToInvalidate(final InvalidateRequest invalidateRequest) {
+    private Stream<CacheRequest> getRequestsToInvalidate(final InvalidateRequest invalidateRequest) {
         log.info("search requests to invalidate...");
-        return cache.keys()
-                .filter(invalidateRequest::match)
-                .toList();
-    }
-
-    private void evictRequests(final Collection<CacheRequest> requests) {
-        requests.forEach(cache::evict);
+        return cache.keys().filter(invalidateRequest::match);
     }
 
     private record InvalidateRequest(

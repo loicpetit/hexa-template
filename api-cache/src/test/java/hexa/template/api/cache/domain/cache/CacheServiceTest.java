@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpMethod;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -101,7 +102,7 @@ class CacheServiceTest {
                         .build();
                 final var apiResponse = CacheResponse.builder()
                         .status(200)
-                        .invalidateCache("/api/emails/1")
+                        .invalidateCache(List.of("/api/emails/1"))
                         .build();
                 when(requestProcessor.processRequest(same(request))).thenReturn(Mono.just(apiResponse));
                 when(cache.keys()).thenReturn(Stream.of(cachedRequest1, cachedRequest2));
@@ -118,21 +119,28 @@ class CacheServiceTest {
                         .method(HttpMethod.PUT)
                         .path("/api/emails/1")
                         .build();
-                final var cachedRequest = CacheRequest.builder()
+                final var cachedRequestAll = CacheRequest.builder()
+                        .authorization("Bearer token")
+                        .method(HttpMethod.GET)
+                        .path("/api/emails")
+                        .build();
+                final var cachedRequestId = CacheRequest.builder()
                         .authorization("Bearer token")
                         .method(HttpMethod.GET)
                         .path("/api/emails/1")
                         .build();
+                final var cacheKeys = List.of(cachedRequestAll, cachedRequestId);
                 final var expected = CacheResponse.builder()
                         .status(200)
-                        .invalidateCache("/api/emails/1")
+                        .invalidateCache(List.of("/api/emails", "/api/emails/1"))
                         .build();
                 when(requestProcessor.processRequest(same(request))).thenReturn(Mono.just(expected));
-                when(cache.keys()).thenReturn(Stream.of(cachedRequest));
+                when(cache.keys()).thenAnswer(i -> cacheKeys.stream());
 
                 service.process(request).block();
 
-                verify(cache).evict(same(cachedRequest));
+                verify(cache).evict(same(cachedRequestAll));
+                verify(cache).evict(same(cachedRequestId));
             }
         }
     }

@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(
@@ -87,7 +89,7 @@ public class UsersApiAdapterTest {
                 .isNotNull()
                 .satisfies(r -> assertThat(r.invalidateCache())
                         .as("invalidate cache")
-                        .isEqualTo("/api/users/1")
+                        .isEqualTo(List.of("/api/users", "/api/users/1"))
                 );
     }
 
