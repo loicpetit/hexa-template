@@ -290,6 +290,7 @@ class UserControllerTest {
                                     )
                     )
                     .andExpect(status().isOk())
+                    .andExpect(header().stringValues("X-Invalidate-Cache", BASE_ENDPOINT, ID_ENDPOINT))
                     .andExpect(jsonPath("$.id").value(ID))
                     .andExpect(jsonPath("$.emailId").doesNotExist())
                     .andExpect(jsonPath("$.firstName").value("Bruce"))
@@ -391,6 +392,7 @@ class UserControllerTest {
                                     .with(httpBasic("userDelete", "userPwd"))
                     )
                     .andExpect(status().isNoContent())
+                    .andExpect(header().stringValues("X-Invalidate-Cache", BASE_ENDPOINT, ID_ENDPOINT))
                     .andExpect(content().string(""));
 
             assertThat(dao.findById(ID))

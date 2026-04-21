@@ -8,23 +8,45 @@ import hexa.template.user.core.usecase.AddUser;
 import hexa.template.user.core.usecase.DeleteUser;
 import hexa.template.user.core.usecase.EditUser;
 import hexa.template.user.core.usecase.GetUser;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 @Slf4j
 public class UserController implements hexa.template.user.api.web.UsersApi {
+    private static final String INVALIDATE_CACHE_HEADER = "X-Invalidate-Cache";
+
     final AddUser add;
     final EditUser edit;
     final GetUser get;
     final DeleteUser delete;
     final UserMapper modelMapper;
     final UserDtoMapper dtoMapper;
+    private final String allPattern;
+    private final String byIdPattern;
+
+     public UserController(
+            final AddUser add,
+            final EditUser edit,
+            final GetUser get,
+            final DeleteUser delete,
+            final UserMapper modelMapper,
+            final UserDtoMapper dtoMapper
+    ) {
+        this.add = add;
+        this.edit = edit;
+        this.get = get;
+        this.delete = delete;
+        this.modelMapper = modelMapper;
+        this.dtoMapper = dtoMapper;
+        this.allPattern = getAllPattern();
+        this.byIdPattern = getByIdPattern();
+    }
 
     @Override
     public ResponseEntity<List<UserDto>> getUsers() {
@@ -58,13 +80,42 @@ public class UserController implements hexa.template.user.api.web.UsersApi {
         log.info("Update user with id {}", id);
         final User userToUpdate = modelMapper.toUser(id, dto);
         final User updatedUser = edit.from(userToUpdate);
-        return ResponseEntity.ok().body(dtoMapper.toDto(updatedUser));
+        return ResponseEntity.ok()
+                .header(INVALIDATE_CACHE_HEADER, allPattern, getInvalidateCache(id))
+                .body(dtoMapper.toDto(updatedUser));
     }
 
     @Override
     public ResponseEntity<Void> deleteUserById(Long id) {
         log.info("Delete user with id {}", id);
         delete.byId(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent()
+                .header(INVALIDATE_CACHE_HEADER, allPattern, getInvalidateCache(id))
+                .build();
+    }
+
+    private String getAllPattern() {
+        final Method method = getApiMethod("getUsers");
+        return method.getAnnotation(RequestMapping.class).value()[0];
+    }
+
+    private String getByIdPattern() {
+        final Method method = getApiMethod("getUserById", Long.class);
+        return method.getAnnotation(RequestMapping.class).value()[0];
+    }
+
+    private Method getApiMethod(
+            final String methodName,
+            final Class<?>... parameterTypes
+    ) {
+        try {
+            return UsersApi.class.getMethod(methodName, parameterTypes);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException("Failed to retrieve EmailsApi method " + methodName, e);
+        }
+    }
+
+    private String getInvalidateCache(final Long id) {
+        return byIdPattern.replace("{id}", id.toString());
     }
 }
