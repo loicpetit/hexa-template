@@ -1,3 +1,45 @@
 ext {
     globalVersion = "1.0.0-SNAPSHOT"
 }
+
+def createJavaTask(
+        String taskName,
+        String taskDescription,
+        String taskDependsOn,
+        String jarPath
+) {
+    tasks.register(taskName, Exec) {
+        group = "Hexa"
+        description = taskDescription
+        dependsOn(taskDependsOn)
+        executable = "${System.getenv('JAVA_HOME')}/bin/java"
+        args = [
+                "-Dspring.profiles.active=local",
+                "-jar",
+                jarPath
+        ]
+    }
+}
+
+def createApiTask(moduleName) {
+    def taskName = "${moduleName}Api"
+    def taskDescription = "Starts the ${moduleName} API"
+    def taskDependsOn = ":${moduleName}:api:build"
+    def jarPath = "${rootDir}/${moduleName}/api/build/libs/${moduleName}-api-${globalVersion}.jar"
+    createJavaTask(taskName, taskDescription, taskDependsOn, jarPath)
+}
+
+createApiTask('email')
+createApiTask('user')
+createJavaTask(
+        "cacheApi",
+        "Starts the API Cache",
+        ":cache-api:build",
+        "${rootDir}/cache-api/build/libs/cache-api-${globalVersion}.jar"
+)
+createJavaTask(
+        "graphql",
+        "Starts the Graphql API",
+        ":graphql:build",
+        "${rootDir}/graphql/build/libs/graphql-${globalVersion}.jar"
+)
